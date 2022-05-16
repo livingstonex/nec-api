@@ -39,7 +39,7 @@ app.get('/healthcheck', (req, res) => {
 app.use(errorHandler);
 
 //== Initialize port and server on specified port ==//
-const PORT = process.env.PORT || 9000;
+const PORT = process.env.PORT || 7001;
 
 const server = app.listen(PORT, () => {
   console.log(
