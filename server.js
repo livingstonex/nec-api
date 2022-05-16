@@ -1,10 +1,10 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const morgan = require('morgan');
-const colors = require('colors');
 const connectDB = require('./config/db');
 const errorHandler = require('./middlewares/error');
 const cors = require('cors');
+const ENV = require('./utils/env.utils');
 
 //== Load env files ==//
 dotenv.config({ path: './config/config.env' });
@@ -27,8 +27,8 @@ const corsOptions = {
 app.use(cors());
 
 //== Dev logging middleware ==//
-if (process.env.NODE_ENV === 'development') {
-  app.us;
+if (ENV.dev) {
+  app.use(morgan('dev'));
 }
 
 app.get('/healthcheck', (req, res) => {
@@ -39,7 +39,7 @@ app.get('/healthcheck', (req, res) => {
 app.use(errorHandler);
 
 //== Initialize port and server on specified port ==//
-const PORT = process.env.PORT || 7001;
+const PORT = process.env.PORT;
 
 const server = app.listen(PORT, () => {
   console.log(
