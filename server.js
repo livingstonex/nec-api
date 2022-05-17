@@ -11,6 +11,7 @@ dotenv.config({ path: './config/config.env' });
 
 // Connect to Database
 connectDB();
+const db = require('./models/sql');
 
 //== Route files ==//
 
