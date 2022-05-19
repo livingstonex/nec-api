@@ -1,8 +1,10 @@
 const mandrill = require('mandrill-api');
+const Mailgun = require('mailgun-js');
 // const axios = require('axios');
 const ejs = require('ejs');
 const path = require('path');
 const Env = require('./env.utils');
+const Validator = require('./validator.utils');
 
 const TEMPLATES = {
   newUserSignUp: {
@@ -11,7 +13,10 @@ const TEMPLATES = {
   },
 };
 
+// Initialize mandrill client
 const mandrill_client = new mandrill.Mandrill(Env.get('MANDRILL_API_KEY'));
+// Initialize mailgun
+const mg = Mailgun({ apiKey: Env.get('MAILGUN_API_KEY'), domain: 'nec.ng' });
 
 // Mandrill Request
 // const MANDRILLAPI = axios.create({
@@ -23,21 +28,98 @@ const mandrill_client = new mandrill.Mandrill(Env.get('MANDRILL_API_KEY'));
 //   timeout: 60000,
 // });
 
-// const getHTMLBody = (templateName = '', templateData = {}) => {
-//   templateName = path.join(__dirname, `../mails/${templateName}/body.ejs`);
+const getHTMLBody = (templateName = '', templateData = {}) => {
+  templateName = path.join(__dirname, `../mails/${templateName}/body.ejs`);
 
-//   // Generate Template
-//   return new Promise((resolve, reject) => {
-//     ejs.renderFile(templateName, templateData, (err, str) => {
-//       if (err) return reject(err);
+  // Generate Template
+  return new Promise((resolve, reject) => {
+    ejs.renderFile(templateName, templateData, (err, str) => {
+      if (err) return reject(err);
 
-//       return resolve(str);
-//     });
-//   });
-// };
+      return resolve(str);
+    });
+  });
+};
 
 module.exports = {
-  async sendMail({
+  async sendEmailTemplate({
+    to = [],
+    templateName = '',
+    templateData = {},
+    subject = 'NEC',
+    opts = {},
+  }) {
+    try {
+      const invalidRecipients = [];
+      const MAIL_PROVIDER = (await config.get('MAIL_PROVIDER')) || 'DISABLED';
+
+      to = to.filter(async (recipient) => {
+        const isValidEmail = Validator.validateEmail(recipient.email);
+
+        if (!isValidEmail) invalidRecipients.push(recipient);
+
+        return isValidEmail;
+      });
+
+      if (!templateName || to.length < 1)
+        throw new Error('Invalid email parameters');
+
+      const html = await getHTMLBody(templateName, templateData);
+
+      if (!Env.live) return console.log(`SENDING EMAIL: ${templateName}`);
+
+      if (MAIL_PROVIDER === 'MAILGUN') {
+        return this.sendViaMailgun({
+          html,
+          subject,
+          to: to.map((t) => t.email).join(','),
+          tags: [templateName],
+          opts,
+        });
+      }
+
+      return this.sendViaMailgun({
+        html,
+        subject,
+        to: to.map((t) => t.email).join(','),
+        tags: [templateName],
+        opts,
+      });
+    } catch (error) {
+      throw Error(
+        error.message ||
+          'Error sending email. Contact NEC support on 09011111111'
+      );
+    }
+  },
+
+  async sendViaMailgun({
+    to = '',
+    html,
+    from = 'NEC.NG <no-reply@nec.ng>',
+    subject = 'NEC',
+    tags = [],
+    opts = {},
+  }) {
+    return new Promise((resolve, reject) => {
+      const data = {
+        from,
+        to,
+        subject,
+        html,
+        'o:tag': tags,
+        ...opts,
+      };
+
+      mg.messages().send(data, (err, body) => {
+        if (err) return reject(err);
+
+        return resolve(body);
+      });
+    });
+  },
+
+  async sendViaMadrillClient({
     users,
     from = {
       name: 'NEC.NG',
