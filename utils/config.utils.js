@@ -1,4 +1,3 @@
-const { DOUBLE } = require('sequelize/types');
 const Cache = require('./cache.utils');
 const Env = require('./env.utils');
 
