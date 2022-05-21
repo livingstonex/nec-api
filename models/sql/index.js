@@ -45,7 +45,11 @@ sequelize
     console.error('PSQL: Unable to connect to the database:', err);
   });
 
-const modelDefiners = [require('./PasswordReset')];
+const modelDefiners = [
+  require('./PasswordReset'),
+  require('./Users'),
+  require('./Privilages'),
+];
 
 for (const modelDefiner of modelDefiners) {
   modelDefiner(sequelize);
