@@ -38,6 +38,7 @@
     "lodash": "^4.17.21",
     "mailgun-js": "^0.22.0",
     "mandrill-api": "^1.0.45",
+    "moment": "^2.29.3",
     "mongoose": "^6.3.3",
     "morgan": "^1.10.0",
     "path": "^0.12.7",
