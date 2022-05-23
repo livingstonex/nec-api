@@ -49,6 +49,7 @@ const modelDefiners = [
   require('./PasswordReset'),
   require('./Users'),
   require('./Privilages'),
+  require('./UserPrivilages'),
 ];
 
 for (const modelDefiner of modelDefiners) {

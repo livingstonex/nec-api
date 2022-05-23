@@ -1,47 +1,98 @@
-const User = require('../../models/sql/Users');
+const { User } = require('../../models/sql').models;
 const Error = require('../../utils/errorResponse');
+const Validator = require('../../utils/validator.utils');
+const bcrypt = require('bcryptjs');
 
-const Register = async (req, res, next) => {
-  const { email, fullName, phone, password } = req.body;
+// module.exports = Register;
+module.exports = {
+  async register(req, res, next) {
+    try {
+      const { email, fullname, phone, password } = req.body;
 
-  if (email == '' || password == '' || phone == '' || fullName == '') {
-    return next(
-      new Error('Please fill in all the fields, they are all required', 400)
-    );
-  }
+      if (email == '' || password == '' || phone == '' || fullname == '') {
+        return res.status(400).json({
+          status: 'error',
+          message: 'Please fill in all the fields, they are all required',
+          data: '',
+        });
+      }
 
-  const passChecker =
-    /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/;
+      const passwordValid = Validator.passwordChecker(password);
 
-  if (!password.match(passChecker)) {
-    return next(
-      new Error(
-        'Password must be minimum of eight (8) characters long, containing uppercase and lowercase letters,atleast a number and a special character',
-        400
-      )
-    );
-  }
+      if (!passwordValid) {
+        return res.status(400).json({
+          status: 'error',
+          message:
+            'Password must be minimum of eight (8) characters long, containing uppercase and lowercase letters,atleast a number and a special character',
+          data: '',
+        });
+      }
 
-  const emailChecker =
-    /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  if (!email.match(emailChecker)) {
-    return next(new Error('Please enter a valid email', 400));
-  }
+      const hashedPassword = await bcrypt.hash(password, 12);
 
-  const phoneNumberChecker =
-    /(?:(?:(?:\+?234(?:\h1)?|01)\h*)?(?:\(\d{3}\)|\d{3})|\d{4})(?:\W*\d{3})?\W*\d{4}(?!\d)/;
-  if (!phone.match(phoneNumberChecker)) {
-    return next(new Error('please enter a valid phone number', 400));
-  }
+      const emailChecker = Validator.validateEmail(email);
+      if (!emailChecker) {
+        return res.status(400).json({
+          status: 'failed',
+          message: 'Please enter a valid email',
+          data: '',
+        });
+      }
 
-  try {
-    const newUser = await User.create({
-      fullName,password,phone ,email
-    })
-    console.log(newUser)
-  } catch (e) {
-    return next(new Error(e.message, 500));
-  }
+      const validPhoneNumber = Validator.phoneNumberChecker(phone);
+
+      if (!validPhoneNumber) {
+        res.status(400).json({
+          status: 'failed',
+          message: 'please enter a valid phone number',
+          data: '',
+        });
+      }
+
+      // const userExist = await User.findOne({ where: { email } });
+
+      // if (userExist != null) {
+      //   return res.status(400).json({
+      //     status: 'failed',
+      //     message: `A user with ${email} already exist`,
+      //     data: '',
+      //   });
+      // }
+
+      // const newUser = await User.create({
+      //   fullname,
+      //   password:hashedPassword,
+      //   phone,
+      //   email,
+      // });
+
+      const [user, created] = await User.findOrCreate({
+        where: { email },
+        defaults: {
+          fullname,
+          password: hashedPassword,
+          phone,
+          email,
+        },
+      });
+      if (created) {
+        return res.status(200).json({
+          status: 'success',
+          message: 'User created successfully',
+          data: user,
+        });
+
+        
+      }else{
+        return res.status(400).json({
+          status:'failed',
+          message: `A user with ${email} already exist`,
+          data:''
+        })
+      }
+    } catch (e) {
+      return next(e);
+    }
+  },
+  //==other auth controllers ==//
 };
-
-module.exports = Register;

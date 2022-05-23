@@ -1,21 +1,41 @@
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-  const Privilage = sequelize.define(
+  const model = sequelize.define(
     'Privilage',
     {
+      id: {
+        type: DataTypes.INTEGER(10).UNSIGNED,
+        allowNull: false,
+        primaryKey: true,
+        unique: true,
+        autoIncrement: true,
+      },
       name: {
         type: DataTypes.STRING(255),
         allowNull: false,
         primaryKey: true,
       },
     },
-    { timestamps: true }
+    {
+      tableName: 'privilages',
+      createdAt: 'created_at',
+      updatedAt: 'updated_at',
+      timestamps: true,
+    }
   );
 
-  Privilage.associate = (model) => {
-    Privilage.belongsToMany(model.User, { through: 'UserPrivilages' });
+  model.associate = ({ User, UserPrivilage }) => {
+    model.belongsToMany(User, {
+      foreignKey: 'privilage_id',
+      as: 'users',
+      through: UserPrivilage,
+    });
+    model.hasMany(UserPrivilage, {
+      as: 'user_privilages',
+      foreignKey: 'privilage_id',
+    });
   };
 
-  return Privilage;
+  return model;
 };

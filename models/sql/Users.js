@@ -1,11 +1,17 @@
 const { DataTypes } = require('sequelize');
-const UserPrivilages = require('./UserPrivilagesOld');
 
 module.exports = (sequelize) => {
-  const User = sequelize.define(
+  const model = sequelize.define(
     'User',
     {
-      fullName: {
+      id: {
+        type: DataTypes.INTEGER(10).UNSIGNED,
+        allowNull: false,
+        primaryKey: true,
+        unique:true,
+        autoIncrement: true,
+      },
+      fullname: {
         type: DataTypes.STRING(255),
         allowNull: false,
       },
@@ -23,15 +29,26 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      isVerified:{
+        type:DataTypes.BOOLEAN,
+        default:false
+      }
     },
     {
+      tableName:'users',
+      createdAt:'created_at',
+      updatedAt:'updated_at',
       timestamps: true,
     }
   );
 
-  User.associate = (model) => {
-    User.belongsToMany(model.Privilage, { through: 'UserPrivilages' });
+  model.associate = ({ Privilage, UserPrivilage }) => {
+    model.belongsToMany(Privilage, {
+      foreignKey: 'user_id',
+      as: 'privilages',
+      through: UserPrivilage,
+    });
   };
 
-  return User;
+  return model;
 };

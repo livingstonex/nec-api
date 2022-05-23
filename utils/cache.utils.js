@@ -42,7 +42,7 @@ const R = {
       typeof value === 'object' ? JSON.stringify(value) : value,
     ];
 
-    if (rest.length > 0) rest = rest.filter((r) => Bpplean(r));
+    if (rest.length > 0) rest = rest.filter((r) => Boolean(r));
 
     // Allow Cache.set(...) to take rxtra arguments; e.g Expiry
     if (rest.length) args.push(...rest);

@@ -14,6 +14,8 @@ connectDB();
 const db = require('./models/sql');
 
 //== Route files ==//
+const routes = require('./routes');
+
 
 //== App Initialization ==//
 const app = express();
@@ -35,6 +37,11 @@ if (ENV.dev) {
 app.get('/healthcheck', (req, res) => {
   res.send('Zeenab API is online.');
 });
+
+//=== mount route files ===//
+
+app.use('/api', routes);
+
 
 //== General Error handler middleware ==//
 app.use(errorHandler);
