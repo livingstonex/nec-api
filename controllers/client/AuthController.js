@@ -1,6 +1,7 @@
 const { User } = require('../../models/sql').models;
-const Error = require('../../utils/errorResponse');
+// const Error = require('../../utils/errorResponse');
 const Validator = require('../../utils/validator.utils');
+const sendTokenResponse = require('../../utils/sendTokenResponse.utils');
 const bcrypt = require('bcryptjs');
 
 // module.exports = Register;
@@ -8,8 +9,7 @@ module.exports = {
   async register(req, res, next) {
     try {
       const { email, fullname, phone, password } = req.body;
-
-      if (email == '' || password == '' || phone == '' || fullname == '') {
+      if (email === '' || password ==- '' || phone === '' || fullname === '') {
         return res.status(400).json({
           status: 'error',
           message: 'Please fill in all the fields, they are all required',
@@ -93,6 +93,63 @@ module.exports = {
     } catch (e) {
       return next(e);
     }
+  },
+
+  async login (req, res, next) {
+    try {
+      const { email, password } = req.body;
+      const errors = {};
+      
+      if (!email) {
+        errors.email = 'Invalid login data!';
+      }
+
+      if (!password) {
+        errors.password = 'Password is required!';
+      }
+
+      if (Object.keys(errors).length > 0) {
+        return res.status(400).json({
+          status: 'failed',
+          message: 'Email and password is required!',
+          data: errors
+        });
+      }
+
+      const user = await User.findOne({ where: { email } });
+
+      if (!user) {
+        return res.status(400).json({
+          status: 'failed',
+          message: 'Invalid login details!'
+        });
+      }
+
+      const isMatch = await bcrypt.compare(password, user.password);
+      
+      if (!isMatch) {
+        return res.status(400).json({
+          success: 'failed',
+          message: 'Invalid login details!'
+        });
+      }
+      user.password = undefined;
+      return sendTokenResponse(user, res, 200, 'Login successful');
+    } catch (e) {
+      return next(e);
+    }
+  },
+
+  async logout (req, res) {
+    res.cookie('nec-cookie', 'none', {
+      expires: new Date(Date.now() - 10 * 1000),
+      httpOnly: true
+    });
+    res.status(200).json({
+      success: 'success',
+      data: {},
+      message: 'Logout successful'
+    });
   },
   //==other auth controllers ==//
 };
