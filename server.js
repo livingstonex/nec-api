@@ -51,7 +51,8 @@ const server = app.listen(PORT, () => {
   console.log(
     `Server running in ${process.env.NODE_ENV} mode on port ${PORT}`.rainbow
   );
-  client.connect().catch((err) => console.error('REDIS Err: ', err));
+
+  client.connect().catch((err) => console.error('Redis Error: ', err));
 });
 
 //== Handle global error on server initialization ==//

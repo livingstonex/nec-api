@@ -8,10 +8,6 @@ client.on('connect', () => {
   console.log('Connected to Redis');
 });
 
-client.on('error', (err) => {
-  console.log(`Redis error: ${err}`);
-});
-
 const CACHE_PREFIX = 'NEC:';
 
 const R = {
