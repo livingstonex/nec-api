@@ -61,9 +61,6 @@ Object.keys(sequelize.models).forEach((key) => {
     sequelize.models[key].associate(sequelize.models);
 });
 
-sequelize
-  .sync()
-  .then((res) => console.log('Synced: ', res))
-  .catch((err) => console.log('Error: ', err));
+sequelize.sync().catch((err) => console.log('Error: ', err));
 
 module.exports = sequelize;

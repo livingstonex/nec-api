@@ -6,6 +6,7 @@ const bcrypt = require('bcryptjs');
 const Utils = require('../../utils/utils');
 const Email = require('../../utils/email.utils');
 const Time = require('../../utils/time.utils');
+const Config = require('../../utils/config.utils');
 
 // module.exports = Register;
 module.exports = {
