@@ -55,7 +55,7 @@ module.exports = {
   }) {
     try {
       const invalidRecipients = [];
-      const MAIL_PROVIDER = 'MAILGUN'; // (await Config.get('MAIL_PROVIDER')) || 'MAILGUN'; // 'DISABLED';
+      const MAIL_PROVIDER = (await Config.get('MAIL_PROVIDER')) || 'DISABLED';
 
       to = to.filter(async (recipient) => {
         const isValidEmail = Validator.validateEmail(recipient.email);
