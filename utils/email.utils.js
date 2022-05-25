@@ -70,7 +70,7 @@ module.exports = {
 
       const html = await getHTMLBody(templateName, templateData);
 
-      if (Env.live) return console.log(`SENDING EMAIL: ${templateName}`);
+      if (!Env.live) return console.log(`**** MAIL SENT: ${templateName} ****`);
 
       if (MAIL_PROVIDER === 'MAILGUN') {
         return this.sendViaMailgun({
@@ -111,8 +111,6 @@ module.exports = {
     tags = [],
     opts = {},
   }) {
-    console.log('HEE...');
-
     return new Promise((resolve, reject) => {
       const data = {
         from,
@@ -124,9 +122,7 @@ module.exports = {
       };
 
       mg.messages().send(data, (err, body) => {
-        console.log('MG Error: ', err);
         if (err) return reject(err);
-        console.log('MG BODY: ', body);
 
         return resolve(body);
       });
@@ -189,16 +185,7 @@ module.exports = {
         message,
       });
     } catch (error) {
-      console.log('Email Error: ', error);
+      console.log('MadrillClient Email Error: ', error);
     }
   },
-
-  // async test() {
-  //   try {
-  //     const tet = await Config.get('MAIL_PROVIDER');
-  //     console.log('TEST: ', tet);
-  //   } catch (error) {
-  //     console.log('Redis Err: ', error);
-  //   }
-  // },
 };

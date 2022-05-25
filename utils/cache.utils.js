@@ -18,7 +18,6 @@ const R = {
   client,
 
   get(key = '') {
-    console.log('KEYY: ', CACHE_PREFIX + String(key));
     return client
       .get(CACHE_PREFIX + String(key))
       .then((res) => res)

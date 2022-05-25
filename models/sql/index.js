@@ -14,8 +14,6 @@ class SQL extends Sequelize {
   }
 }
 
-console.log('SQL... ', SQL_DB_NAME);
-
 const pool = Env.live
   ? {
       max: 100,
