@@ -14,8 +14,6 @@ class SQL extends Sequelize {
   }
 }
 
-console.log('SQL... ', SQL_DB_NAME);
-
 const pool = Env.live
   ? {
       max: 100,
@@ -61,9 +59,6 @@ Object.keys(sequelize.models).forEach((key) => {
     sequelize.models[key].associate(sequelize.models);
 });
 
-sequelize
-  .sync()
-  .then((res) => console.log('Synced: ', res))
-  .catch((err) => console.log('Error: ', err));
+sequelize.sync().catch((err) => console.log('Error: ', err));
 
 module.exports = sequelize;

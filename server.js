@@ -5,17 +5,17 @@ const connectDB = require('./config/db');
 const errorHandler = require('./middlewares/error');
 const cors = require('cors');
 const ENV = require('./utils/env.utils');
+const { client } = require('./utils/cache.utils');
 
 //== Load env files ==//
 dotenv.config({ path: './config/config.env' });
 
 // Connect to Database
 connectDB();
-const db = require('./models/sql');
+// const db = require('./models/sql');
 
 //== Route files ==//
 const routes = require('./routes');
-
 
 //== App Initialization ==//
 const app = express();
@@ -39,9 +39,7 @@ app.get('/healthcheck', (req, res) => {
 });
 
 //=== mount route files ===//
-
 app.use('/api', routes);
-
 
 //== General Error handler middleware ==//
 app.use(errorHandler);
@@ -53,6 +51,8 @@ const server = app.listen(PORT, () => {
   console.log(
     `Server running in ${process.env.NODE_ENV} mode on port ${PORT}`.rainbow
   );
+
+  client.connect().catch((err) => console.error('Redis Error: ', err));
 });
 
 //== Handle global error on server initialization ==//
