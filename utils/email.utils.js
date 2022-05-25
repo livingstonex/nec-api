@@ -5,6 +5,7 @@ const ejs = require('ejs');
 const path = require('path');
 const Env = require('./env.utils');
 const Validator = require('./validator.utils');
+const Config = require('./config.utils');
 
 const TEMPLATES = {
   newUserSignUp: {
@@ -16,7 +17,10 @@ const TEMPLATES = {
 // Initialize mandrill client
 const mandrill_client = new mandrill.Mandrill(Env.get('MANDRILL_API_KEY'));
 // Initialize mailgun
-const mg = Mailgun({ apiKey: Env.get('MAILGUN_API_KEY'), domain: 'nec.ng' });
+const mg = Mailgun({
+  apiKey: Env.get('MAILGUN_API_KEY'),
+  domain: 'sandbox820ba9ce2e654b969d87bca27b31775a.mailgun.org',
+});
 
 // Mandrill Request
 // const MANDRILLAPI = axios.create({
@@ -51,7 +55,7 @@ module.exports = {
   }) {
     try {
       const invalidRecipients = [];
-      const MAIL_PROVIDER = (await config.get('MAIL_PROVIDER')) || 'DISABLED';
+      const MAIL_PROVIDER = (await Config.get('MAIL_PROVIDER')) || 'DISABLED';
 
       to = to.filter(async (recipient) => {
         const isValidEmail = Validator.validateEmail(recipient.email);
@@ -66,7 +70,7 @@ module.exports = {
 
       const html = await getHTMLBody(templateName, templateData);
 
-      if (!Env.live) return console.log(`SENDING EMAIL: ${templateName}`);
+      if (!Env.live) return console.log(`**** MAIL SENT: ${templateName} ****`);
 
       if (MAIL_PROVIDER === 'MAILGUN') {
         return this.sendViaMailgun({
@@ -75,7 +79,13 @@ module.exports = {
           to: to.map((t) => t.email).join(','),
           tags: [templateName],
           opts,
-        });
+        })
+          .then((res) => {
+            console.log('Mail Response: ', res);
+          })
+          .catch((err) => {
+            console.log('Mailgun Err: ', err);
+          });
       }
 
       return this.sendViaMailgun({
@@ -175,7 +185,7 @@ module.exports = {
         message,
       });
     } catch (error) {
-      console.log('Email Error: ', error);
+      console.log('MadrillClient Email Error: ', error);
     }
   },
 };

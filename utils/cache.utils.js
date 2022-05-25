@@ -1,15 +1,11 @@
 const redis = require('redis');
 
 const client = redis.createClient({
-  host: process.env.REDIS_HOST || '127.0.0.1',
+  host: process.env.REDIS_HOST || '127.0.0.1:6379',
 });
 
 client.on('connect', () => {
   console.log('Connected to Redis');
-});
-
-client.on('error', () => {
-  console.log(`Redis error: ${err}`);
 });
 
 const CACHE_PREFIX = 'NEC:';
@@ -18,20 +14,27 @@ const R = {
   client,
 
   get(key = '') {
-    return new Promise((resolve, reject) => {
-      client.get(CACHE_PREFIX + String(key), (err, res) => {
-        if (err) {
-          return reject(err);
-        }
+    return client
+      .get(CACHE_PREFIX + String(key))
+      .then((res) => res)
+      .catch((err) => console.log('Err1: ', err));
+    // return new Promise((resolve, reject) => {
+    //   client.get(CACHE_PREFIX + String(key), (err, res) => {
+    //     console.log('Raw Err: ', err)
+    //     if (err) {
+    //       return reject(err);
+    //     }
 
-        try {
-          const result = JSON.parse(res);
-          return resolve(result);
-        } catch (error) {
-          return resolve(res);
-        }
-      });
-    });
+    //     try {
+    //       const result = JSON.parse(res);
+    //       console.log('Result: ', result)
+    //       return resolve(result);
+    //     } catch (error) {
+    //         console.log('Result2: ', res)
+    //       return resolve(res);
+    //     }
+    //   });
+    // });
   },
 
   set(key, value = null, ...rest) {

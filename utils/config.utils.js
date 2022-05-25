@@ -1,7 +1,7 @@
 const Cache = require('./cache.utils');
 const Env = require('./env.utils');
 
-const CONFIG_PREFIX = Env.live ? 'CONFIG' : 'CONFIG_TEST';
+const CONFIG_PREFIX = Env.live ? 'CONFIG:' : 'CONFIG_TEST:';
 
 const CACHE_CONFIG_PREFIX = Env.live ? 'NEC:CONFIG:' : 'NEC:CONFIG_TEST';
 
@@ -11,7 +11,7 @@ const Config = {
   CLIENT_BASE_URL,
 
   async get(key, def = null) {
-    let value = await Cache.get(CONFIG_PREFIX + key);
+    let value = Cache.get(CONFIG_PREFIX + key).then((res) => res).catch(err => err);
 
     if (Object.is(value, undefined)) {
       // Read from DB if config value exists
