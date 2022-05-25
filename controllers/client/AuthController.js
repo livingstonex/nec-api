@@ -138,7 +138,7 @@ module.exports = {
       return res.status(201).json({
         status: 'created',
         message:
-          'Password reset link sent! Please check your email inbox for a reset link.s',
+          'Password reset link sent! Please check your email inbox for a reset link',
       });
     } catch (error) {
       return next(error);
