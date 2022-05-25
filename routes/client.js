@@ -5,15 +5,12 @@ const PasswordResetRateLimiter = require('../utils/ratelimit.utils');
 
 //== Load Routes ==//
 router.route('/register').post(AuthController.register);
-router.route(
-  '/resetpassword',
-  PasswordResetRateLimiter,
-  AuthController.requestPasswordReset
-);
-router.post(
-  '/reset/:token',
-  PasswordResetRateLimiter,
-  AuthController.resetPasswordByLink
-);
+router
+  .route('/resetpassword')
+  .post(PasswordResetRateLimiter, AuthController.requestPasswordReset);
+
+router
+  .route('/reset/:token')
+  .post(PasswordResetRateLimiter, AuthController.resetPasswordByLink);
 
 module.exports = router;
