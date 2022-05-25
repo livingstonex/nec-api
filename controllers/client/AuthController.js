@@ -1,4 +1,3 @@
-const { User } = require('../../models/sql').models;
 const Sequelize = require('sequelize');
 const { User, PasswordReset } = require('../../models/sql').models;
 const Error = require('../../utils/errorResponse');
@@ -9,13 +8,14 @@ const Utils = require('../../utils/utils');
 const Email = require('../../utils/email.utils');
 const Time = require('../../utils/time.utils');
 const Config = require('../../utils/config.utils');
+const crypto = require('crypto');
 
 // module.exports = Register;
 module.exports = {
   async register(req, res, next) {
     try {
       const { email, fullname, phone, password } = req.body;
-      if (email === '' || password ==- '' || phone === '' || fullname === '') {
+      if (email === '' || password == -'' || phone === '' || fullname === '') {
         return res.status(400).json({
           status: 'error',
           message: 'Please fill in all the fields, they are all required',
@@ -54,23 +54,8 @@ module.exports = {
           data: '',
         });
       }
-
-      // const userExist = await User.findOne({ where: { email } });
-
-      // if (userExist != null) {
-      //   return res.status(400).json({
-      //     status: 'failed',
-      //     message: `A user with ${email} already exist`,
-      //     data: '',
-      //   });
-      // }
-
-      // const newUser = await User.create({
-      //   fullname,
-      //   password:hashedPassword,
-      //   phone,
-      //   email,
-      // });
+      const verification_token = crypto.randomBytes(20).toString('hex');
+      const verification_token_epires_in = Time.add(1, 'day', Date.now());
 
       const [user, created] = await User.findOrCreate({
         where: { email },
@@ -79,14 +64,39 @@ module.exports = {
           password: hashedPassword,
           phone,
           email,
+          verification_token,
+          verification_token_expires: verification_token_epires_in,
         },
       });
       if (created) {
-        return res.status(200).json({
-          status: 'ok',
-          message: 'User created successfully',
-          data: user,
+        //send email with verification link
+        const reset_link = `${
+          req.protocol +
+          '://' +
+          req.get('host') +
+          '/api/client/verifyemail' +
+          '/' +
+          verification_token
+        }`;
+
+        const data = { link: reset_link };
+
+        const send_verification_link = Email.sendEmailTemplate({
+          to: email,
+          templateName: 'body.ejs',
+          templateData: data,
+          subject: 'please verify your email',
+          opts: {},
         });
+
+        sendTokenResponse(user, res, 200, 'user signed up successfully');
+
+        // return res.status(200).json({
+        //   status: 'ok',
+        //   message:
+        //     'We have sent a verification link to your email, Please clink on the link to verify your email',
+        //   data: user,
+        // });
       } else {
         return res.status(422).json({
           status: 'unprocessable',
@@ -98,12 +108,52 @@ module.exports = {
       return next(e);
     }
   },
-  
-  async login (req, res, next) {
+
+  async verifyEmail(req, res, next) {
+    try {
+      const { verificationcode } = req.params;
+
+      const user = await User.findOne({
+        where: {
+          verification_token_expires: {
+            [Sequelize.Op.gt]: Time.startOfDay(),
+          },
+          verification_token: verificationcode,
+        },
+      });
+
+      if (user === null) {
+        return res.status(422).json({
+          status: 'not-found',
+          message: 'Your verification token is either invalid or expired.',
+        });
+      }
+
+      const data = {
+        is_verified: true,
+        verification_token: null,
+        verification_token_expires: null,
+      };
+      await User.update(data, {
+        where: {
+          email: user.email,
+        },
+      });
+
+      return res.status(201).json({
+        status: 'ok',
+        message: 'email verified successfully',
+      });
+    } catch (e) {
+      return next(e);
+    }
+  },
+
+  async login(req, res, next) {
     try {
       const { email, password } = req.body;
       const errors = {};
-      
+
       if (!email) {
         errors.email = 'Invalid login data!';
       }
@@ -116,7 +166,7 @@ module.exports = {
         return res.status(400).json({
           status: 'failed',
           message: 'Email and password is required!',
-          data: errors
+          data: errors,
         });
       }
 
@@ -125,16 +175,16 @@ module.exports = {
       if (!user) {
         return res.status(400).json({
           status: 'failed',
-          message: 'Invalid login details!'
+          message: 'Invalid login details!',
         });
       }
 
       const isMatch = await bcrypt.compare(password, user.password);
-      
+
       if (!isMatch) {
         return res.status(400).json({
           success: 'failed',
-          message: 'Invalid login details!'
+          message: 'Invalid login details!',
         });
       }
       user.password = undefined;
@@ -144,18 +194,18 @@ module.exports = {
     }
   },
 
-  async logout (req, res) {
+  async logout(req, res) {
     res.cookie('nec-cookie', 'none', {
       expires: new Date(Date.now() - 10 * 1000),
-      httpOnly: true
+      httpOnly: true,
     });
     res.status(200).json({
       success: 'success',
       data: {},
-      message: 'Logout successful'
+      message: 'Logout successful',
     });
   },
-  //==other auth controllers ==//
+
   async requestPasswordReset(req, res, next) {
     try {
       const { email } = req.body;
@@ -196,7 +246,7 @@ module.exports = {
       return res.status(201).json({
         status: 'created',
         message:
-          'Password reset link sent! Please check your email inbox for a reset link.s',
+          'Password reset link sent! Please check your email inbox for a reset link',
       });
     } catch (error) {
       return next(error);
