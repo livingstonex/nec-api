@@ -6,6 +6,8 @@ const PasswordResetRateLimiter = require('../utils/ratelimit.utils');
 //== Load Routes ==//
 router.route('/register').post(AuthController.register);
 router.route('/verifyemail/:verificationcode').get(AuthController.verifyEmail);
+router.route('/login').post(AuthController.login);
+router.route('/logout').get(AuthController.logout);
 router
   .route('/resetpassword')
   .post(PasswordResetRateLimiter, AuthController.requestPasswordReset);
