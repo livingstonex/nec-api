@@ -7,6 +7,7 @@ const Utils = require('../../utils/utils');
 const Email = require('../../utils/email.utils');
 const Time = require('../../utils/time.utils');
 const Config = require('../../utils/config.utils');
+const crypto = require('crypto');
 
 // module.exports = Register;
 module.exports = {
@@ -53,23 +54,8 @@ module.exports = {
           data: '',
         });
       }
-
-      // const userExist = await User.findOne({ where: { email } });
-
-      // if (userExist != null) {
-      //   return res.status(400).json({
-      //     status: 'failed',
-      //     message: `A user with ${email} already exist`,
-      //     data: '',
-      //   });
-      // }
-
-      // const newUser = await User.create({
-      //   fullname,
-      //   password:hashedPassword,
-      //   phone,
-      //   email,
-      // });
+      const verification_token = crypto.randomBytes(20).toString('hex');
+      const verification_token_epires_in = Time.add(1, 'day', Date.now());
 
       const [user, created] = await User.findOrCreate({
         where: { email },
@@ -78,12 +64,36 @@ module.exports = {
           password: hashedPassword,
           phone,
           email,
+          verification_token,
+          verification_token_expires: verification_token_epires_in,
         },
       });
       if (created) {
+        //send email with verification link
+
+        const reset_link = `${
+          req.protocol +
+          '://' +
+          req.get('host') +
+          '/api/client/verifyemail' +
+          '/' +
+          verification_token
+        }`;
+        console.log(reset_link);
+        const data = { link: reset_link };
+
+        const send_verification_link = Email.sendEmailTemplate({
+          to: email,
+          templateName: 'body.ejs',
+          templateData: data,
+          subject: 'please verify your email',
+          opts: {},
+        });
+
         return res.status(200).json({
           status: 'ok',
-          message: 'User created successfully',
+          message:
+            'We have sent a verification link to your email, Please clink on the link to verify your email',
           data: user,
         });
       } else {
@@ -93,6 +103,46 @@ module.exports = {
           data: '',
         });
       }
+    } catch (e) {
+      return next(e);
+    }
+  },
+
+  async verifyEmail(req, res, next) {
+    try {
+      const { verificationcode } = req.params;
+
+      const user = await User.findOne({
+        where: {
+          verification_token_expires: {
+            [Sequelize.Op.gt]: Time.startOfDay(),
+          },
+          verification_token: verificationcode,
+        },
+      });
+
+      if (user === null) {
+        return res.status(422).json({
+          status: 'not-found',
+          message: 'Your verification token is either invalid or expired.',
+        });
+      }
+
+      const data = {
+        is_verified: true,
+        verification_token: null,
+        verification_token_expires: null,
+      };
+      await User.update(data, {
+        where: {
+          email: user.email,
+        },
+      });
+
+      return res.status(201).json({
+        status: 'ok',
+        message: 'email verified successfully',
+      });
     } catch (e) {
       return next(e);
     }

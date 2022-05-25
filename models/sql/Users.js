@@ -8,7 +8,7 @@ module.exports = (sequelize) => {
         type: DataTypes.INTEGER(10).UNSIGNED,
         allowNull: false,
         primaryKey: true,
-        unique:true,
+        unique: true,
         autoIncrement: true,
       },
       fullname: {
@@ -29,16 +29,24 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      is_verified:{
-        type:DataTypes.BOOLEAN,
-        allowNull:true,
-        default:false
-      }
+      is_verified: {
+        type: DataTypes.BOOLEAN,
+        allowNull: true,
+        default: false,
+      },
+      verification_token: {
+        type: DataTypes.STRING(255),
+        allowNull: true,
+      },
+      verification_token_expires: {
+        type: DataTypes.DATE,
+        allowNull: true,
+      },
     },
     {
-      tableName:'users',
-      createdAt:'created_at',
-      updatedAt:'updated_at',
+      tableName: 'users',
+      createdAt: 'created_at',
+      updatedAt: 'updated_at',
       timestamps: true,
     }
   );
