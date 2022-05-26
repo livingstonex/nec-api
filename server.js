@@ -6,6 +6,8 @@ const errorHandler = require('./middlewares/error');
 const cors = require('cors');
 const ENV = require('./utils/env.utils');
 const { client } = require('./utils/cache.utils');
+const swaggerJsDoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
 
 //== Load env files ==//
 dotenv.config({ path: './config/config.env' });
@@ -43,6 +45,23 @@ app.use('/api', routes);
 
 //== General Error handler middleware ==//
 app.use(errorHandler);
+
+// == Initialize docs == //
+const swaggerOptions = {
+  swaggerDefinition: {
+    info: {
+      title: 'NEC API',
+      description:
+        'API for the NEC Application: import, export and local merchant.',
+      contact: { name: 'Anonymous Dev.' },
+      servers: [`http://localhost:${ENV.get('PORT')}`],
+    },
+  },
+  apis: ['./routes/**.js'],
+};
+
+const swaggerDocs = swaggerJsDoc(swaggerOptions);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 //== Initialize port and server on specified port ==//
 const PORT = process.env.PORT;

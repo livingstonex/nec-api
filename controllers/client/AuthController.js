@@ -297,7 +297,7 @@ module.exports = {
       if (!user) {
         return res.status(422).json({
           status: 'unprocessable',
-          message: 'Noa ccount is attached to this token.',
+          message: 'No account is attached to this token.',
         });
       }
 
