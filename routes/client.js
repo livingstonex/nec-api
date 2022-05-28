@@ -4,17 +4,27 @@ const { AuthController } = require('../controllers/client');
 const PasswordResetRateLimiter = require('../utils/ratelimit.utils');
 
 /**
- * @swagger
- * /api/client/register:
+ * @openapi
+ * '/api/client/register':
  *  post:
- *    description: Used to register a new user
- *    responses:
- *      '200':
- *        description: We have sent a verification link to your email, Please clink on the link to verify your email
- *      '400':
- *        description: Bad request
- *      '422':
- *        description: User with email already exist
+ *    tags:
+ *      - User
+ *    summary: Register a User
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            $ref: "#/components/schemas/CreateUserInput"
+ *      responses:
+ *        200:
+ *          description: Success
+ *          content:
+ *            application/json:
+ *              schema:
+ *                $ref: '#/components/schemas/CreateUserResponse'
+ *        400:
+ *          description: Bad request
  */
 router.route('/register').post(AuthController.register);
 

@@ -1,5 +1,43 @@
 const { DataTypes } = require('sequelize');
 
+/**
+ * @openapi
+ * components:
+ *  schemas:
+ *    CreateUserInput:
+ *      type: object
+ *      required:
+ *        - fullname
+ *        - email
+ *        - phone
+ *        - password
+ *      properties:
+ *       fullname:
+ *         type: string
+ *         default: John Doe
+ *       email:
+ *         type: string
+ *         default: john.doe@example.com
+ *       phone:
+ *         type: string
+ *         default: 09011111111
+ *       password:
+ *         type: string
+ *         default: anypassword
+ *    CreateUserResponse:
+ *      type: object
+ *      properties:
+ *       fullname:
+ *         type: string
+ *       email:
+ *         type: string
+ *       phone:
+ *         type: string
+ *       created_at:
+ *         type: string
+ *       updated_at:
+ *         type: string
+ */
 module.exports = (sequelize) => {
   const model = sequelize.define(
     'User',
