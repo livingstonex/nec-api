@@ -79,15 +79,14 @@ module.exports = {
           verification_token
         }`;
 
-        const data = { link: reset_link };
+        const data = { link: reset_link, name: fullname };
 
-        const send_verification_link = Email.sendEmailTemplate({
-          to: email,
-          templateName: 'body.ejs',
+        Email.sendEmailTemplate({
+          to: [{ email, name: fullname }],
+          templateName: 'verification',
           templateData: data,
-          subject: 'please verify your email',
-          opts: {},
-        });
+          subject: 'NEC: Account verification',
+        }).catch(console.error());
 
         sendTokenResponse(user, res, 200, 'user signed up successfully');
 
@@ -241,7 +240,7 @@ module.exports = {
         token: resetToken,
       });
 
-      //   Send email
+      // Send email
       // Email.sendEmailTemplate
       return res.status(201).json({
         status: 'created',
