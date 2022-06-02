@@ -33,7 +33,6 @@ const sequelize = new SQL(SQL_DB_NAME, SQL_DB_USER, SQL_DB_PASS, {
   pool,
   logging: false,
 });
-
 sequelize
   .authenticate()
   .then(() => {
@@ -46,8 +45,11 @@ sequelize
 const modelDefiners = [
   require('./PasswordReset'),
   require('./Users'),
+  require('./Plans'),
   require('./Privilages'),
-  require('./UserPrivilages'),
+  require('./Payments'),
+  require('./Subscriptions'),
+  require('./UserPrivileges'),
 ];
 
 for (const modelDefiner of modelDefiners) {
@@ -59,6 +61,9 @@ Object.keys(sequelize.models).forEach((key) => {
     sequelize.models[key].associate(sequelize.models);
 });
 
-sequelize.sync().catch((err) => console.log('Error: ', err));
+sequelize
+  .sync({ force: true })
+  .then((res) => console.log('Synced: ', res))
+  .catch((err) => console.log('Error: ', err));
 
 module.exports = sequelize;

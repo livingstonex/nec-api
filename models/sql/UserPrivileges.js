@@ -15,7 +15,7 @@ module.exports = (sequelize) => {
       },
       privilage_id: {
         type: DataTypes.INTEGER(10).UNSIGNED,
-        allowNull: false,
+        allowNull: true,
         unique: true,
         references: {
           model: Privilages,
@@ -45,6 +45,7 @@ module.exports = (sequelize) => {
       foreignKey: 'user_id',
       as: 'user',
     });
+
     model.belongsTo(Privilage, {
       foreignKey: 'privilage_id',
       as: 'privilage',

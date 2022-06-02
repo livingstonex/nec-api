@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { AuthController } = require('../controllers/client');
+const { AuthController, PaymentController } = require('../controllers/client');
 const PasswordResetRateLimiter = require('../utils/ratelimit.utils');
 
 /**
@@ -103,5 +103,9 @@ router
 router
   .route('/reset/:token')
   .post(PasswordResetRateLimiter, AuthController.resetPasswordByLink);
+
+router.route('/payments').get(PaymentController.index);
+router.route('/payments/:reference').get(PaymentController.get);
+router.route('/payments').post(PaymentController.create);
 
 module.exports = router;
