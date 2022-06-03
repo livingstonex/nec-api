@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize');
-const Plans = require('./Plans');
+// const Plans = require('./Plans');
 
 /**
  * @openapi
@@ -94,7 +94,7 @@ module.exports = (sequelize) => {
         unique: true,
         allowNull: true,
         references: {
-          model: Plans,
+          model: 'plans',
           key: 'id',
         },
       },
@@ -108,13 +108,13 @@ module.exports = (sequelize) => {
   );
 
   model.associate = ({
-    Privilage,
     UserPrivilage,
+    Privilage,
     Payment,
     Subscription,
     Plan,
+    Card,
   }) => {
-    
     model.belongsToMany(Privilage, {
       foreignKey: 'user_id',
       as: 'privilages',
@@ -134,6 +134,11 @@ module.exports = (sequelize) => {
     model.belongsTo(Plan, {
       foreignKey: 'plan_id',
       as: 'plan',
+    });
+
+    model.hasMany(Card, {
+      as: 'cards',
+      foreignKey: 'user_id',
     });
   };
 

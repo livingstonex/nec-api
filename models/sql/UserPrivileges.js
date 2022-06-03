@@ -18,7 +18,7 @@ module.exports = (sequelize) => {
         allowNull: true,
         unique: true,
         references: {
-          model: Privilages,
+          model: 'privileges',
           key: 'id',
         },
       },
@@ -27,7 +27,7 @@ module.exports = (sequelize) => {
         allowNull: false,
         unique: true,
         references: {
-          model: Users,
+          model: 'users',
           key: 'id',
         },
       },
