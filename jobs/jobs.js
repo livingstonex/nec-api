@@ -6,7 +6,11 @@ module.exports = {
   async checkPaymentValidity() {
     let todayDate = moment(new Date()).format('YYYY-MM-DD hh:mm');
 
-    const subscriptions = await Subscription.findAll();
+    const subscriptions = await Subscription.findAll({
+      where: {
+        active: true,
+      },
+    });
 
     if (subscriptions.length) {
       for (let i = 0; i < subscriptions.length; i++) {

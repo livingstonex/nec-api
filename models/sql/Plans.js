@@ -1,4 +1,5 @@
 const { DataTypes } = require('sequelize');
+const UserPrivileges = require('./UserPrivileges');
 
 module.exports = (sequelize) => {
   const model = sequelize.define(
@@ -37,6 +38,7 @@ module.exports = (sequelize) => {
       foreignKey: 'plan_id',
     });
 
+    // Not sure about this for new model
     model.hasMany(User, {
       as: 'users',
       foreignKey: 'plan_id',

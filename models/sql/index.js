@@ -50,7 +50,7 @@ const modelDefiners = [
   require('./Privilages'),
   require('./Payments'),
   require('./Subscriptions'),
-  require('./UserPrivileges'),
+  // require('./UserPrivileges'),
   require('./Cards'),
 ];
 
@@ -64,7 +64,7 @@ Object.keys(sequelize.models).forEach((key) => {
 });
 
 sequelize
-  .sync() 
+  .sync({ force: true })
   .then((res) => console.log('Synced... '))
   .catch((err) => console.log('Error: ', err));
 

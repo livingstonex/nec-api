@@ -34,13 +34,13 @@ module.exports = (sequelize) => {
   );
 
   model.associate = ({ User, UserPrivilage, Plan }) => {
-    model.belongsToMany(User, {
-      foreignKey: 'privilage_id',
-      as: 'users',
-      through: UserPrivilage,
-    });
+    // model.belongsToMany(User, {
+    //   foreignKey: 'privilage_id',
+    //   as: 'users',
+    //   through: UserPrivilage,
+    // });
 
-    // Not sure about this hasMany
+    // Not sure about this hasMany relationship for old model
     // model.hasMany(UserPrivilage, {
     //   as: 'user_privilages',
     //   foreignKey: 'privilage_id',

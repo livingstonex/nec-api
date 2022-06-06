@@ -115,11 +115,11 @@ module.exports = (sequelize) => {
     Plan,
     Card,
   }) => {
-    model.belongsToMany(Privilage, {
-      foreignKey: 'user_id',
-      as: 'privilages',
-      through: UserPrivilage,
-    });
+    // model.belongsToMany(Privilage, {
+    //   foreignKey: 'user_id',
+    //   as: 'privilages',
+    //   through: UserPrivilage,
+    // });
 
     model.hasMany(Payment, {
       as: 'payments',
