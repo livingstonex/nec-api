@@ -1,4 +1,5 @@
 const { DataTypes } = require('sequelize');
+// const Plans = require('./Plans');
 
 /**
  * @openapi
@@ -44,7 +45,6 @@ module.exports = (sequelize) => {
     {
       id: {
         type: DataTypes.INTEGER(10).UNSIGNED,
-        allowNull: false,
         primaryKey: true,
         unique: true,
         autoIncrement: true,
@@ -80,6 +80,24 @@ module.exports = (sequelize) => {
         type: DataTypes.DATE,
         allowNull: true,
       },
+      is_paid: {
+        type: DataTypes.BOOLEAN,
+        allowNull: true,
+        default: false,
+      },
+      next_payment_date: {
+        type: DataTypes.DATE,
+        allowNull: true,
+      },
+      plan_id: {
+        type: DataTypes.INTEGER(10).UNSIGNED,
+        unique: true,
+        allowNull: true,
+        references: {
+          model: 'plans',
+          key: 'id',
+        },
+      },
     },
     {
       tableName: 'users',
@@ -89,11 +107,38 @@ module.exports = (sequelize) => {
     }
   );
 
-  model.associate = ({ Privilage, UserPrivilage }) => {
-    model.belongsToMany(Privilage, {
+  model.associate = ({
+    UserPrivilage,
+    Privilage,
+    Payment,
+    Subscription,
+    Plan,
+    Card,
+  }) => {
+    // model.belongsToMany(Privilage, {
+    //   foreignKey: 'user_id',
+    //   as: 'privilages',
+    //   through: UserPrivilage,
+    // });
+
+    model.hasMany(Payment, {
+      as: 'payments',
       foreignKey: 'user_id',
-      as: 'privilages',
-      through: UserPrivilage,
+    });
+
+    model.hasMany(Subscription, {
+      as: 'subscriptions',
+      foreignKey: 'user_id',
+    });
+
+    model.belongsTo(Plan, {
+      foreignKey: 'plan_id',
+      as: 'plan',
+    });
+
+    model.hasMany(Card, {
+      as: 'cards',
+      foreignKey: 'user_id',
     });
   };
 

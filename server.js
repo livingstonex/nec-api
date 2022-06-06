@@ -7,6 +7,7 @@ const cors = require('cors');
 const ENV = require('./utils/env.utils');
 const { client } = require('./utils/cache.utils');
 const { swaggerDocs } = require('./utils/swagger.utils');
+const madge = require('madge');
 // const swaggerJsDoc = require('swagger-jsdoc');
 // const swaggerUi = require('swagger-ui-express');
 // const { version } = require('./package.json');
@@ -123,6 +124,10 @@ const server = app.listen(PORT, () => {
 
   swaggerDocs(app, PORT);
   client.connect().catch((err) => console.error('Redis Error: ', err));
+
+  madge('server.js').then((res) => {
+    console.log(res.circularGraph());
+  });
 });
 
 //== Handle global error on server initialization ==//
