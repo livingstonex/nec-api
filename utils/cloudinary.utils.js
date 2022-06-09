@@ -8,9 +8,9 @@ cloudinary.config({
 });
 
 module.exports = {
-  async uploadImage(image) {
+  async uploadImage(image, folder) {
     try {
-      const result = await cloudinary.uploader.upload(image);
+      const result = await cloudinary.uploader.upload(image, { folder });
 
       return result;
     } catch (error) {

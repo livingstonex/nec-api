@@ -98,6 +98,14 @@ module.exports = (sequelize) => {
           key: 'id',
         },
       },
+      avatar: {
+        type: DataTypes.STRING(255),
+        allowNull: true
+      },
+      avaratId: {
+        type: DataTypes.STRING(255),
+        allowNull: true
+      },
     },
     {
       tableName: 'users',

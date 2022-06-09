@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { AuthController, PaymentController } = require('../controllers/client');
 const PasswordResetRateLimiter = require('../utils/ratelimit.utils');
+const { protect } = require('../middlewares/auth');
 
 /**
  * @openapi
@@ -103,6 +104,8 @@ router
 router
   .route('/reset/:token')
   .post(PasswordResetRateLimiter, AuthController.resetPasswordByLink);
+
+router.route('/avatar').post(protect, AuthController.uploadAvatar);
 
 router.route('/payments').get(PaymentController.index);
 router.route('/payments/:reference').get(PaymentController.get);

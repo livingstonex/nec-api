@@ -1,4 +1,5 @@
 const Sequelize = require('sequelize');
+const crypto = require('crypto');
 const { User, PasswordReset } = require('../../models/sql').models;
 const Error = require('../../utils/errorResponse');
 const Validator = require('../../utils/validator.utils');
@@ -8,6 +9,9 @@ const Utils = require('../../utils/utils');
 const Email = require('../../utils/email.utils');
 const Time = require('../../utils/time.utils');
 const Config = require('../../utils/config.utils');
+const cloudinaryUtils = require('../../utils/cloudinary.utils');
+const Env = require('../../utils/env.utils');
+const response = require('../../middlewares/response');
 
 // module.exports = Register;
 module.exports = {
@@ -337,4 +341,32 @@ module.exports = {
       return next(error);
     }
   },
+
+  async uploadAvatar (req, res, next) {
+    try {
+      // Check if there is an image sent with the upload
+      if (!req.files || !req.files.image) {
+        return res.status(400).json({
+          status: 'bad-request',
+          message: 'Please provide an image.',
+        });
+      }
+      console.log(req.user);
+      // Check if there is an existing avatar
+        // If there is, delete it
+      // Upload new avatar
+      // const image = req.files.image.tempFilePath;
+      // const uploadRes = await cloudinaryUtils.uploadImage(image, Env.get('NEC_CLOUDINARY_AVATAR_FOLDER'));
+      // console.log(uploadRes);
+      // return res.status(201).json({
+      //   msg: 'Image uploaded',
+      //   data: uploadRes
+      // });
+    } catch (err) {
+      console.error(err);
+      // return next(error);
+    }
+  },
+
+  async removeAvatar (req, res, next) {}
 };

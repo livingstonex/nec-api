@@ -8,6 +8,7 @@ const ENV = require('./utils/env.utils');
 const { client } = require('./utils/cache.utils');
 const { swaggerDocs } = require('./utils/swagger.utils');
 const madge = require('madge');
+const fileUpload = require('express-fileupload');
 // const swaggerJsDoc = require('swagger-jsdoc');
 // const swaggerUi = require('swagger-ui-express');
 // const { version } = require('./package.json');
@@ -38,6 +39,26 @@ app.use(cors());
 if (ENV.dev) {
   app.use(morgan('dev'));
 }
+
+app.use(fileUpload({
+  useTempFiles: true,
+  tempFileDir: '/temp/',
+  // createParentPath: true,
+  safeFileNames: true,
+  preserveExtension: true,
+  abortOnLimit: true,
+  limits: {
+    fileSize: 2 * 1024 * 1024,
+  },
+  limitHandler: (req, res, next) => {
+    res.status(413).json({
+      status: 'error',
+      message: 'File too large',
+      data: '',
+    });
+    next();
+  }
+}));
 
 /**
  * @openapi
