@@ -241,10 +241,19 @@ module.exports = {
         token: resetToken,
       });
 
+      const reset_link = `${
+        req.protocol +
+        '://' +
+        req.get('host') +
+        '/client/password/reset' +
+        '/' +
+        resetToken
+      }`;
+
       // Send email
       const templateData = {
         name: user.fullname,
-        token: resetToken,
+        link: reset_link,
         title: 'TOKEN',
       };
 

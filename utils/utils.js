@@ -7,7 +7,7 @@ module.exports = {
   },
 
   getRandomString(length) {
-    return random(length);
+    return random({ length });
   },
 
   removeNull(obj = {}) {
