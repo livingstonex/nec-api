@@ -78,15 +78,14 @@ module.exports = {
           verification_token
         }`;
 
-        const data = { link: reset_link };
+        const data = { link: reset_link, name: fullname };
 
         Email.sendEmailTemplate({
-          to: email,
-          templateName: 'body.ejs',
+          to: [{ email, name: fullname }],
+          templateName: 'verification',
           templateData: data,
-          subject: 'please verify your email',
-          opts: {},
-        }).catch(console.error);
+          subject: 'NEC: Account verification',
+        }).catch(console.error());
 
         sendTokenResponse(user, res, 200, 'user signed up successfully');
 
