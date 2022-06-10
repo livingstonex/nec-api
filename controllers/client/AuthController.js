@@ -1,4 +1,5 @@
 const Sequelize = require('sequelize');
+const crypto = require('crypto');
 const { User, PasswordReset } = require('../../models/sql').models;
 const Error = require('../../utils/errorResponse');
 const Validator = require('../../utils/validator.utils');
