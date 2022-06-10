@@ -1,12 +1,50 @@
 const { DataTypes } = require('sequelize');
+// const Plans = require('./Plans');
 
+/**
+ * @openapi
+ * components:
+ *  schemas:
+ *    CreateUserInput:
+ *      type: object
+ *      required:
+ *        - fullname
+ *        - email
+ *        - phone
+ *        - password
+ *      properties:
+ *       fullname:
+ *         type: string
+ *         default: John Doe
+ *       email:
+ *         type: string
+ *         default: john.doe@example.com
+ *       phone:
+ *         type: string
+ *         default: 09011111111
+ *       password:
+ *         type: string
+ *         default: anypassword
+ *    CreateUserResponse:
+ *      type: object
+ *      properties:
+ *       fullname:
+ *         type: string
+ *       email:
+ *         type: string
+ *       phone:
+ *         type: string
+ *       created_at:
+ *         type: string
+ *       updated_at:
+ *         type: string
+ */
 module.exports = (sequelize) => {
   const model = sequelize.define(
     'User',
     {
       id: {
         type: DataTypes.INTEGER(10).UNSIGNED,
-        allowNull: false,
         primaryKey: true,
         unique: true,
         autoIncrement: true,
@@ -42,6 +80,24 @@ module.exports = (sequelize) => {
         type: DataTypes.DATE,
         allowNull: true,
       },
+      is_paid: {
+        type: DataTypes.BOOLEAN,
+        allowNull: true,
+        default: false,
+      },
+      next_payment_date: {
+        type: DataTypes.DATE,
+        allowNull: true,
+      },
+      plan_id: {
+        type: DataTypes.INTEGER(10).UNSIGNED,
+        unique: true,
+        allowNull: true,
+        references: {
+          model: 'plans',
+          key: 'id',
+        },
+      },
     },
     {
       tableName: 'users',
@@ -51,11 +107,38 @@ module.exports = (sequelize) => {
     }
   );
 
-  model.associate = ({ Privilage, UserPrivilage }) => {
-    model.belongsToMany(Privilage, {
+  model.associate = ({
+    UserPrivilage,
+    Privilage,
+    Payment,
+    Subscription,
+    Plan,
+    Card,
+  }) => {
+    // model.belongsToMany(Privilage, {
+    //   foreignKey: 'user_id',
+    //   as: 'privilages',
+    //   through: UserPrivilage,
+    // });
+
+    model.hasMany(Payment, {
+      as: 'payments',
       foreignKey: 'user_id',
-      as: 'privilages',
-      through: UserPrivilage,
+    });
+
+    model.hasMany(Subscription, {
+      as: 'subscriptions',
+      foreignKey: 'user_id',
+    });
+
+    model.belongsTo(Plan, {
+      foreignKey: 'plan_id',
+      as: 'plan',
+    });
+
+    model.hasMany(Card, {
+      as: 'cards',
+      foreignKey: 'user_id',
     });
   };
 

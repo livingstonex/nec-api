@@ -8,7 +8,6 @@ const Utils = require('../../utils/utils');
 const Email = require('../../utils/email.utils');
 const Time = require('../../utils/time.utils');
 const Config = require('../../utils/config.utils');
-const crypto = require('crypto');
 
 // module.exports = Register;
 module.exports = {
@@ -198,8 +197,9 @@ module.exports = {
       expires: new Date(Date.now() - 10 * 1000),
       httpOnly: true,
     });
+
     res.status(200).json({
-      success: 'success',
+      success: 'ok',
       data: {},
       message: 'Logout successful',
     });
@@ -241,11 +241,25 @@ module.exports = {
       });
 
       // Send email
-      // Email.sendEmailTemplate
+      const templateData = {
+        name: user.fullname,
+        token: resetToken,
+        title: 'TOKEN',
+      };
+
+      if (user.email) {
+        Email.sendEmailTemplate({
+          to: [{ email: user.email, name: user.fullname }],
+          templateName: 'password-request',
+          templateData,
+          subject: 'NEC: Account Password Reset',
+        }).catch(console.error);
+      }
+
       return res.status(201).json({
         status: 'created',
         message:
-          'Password reset link sent! Please check your email inbox for a reset link',
+          'Password reset link sent! Please check your email inbox for a reset link.s',
       });
     } catch (error) {
       return next(error);
@@ -296,7 +310,7 @@ module.exports = {
       if (!user) {
         return res.status(422).json({
           status: 'unprocessable',
-          message: 'Noa ccount is attached to this token.',
+          message: 'No account is attached to this token.',
         });
       }
 

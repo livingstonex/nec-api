@@ -1,4 +1,4 @@
-const { Sequelize } = require('sequelize');
+const Sequelize = require('sequelize');
 const Env = require('../../utils/env.utils');
 
 const { SQL_DB_NAME, SQL_DB_USER, SQL_DB_PASS, SQL_DB_HOST, SQL_DB_PORT } =
@@ -46,8 +46,12 @@ sequelize
 const modelDefiners = [
   require('./PasswordReset'),
   require('./Users'),
+  require('./Plans'),
   require('./Privilages'),
-  require('./UserPrivilages'),
+  require('./Payments'),
+  require('./Subscriptions'),
+  // require('./UserPrivileges'),
+  require('./Cards'),
 ];
 
 for (const modelDefiner of modelDefiners) {
@@ -59,6 +63,9 @@ Object.keys(sequelize.models).forEach((key) => {
     sequelize.models[key].associate(sequelize.models);
 });
 
-sequelize.sync().catch((err) => console.log('Error: ', err));
+sequelize
+  .sync({ force: true })
+  .then((res) => console.log('Synced... '))
+  .catch((err) => console.log('Error: ', err));
 
 module.exports = sequelize;
