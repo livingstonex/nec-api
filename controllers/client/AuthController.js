@@ -9,6 +9,8 @@ const Utils = require('../../utils/utils');
 const Email = require('../../utils/email.utils');
 const Time = require('../../utils/time.utils');
 const Config = require('../../utils/config.utils');
+const cloudinaryUtils = require('../../utils/cloudinary.utils');
+const Env = require('../../utils/env.utils');
 
 // module.exports = Register;
 module.exports = {
@@ -346,4 +348,112 @@ module.exports = {
       return next(error);
     }
   },
+
+  async uploadAvatar (req, res, next) {
+    try {
+      // Check if there is an image sent with the upload
+      if (!req.files || !req.files.image) {
+        return res.status(400).json({
+          status: 'bad-request',
+          message: 'Please provide an image.',
+        });
+      }
+
+      // Check if there is an existing avatar
+      if (req.user.avatar) {
+        await cloudinaryUtils.deleteFile(req.user.avatar_id);
+      }
+
+      // Upload new avatar
+      const uploadRes = await cloudinaryUtils.uploadImage(req.files.image.tempFilePath, Env.get('NEC_CLOUDINARY_AVATAR_FOLDER'));
+      const { url, public_id } = uploadRes;
+      await User.update({ avatar: url, avatar_id: public_id }, { where: { id: req.user.id } });
+      
+      return res.status(201).json({
+        msg: 'Image uploaded',
+        data: { url, public_id }
+      });
+    } catch (err) {
+      return next(err);
+    }
+  },
+
+  async removeAvatar (req, res, next) {
+    try {
+      if (req.user.avatar) {
+        await Promise.all([
+          cloudinaryUtils.deleteFile(req.user.avatar_id),
+          User.update({ avatar: null, avatar_id: null }, { where: { id: req.user.id } })
+        ]);
+      }
+      return res.status(200).json({
+        msg: 'Avatar removed',
+      });
+    } catch (err) {
+      return next(err);
+    }
+  },
+
+  async updateProfile (req, res, next) {
+    try {
+      const { fullname, phone, currentPassword, newPassword } = req.body;
+
+      if (!fullname && !phone && !currentPassword && !newPassword) {
+        return res.status(400).json({
+          status: 'bad-request',
+          message: 'Please provide all the required fields.',
+        });
+      }
+
+      let payload = {};
+
+      if (fullname) {
+        payload.fullname = fullname;
+      }
+      if (phone) {
+        payload.phone = phone;
+      }
+
+      if ((!currentPassword && newPassword) || (currentPassword && !newPassword)) {
+        return res.status(400).json({
+          status: 'bad-request',
+          message: 'Please provide both current and new password.',
+        });
+      }
+
+      const user = await User.findOne({ where: { id: req.user.id } });
+
+      if (currentPassword && newPassword) {
+        const isPasswordValid = Validator.passwordChecker(newPassword);
+        if (!isPasswordValid) {
+          return res.status(400).json({
+            status: 'bad-request',
+            message:
+              'Password must be minimum of eight (8) characters long, containing uppercase and lowercase letters, at least a number and a special character',
+          });
+        }
+
+        const isMatch = await bcrypt.compare(currentPassword, user.password);
+
+        if (!isMatch) {
+          return res.status(400).json({
+            status: 'bad-request',
+            message: 'Current password is incorrect.',
+          });
+        }
+
+        const hashedPassword = await bcrypt.hash(newPassword, 12);
+        payload.password = hashedPassword;
+      }
+
+      const updatedUser = await User.update(payload, { where: { id: req.user.id } });
+      return res.status(200).json({
+        status: 'ok',
+        message: 'Profile updated successfully.',
+        data: updatedUser,
+      });
+    } catch (err) {
+      return next(err);
+    }
+  }
 };

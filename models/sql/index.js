@@ -67,5 +67,4 @@ sequelize
   .sync()
   .then((res) => console.log('Synced... '))
   .catch((err) => console.log('Error: ', err));
-
 module.exports = sequelize;

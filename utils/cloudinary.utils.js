@@ -8,13 +8,21 @@ cloudinary.config({
 });
 
 module.exports = {
-  async uploadImage(image) {
+  async uploadImage(image, folder) {
     try {
-      const result = await cloudinary.uploader.upload(image);
+      const result = await cloudinary.uploader.upload(image, { folder });
 
       return result;
     } catch (error) {
       console.log('Cloudinary: ', error);
     }
   },
+
+  async deleteFile(id) {
+    try {
+      return await cloudinary.uploader.destroy(id);
+    } catch (err) {
+      console.log('Cloudinary: ', error);
+    }
+  }
 };
