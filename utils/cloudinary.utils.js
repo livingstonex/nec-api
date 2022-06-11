@@ -17,4 +17,12 @@ module.exports = {
       console.log('Cloudinary: ', error);
     }
   },
+
+  async deleteFile(id) {
+    try {
+      return await cloudinary.uploader.destroy(id);
+    } catch (err) {
+      console.log('Cloudinary: ', error);
+    }
+  }
 };

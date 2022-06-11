@@ -105,7 +105,42 @@ router
   .route('/reset/:token')
   .post(PasswordResetRateLimiter, AuthController.resetPasswordByLink);
 
+/**
+ * @swagger
+ * /api/client/avatar:
+ *  post:
+ *    description: Upload profile picture and replace profile picture
+ *    responses:
+ *      '201':
+ *        description: Profile picture uploaded successfully
+ *      '400':
+ *        description: No image sent with request
+ *      '413':
+ *        description: Image size is too large (max 2MB)
+ *
+ */
 router.route('/avatar').post(protect, AuthController.uploadAvatar);
+/**
+ * @swagger
+ * /api/client/avatar:
+ *  patch:
+ *    description: Delete profile picture
+ *    responses:
+ *      '200':
+ *        description: Profile picture deleted successfully
+ *
+ */
+router.route('/avatar').patch(protect, AuthController.removeAvatar);
+/**
+ * @swagger
+ * /api/client/profile:
+ *  put:
+ *    description: Update profile and password
+ *    responses:
+ *      '200':
+ *        description: Profile updated successfully.
+ */
+router.route('/profile').put(protect, AuthController.updateProfile);
 
 router.route('/payments').get(PaymentController.index);
 router.route('/payments/:reference').get(PaymentController.get);

@@ -102,7 +102,7 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING(255),
         allowNull: true
       },
-      avaratId: {
+      avatar_id: {
         type: DataTypes.STRING(255),
         allowNull: true
       },

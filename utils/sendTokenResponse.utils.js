@@ -8,7 +8,6 @@ const jwt = require('jsonwebtoken');
  * @param {string} msg - Message to be sent
  */
 const sendTokenResponse = (user, res, statusCode, msg = null) => {
-    console.log(user)
     const payload = user.dataValues ? user.dataValues : user;
     // Create token
     const token = jwt.sign({ id: payload.id, email: payload.email }, process.env.JWT_SECRET, {
