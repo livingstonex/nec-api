@@ -130,7 +130,7 @@ router.route('/avatar').post(protect, AuthController.uploadAvatar);
  *        description: Profile picture deleted successfully
  *
  */
-router.route('/avatar').patch(protect, AuthController.removeAvatar);
+router.route('/avatar').delete(protect, AuthController.removeAvatar);
 /**
  * @swagger
  * /api/client/profile:
