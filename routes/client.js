@@ -142,8 +142,37 @@ router.route('/avatar').delete(protect, AuthController.removeAvatar);
  */
 router.route('/profile').put(protect, AuthController.updateProfile);
 
+/**
+ * @swagger
+ * /api/client/payments:
+ *  get:
+ *    description: Get all user payments
+ *    responses:
+ *      '200':
+ *        description: Payments fetched successfully.
+ */
 router.route('/payments').get(PaymentController.index);
+
+/**
+ * @swagger
+ * /api/client/payments:
+ *  get:
+ *    description: Get all user payment
+ *    responses:
+ *      '200':
+ *        description: Payment fetched successfully.
+ */
 router.route('/payments/:reference').get(PaymentController.get);
+
+/**
+ * @swagger
+ * /api/client/payments:
+ *  post:
+ *    description: Create payment
+ *    responses:
+ *      '200':
+ *        description: Payment created.
+ */
 router.route('/payments').post(PaymentController.create);
 
 module.exports = router;
