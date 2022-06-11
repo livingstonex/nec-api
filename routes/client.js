@@ -123,7 +123,7 @@ router.route('/avatar').post(protect, AuthController.uploadAvatar);
 /**
  * @swagger
  * /api/client/avatar:
- *  patch:
+ *  delete:
  *    description: Delete profile picture
  *    responses:
  *      '200':
