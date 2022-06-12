@@ -1,6 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const { AuthController, PaymentController } = require('../controllers/client');
+const {
+  AuthController,
+  PaymentController,
+  CompanyController,
+} = require('../controllers/client');
 const PasswordResetRateLimiter = require('../utils/ratelimit.utils');
 const { protect } = require('../middlewares/auth');
 
@@ -174,5 +178,17 @@ router.route('/payments/:reference').get(PaymentController.get);
  *        description: Payment created.
  */
 router.route('/payments').post(PaymentController.create);
+
+router
+  .route('/companies')
+  .post(protect, CompanyController.create)
+  .get(CompanyController.index);
+
+router
+  .route('/companies/:id')
+  .get(CompanyController.get)
+  .put(protect, CompanyController.update);
+
+router.route('/companies/user').get(CompanyController.getUserCompany);
 
 module.exports = router;

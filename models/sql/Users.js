@@ -100,11 +100,11 @@ module.exports = (sequelize) => {
       },
       avatar: {
         type: DataTypes.STRING(255),
-        allowNull: true
+        allowNull: true,
       },
       avatar_id: {
         type: DataTypes.STRING(255),
-        allowNull: true
+        allowNull: true,
       },
     },
     {
@@ -122,6 +122,7 @@ module.exports = (sequelize) => {
     Subscription,
     Plan,
     Card,
+    Company,
   }) => {
     // model.belongsToMany(Privilage, {
     //   foreignKey: 'user_id',
@@ -147,6 +148,11 @@ module.exports = (sequelize) => {
     model.hasMany(Card, {
       as: 'cards',
       foreignKey: 'user_id',
+    });
+
+    model.hasOne(Company, {
+      foreignKey: 'user_id',
+      as: 'company',
     });
   };
 
