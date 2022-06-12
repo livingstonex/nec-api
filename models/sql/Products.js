@@ -58,7 +58,7 @@ module.exports = (sequelize) => {
       },
     },
     {
-      tableName: 'cards',
+      tableName: 'products',
       createdAt: 'created_at',
       updatedAt: 'updated_at',
       timestamps: true,
