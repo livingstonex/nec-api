@@ -46,13 +46,17 @@ module.exports = {
   },
 
   async create(req, res, next) {
-    const { reference } = req.params;
     const {
+      reference,
       amount_paid,
       user_id,
       method = 'Card',
       processor = 'Paystack',
     } = req.body;
+
+    if (!reference) {
+      return res.badRequest({ message: 'Invalid reference.' });
+    }
 
     if (!amount_paid || !user_id) {
       return res.status(400).json({
