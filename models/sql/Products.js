@@ -38,6 +38,11 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING(255),
         allowNull: true,
       },
+      approved: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+      },
       user_id: {
         type: DataTypes.INTEGER(10).UNSIGNED,
         allowNull: false,
