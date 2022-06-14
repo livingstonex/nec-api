@@ -17,7 +17,8 @@ const AdminController = require('../controllers/admin/AdminController');
  *        Admin already exists
  *
  */
-router.route('/register').post(AdminController.register);
+router.route('/register').post(protect, authorize(['super_admin']), AdminController.register);
+// router.route('/register').post(protect, authorize(['super_admin']), AdminController.register);
 /**
  * @swagger
  * /api/admin/login:

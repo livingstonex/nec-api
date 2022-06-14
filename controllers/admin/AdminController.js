@@ -46,7 +46,7 @@ module.exports = {
         return res.badRequest({ message: 'Username and password are required' });
       }
 
-      const admin = await Administrator.findOne({ where: { username: 'barman' } });
+      const admin = await Administrator.findOne({ where: { username } });
 
       if (!admin) {
         return res.badRequest({ msg: 'Invalid login details!' });
