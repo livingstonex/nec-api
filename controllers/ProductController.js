@@ -101,7 +101,7 @@ module.exports = {
 
       const { url, public_id } = await cloudinaryUtils.uploadImage(
         req.files.image.tempFilePath,
-        Env.get('NEC_CLOUDINARY_PRODUCT_FOLDER')
+        Env.get('NEC_CLOUDINARY_PRODUCT_FOLDER') || 'products'
       );
 
       const payload = {
@@ -151,7 +151,7 @@ module.exports = {
 
         const { url, public_id } = await cloudinaryUtils.uploadImage(
           req.files.image.tempFilePath,
-          Env.get('NEC_CLOUDINARY_PRODUCT_FOLDER')
+          Env.get('NEC_CLOUDINARY_PRODUCT_FOLDER') || 'products'
         );
 
         data.image_url = url;
