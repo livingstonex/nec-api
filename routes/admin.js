@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { protect, authorize } = require('../middlewares/auth');
 const AdminController = require('../controllers/admin/AdminController');
+const { StatusController } = require('../controllers/admin/product');
 
 /**
  * @swagger
@@ -17,7 +18,9 @@ const AdminController = require('../controllers/admin/AdminController');
  *        Admin already exists
  *
  */
-router.route('/register').post(protect, authorize(['super_admin']), AdminController.register);
+router
+  .route('/register')
+  .post(protect, authorize(['super_admin']), AdminController.register);
 // router.route('/register').post(protect, authorize(['super_admin']), AdminController.register);
 /**
  * @swagger
@@ -43,5 +46,13 @@ router.route('/login').post(AdminController.login);
  *
  */
 router.route('/logout').get(AdminController.logout);
+
+router
+  .route('/product/:id/status')
+  .put(
+    protect,
+    authorize(['super_admin', 'admin2', 'admin3']),
+    StatusController.update
+  );
 
 module.exports = router;
