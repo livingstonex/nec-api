@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { User } = require('../models/sql').models;
+const { Administrator, User } = require('../models/sql').models;
 
 /**
  * @desc  Middleware to protect routes
@@ -31,7 +31,7 @@ exports.protect = async (req, res, next) => {
     try {
         // Verify token
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = await User.findByPk(decoded.id);
+        decoded.role ? req.user = await Administrator.findByPk(decoded.id) : await User.findByPk(decoded.id);
         next();
     } catch (err) {
         console.error(err);
@@ -44,16 +44,16 @@ exports.protect = async (req, res, next) => {
     }
 };
 
-// exports.authorize = (...roles) => {
-//     return (req, res, next) => {
-//         if (!roles.includes(req.user.role)) {
-//             return res.status(403).json({
-//                 success: false,
-//                 errors: {
-//                     msg: 'User not authorized to access resource'
-//                 }
-//             });
-//         }
-//         next();
-//     };
-// };
+exports.authorize = (roles) => {
+    return (req, res, next) => {
+        if (!roles.includes(req.user.role)) {
+            return res.status(403).json({
+                success: false,
+                errors: {
+                    msg: 'User not authorized to access resource'
+                }
+            });
+        }
+        next();
+    };
+};
