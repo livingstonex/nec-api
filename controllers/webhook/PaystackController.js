@@ -10,7 +10,7 @@ const payStackWebHook = async (req, res, next) => {
     .update(JSON.stringify(req.body))
     .digest('hex');
 
-  // if (hash == req.headers['x-paystack-signature']) {
+  if (hash == req.headers['x-paystack-signature']) {
   const hook = req.body;
 
   switch (hook.event) {
@@ -113,6 +113,6 @@ const payStackWebHook = async (req, res, next) => {
       }
       break;
   }
-  // }
+  }
 };
 module.exports = payStackWebHook;
