@@ -22,7 +22,7 @@ module.exports = (sequelize) => {
           'PENDING',
           'PROCESSING',
           'FAILED',
-          'SUCCESSFUL',
+          'SUCCESS',
           'CANCELLED',
           'DEBT_OWED',
           'REFUND_INITIATED',
@@ -84,3 +84,4 @@ module.exports = (sequelize) => {
 
   return model;
 };
+
