@@ -123,6 +123,7 @@ module.exports = (sequelize) => {
     Plan,
     Card,
     Company,
+    Product,
   }) => {
     // model.belongsToMany(Privilage, {
     //   foreignKey: 'user_id',
@@ -153,6 +154,11 @@ module.exports = (sequelize) => {
     model.hasOne(Company, {
       foreignKey: 'user_id',
       as: 'company',
+    });
+
+    model.hasMany(Product, {
+      as: 'products',
+      foreignKey: 'category_id',
     });
   };
 

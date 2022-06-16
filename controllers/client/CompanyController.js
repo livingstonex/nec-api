@@ -1,4 +1,4 @@
-const { Company } = require('../models/sql').models;
+const { Company } = require('../../models/sql').models;
 
 module.exports = {
   async index(req, res, next) {

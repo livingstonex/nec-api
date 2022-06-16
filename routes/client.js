@@ -155,7 +155,7 @@ router.route('/profile').put(protect, AuthController.updateProfile);
  *      '200':
  *        description: Payments fetched successfully.
  */
-router.route('/payments').get(PaymentController.index);
+router.route('/payments').get(protect, PaymentController.index);
 
 /**
  * @swagger
@@ -166,7 +166,7 @@ router.route('/payments').get(PaymentController.index);
  *      '200':
  *        description: Payment fetched successfully.
  */
-router.route('/payments/:reference').get(PaymentController.get);
+router.route('/payments/:reference').get(protect, PaymentController.get);
 
 /**
  * @swagger
@@ -177,7 +177,7 @@ router.route('/payments/:reference').get(PaymentController.get);
  *      '200':
  *        description: Payment created.
  */
-router.route('/payments').post(PaymentController.create);
+router.route('/payments').post(protect, PaymentController.create);
 
 router
   .route('/companies')
