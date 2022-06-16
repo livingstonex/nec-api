@@ -1,5 +1,6 @@
 const { Category } = require('../models/sql').models;
 const cloudinaryUtils = require('../utils/cloudinary.utils');
+const Env = require('../utils/env.utils');
 
 module.exports = {
   async index(req, res, next) {
