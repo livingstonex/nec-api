@@ -91,13 +91,18 @@ module.exports = {
 
     const { name, description } = req.body;
 
-    let data = {
-      name,
-      description,
-    };
+    let data = {};
+
+    if (name) {
+      data.name = name;
+    }
+
+    if (description) {
+      data.description = description;
+    }
 
     try {
-      if (req.files || req.files.image) {
+      if (req.files || req.files?.image) {
         const category = await Category.findOne({
           where: {
             id: category_id,
