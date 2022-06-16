@@ -189,6 +189,8 @@ router
   .get(CompanyController.get)
   .put(protect, CompanyController.update);
 
-router.route('/companies/user').get(CompanyController.getUserCompany);
+router
+  .route('/companies/user/company')
+  .get(protect, CompanyController.getUserCompany);
 
 module.exports = router;

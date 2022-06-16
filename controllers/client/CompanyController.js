@@ -38,14 +38,12 @@ module.exports = {
   },
 
   async getUserCompany(req, res, next) {
-    const { id } = req.params;
     const user = req.user;
 
     try {
       const company = await Company.findOne({
         where: {
-          id,
-          user_id: user.id,
+          user_id: user?.id,
         },
       }).catch((err) => console.error(err));
 
@@ -62,6 +60,7 @@ module.exports = {
   async create(req, res, next) {
     const { name, description, cac_number, business_address } = req.body;
     let errors = {};
+    const user = req.user;
 
     try {
       if (!name) {
@@ -83,7 +82,7 @@ module.exports = {
       if (Object.keys(errors).length > 0) {
         return res.badRequest({
           message: 'Please provide all required fields.',
-          data: errors,
+          error: errors,
         });
       }
 
@@ -109,38 +108,25 @@ module.exports = {
   async update(req, res, next) {
     const { id: company_id } = req.params;
     const { name, description, cac_number, business_address } = req.body;
+    let data = {};
+
+    if (name) {
+      data.name = name;
+    }
+
+    if (description) {
+      data.description = description;
+    }
+
+    if (cac_number) {
+      data.cac_number = name;
+    }
+
+    if (business_address) {
+      data.business_address = business_address;
+    }
 
     try {
-      if (!name) {
-        errors.name = 'Invalid company name';
-      }
-
-      if (!description) {
-        errors.description = 'Invalid company description';
-      }
-
-      if (!cac_number) {
-        errors.cac_number = 'Invalid company cac_number';
-      }
-
-      if (!business_address) {
-        errors.business_address = 'Invalid company business address';
-      }
-
-      if (Object.keys(errors).length > 0) {
-        return res.badRequest({
-          message: 'Please provide all required fields.',
-          data: errors,
-        });
-      }
-
-      let data = {
-        name,
-        description,
-        cac_number,
-        business_address,
-      };
-
       await Company.update(data, {
         where: {
           id: company_id,
