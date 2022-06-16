@@ -122,6 +122,7 @@ module.exports = (sequelize) => {
     Subscription,
     Plan,
     Card,
+    Company,
     Product,
   }) => {
     // model.belongsToMany(Privilage, {
@@ -148,6 +149,11 @@ module.exports = (sequelize) => {
     model.hasMany(Card, {
       as: 'cards',
       foreignKey: 'user_id',
+    });
+
+    model.hasOne(Company, {
+      foreignKey: 'user_id',
+      as: 'company',
     });
 
     model.hasMany(Product, {
