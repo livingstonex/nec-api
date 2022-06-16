@@ -14,6 +14,6 @@ router
   .get(ProductController.get)
   .put(protect, ProductController.update);
 
-router.route('/user').get(protect, ProductController.getUserProducts);
+router.route('/user/all').get(protect, ProductController.getUserProducts);
 
 module.exports = router;

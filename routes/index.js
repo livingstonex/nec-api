@@ -12,7 +12,7 @@ router.use(requests);
 router.use('/admin', admin);
 router.use('/client', client);
 router.use('/plan', plan);
-router.use('/category', category);
-router.use('/product', product);
+router.use('/categories', category);
+router.use('/products', product);
 
 module.exports = router;

@@ -51,7 +51,7 @@ router
   .route('/product/:id/status')
   .put(
     protect,
-    authorize(['super_admin', 'admin2', 'admin3']),
+    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
     StatusController.update
   );
 

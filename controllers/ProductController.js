@@ -1,5 +1,6 @@
 const { Product } = require('../models/sql').models;
 const cloudinaryUtils = require('../utils/cloudinary.utils');
+const Env = require('../utils/env.utils');
 
 module.exports = {
   async index(req, res, next) {
@@ -95,7 +96,7 @@ module.exports = {
       if (Object.keys(errors).length > 0) {
         return res.badRequest({
           message: 'Please provide all required fields.',
-          data: errors,
+          error: errors,
         });
       }
 
@@ -105,16 +106,23 @@ module.exports = {
       );
 
       const payload = {
-        name,
         description,
         quantity,
         specification,
         category_id,
+        user_id: req.user?.id,
         image_url: url,
         image_id: public_id,
       };
 
-      const product = await Category.create(payload);
+      const [product, created] = await Product.findOrCreate({
+        where: { name },
+        defaults: payload,
+      });
+
+      if (!created) {
+        return res.unprocessable({ mesage: 'Product already exists.' });
+      }
 
       return res.created({
         message: 'Product created successfully.',
@@ -131,16 +139,30 @@ module.exports = {
     const { name, description, quantity, specification, category_id } =
       req.body;
 
-    let data = {
-      name,
-      description,
-      quantity,
-      specification,
-      category_id,
-    };
+    let data = {};
+
+    if (name) {
+      data.name = name;
+    }
+
+    if (description) {
+      data.description = description;
+    }
+
+    if (quantity) {
+      data.quantity = quantity;
+    }
+
+    if (specification) {
+      data.specification = specification;
+    }
+
+    if (category_id) {
+      data.category_id = category_id;
+    }
 
     try {
-      if (req.files || req.files.image) {
+      if (req.files || req.files?.image) {
         const product = await Product.findOne({
           where: {
             id: product_id,

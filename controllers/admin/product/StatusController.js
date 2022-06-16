@@ -5,31 +5,37 @@ module.exports = {
     const { id } = req.params;
     const { status } = req.body;
 
-    if (!status) {
+    if (typeof status != 'boolean') {
       return res.badRequest({
-        message: 'Please attach a status',
+        message: 'Please attach a valid status',
       });
     }
 
     const data = {
-      status,
+      approved: status,
     };
 
     try {
-      const product = await Product.update(data, {
+      const product_status = await Product.update(data, {
         where: {
           id,
         },
       });
 
-      if (!product) {
+      if (!product_status[0]) {
         return res.unprocessable({
           message: 'We could not process the update, please try again!',
         });
       }
 
+      if (status === false) {
+        return res.ok({
+          message: 'Status successfully disapproved',
+        });
+      }
+
       return res.ok({
-        message: `Status successfully updated to: ${status}`,
+        message: 'Status successfully approved.',
       });
     } catch (error) {
       return next(error);
