@@ -40,25 +40,27 @@ if (ENV.dev) {
   app.use(morgan('dev'));
 }
 
-app.use(fileUpload({
-  useTempFiles: true,
-  tempFileDir: '/temp/',
-  // createParentPath: true,
-  safeFileNames: true,
-  preserveExtension: true,
-  abortOnLimit: true,
-  limits: {
-    fileSize: 2 * 1024 * 1024,
-  },
-  limitHandler: (req, res, next) => {
-    res.status(413).json({
-      status: 'error',
-      message: 'File too large',
-      data: '',
-    });
-    next();
-  }
-}));
+app.use(
+  fileUpload({
+    useTempFiles: true,
+    tempFileDir: '/tmp/',
+    // createParentPath: true,
+    safeFileNames: true,
+    preserveExtension: true,
+    abortOnLimit: true,
+    limits: {
+      fileSize: 2 * 1024 * 1024,
+    },
+    limitHandler: (req, res, next) => {
+      res.status(413).json({
+        status: 'error',
+        message: 'File too large',
+        data: '',
+      });
+      next();
+    },
+  })
+);
 
 /**
  * @openapi

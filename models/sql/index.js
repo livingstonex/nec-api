@@ -52,6 +52,8 @@ const modelDefiners = [
   require('./Subscriptions'),
   // require('./UserPrivileges'),
   require('./Cards'),
+  require('./Categories'),
+  require('./Products'),
   require('./Administrators'),
 ];
 
@@ -65,7 +67,7 @@ Object.keys(sequelize.models).forEach((key) => {
 });
 
 sequelize
-  .sync({ })
+  .sync()
   .then((res) => console.log('Synced... '))
   .catch((err) => console.log('Error: ', err));
 module.exports = sequelize;
