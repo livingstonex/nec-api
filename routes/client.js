@@ -1,6 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const { AuthController, PaymentController } = require('../controllers/client');
+const {
+  AuthController,
+  PaymentController,
+  CompanyController,
+} = require('../controllers/client');
 const PasswordResetRateLimiter = require('../utils/ratelimit.utils');
 const { protect } = require('../middlewares/auth');
 
@@ -123,14 +127,14 @@ router.route('/avatar').post(protect, AuthController.uploadAvatar);
 /**
  * @swagger
  * /api/client/avatar:
- *  patch:
+ *  delete:
  *    description: Delete profile picture
  *    responses:
  *      '200':
  *        description: Profile picture deleted successfully
  *
  */
-router.route('/avatar').patch(protect, AuthController.removeAvatar);
+router.route('/avatar').delete(protect, AuthController.removeAvatar);
 /**
  * @swagger
  * /api/client/profile:
@@ -142,8 +146,51 @@ router.route('/avatar').patch(protect, AuthController.removeAvatar);
  */
 router.route('/profile').put(protect, AuthController.updateProfile);
 
-router.route('/payments').get(PaymentController.index);
-router.route('/payments/:reference').get(PaymentController.get);
-router.route('/payments').post(PaymentController.create);
+/**
+ * @swagger
+ * /api/client/payments:
+ *  get:
+ *    description: Get all user payments
+ *    responses:
+ *      '200':
+ *        description: Payments fetched successfully.
+ */
+router.route('/payments').get(protect, PaymentController.index);
+
+/**
+ * @swagger
+ * /api/client/payments:
+ *  get:
+ *    description: Get all user payment
+ *    responses:
+ *      '200':
+ *        description: Payment fetched successfully.
+ */
+router.route('/payments/:reference').get(protect, PaymentController.get);
+
+/**
+ * @swagger
+ * /api/client/payments:
+ *  post:
+ *    description: Create payment
+ *    responses:
+ *      '200':
+ *        description: Payment created.
+ */
+router.route('/payments').post(protect, PaymentController.create);
+
+router
+  .route('/companies')
+  .post(protect, CompanyController.create)
+  .get(CompanyController.index);
+
+router
+  .route('/companies/:id')
+  .get(CompanyController.get)
+  .put(protect, CompanyController.update);
+
+router
+  .route('/companies/user/company')
+  .get(protect, CompanyController.getUserCompany);
 
 module.exports = router;

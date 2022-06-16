@@ -52,6 +52,10 @@ const modelDefiners = [
   require('./Subscriptions'),
   // require('./UserPrivileges'),
   require('./Cards'),
+  require('./Companies'),
+  require('./Categories'),
+  require('./Products'),
+  require('./Administrators'),
 ];
 
 for (const modelDefiner of modelDefiners) {
