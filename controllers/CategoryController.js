@@ -63,13 +63,19 @@ module.exports = {
       );
 
       const payload = {
-        name,
         description,
         image_url: url,
         image_id: public_id,
       };
 
-      const category = await Category.create(payload);
+      const [category, created] = await Category.findOrCreate({
+        where: { name },
+        defaults: payload,
+      });
+
+      if (!created) {
+        return res.unprocessable({ mesage: 'Category already exists.' });
+      }
 
       return res.created({
         message: 'Plan created successfully.',
