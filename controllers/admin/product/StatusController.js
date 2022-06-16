@@ -1,4 +1,4 @@
-const { Product } = require('../../models/sql').models;
+const { Product } = require('../../../models/sql').models;
 
 module.exports = {
   async update(req, res, next) {
