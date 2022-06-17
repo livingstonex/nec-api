@@ -32,7 +32,7 @@ module.exports = (sequelize) => {
     }
   );
 
-  model.associate = ({ Subscription, User, Privilage }) => {
+  model.associate = ({ Subscription, User, Privilege }) => {
     model.hasMany(Subscription, {
       as: 'subscriptions',
       foreignKey: 'plan_id',
@@ -44,8 +44,8 @@ module.exports = (sequelize) => {
       foreignKey: 'plan_id',
     });
 
-    model.hasMany(Privilage, {
-      as: 'privilages',
+    model.hasMany(Privilege, {
+      as: 'privileges',
       foreignKey: 'plan_id',
     });
   };

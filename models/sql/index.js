@@ -47,7 +47,7 @@ const modelDefiners = [
   require('./PasswordReset'),
   require('./Users'),
   require('./Plans'),
-  require('./Privilages'),
+  require('./Privileges'),
   require('./Payments'),
   require('./Subscriptions'),
   // require('./UserPrivileges'),

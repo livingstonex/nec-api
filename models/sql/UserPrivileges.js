@@ -1,10 +1,10 @@
 const { DataTypes } = require('sequelize');
-const Privilages = require('./Privilages');
+const Privileges = require('./Privileges');
 const Users = require('./Users');
 
 module.exports = (sequelize) => {
   const model = sequelize.define(
-    'UserPrivilage',
+    'UserPrivilege',
     {
       id: {
         type: DataTypes.INTEGER(10).UNSIGNED,
@@ -13,7 +13,7 @@ module.exports = (sequelize) => {
         unique: true,
         autoIncrement: true,
       },
-      privilage_id: {
+      privilege_id: {
         type: DataTypes.INTEGER(10).UNSIGNED,
         allowNull: true,
         unique: true,
@@ -33,22 +33,22 @@ module.exports = (sequelize) => {
       },
     },
     {
-      tableName: 'user_privilages',
+      tableName: 'user_privileges',
       createdAt: 'created_at',
       updatedAt: 'updated_at',
       timestamps: true,
     }
   );
 
-  model.associate = ({ User, Privilage }) => {
+  model.associate = ({ User, Privilege }) => {
     model.belongsTo(User, {
       foreignKey: 'user_id',
       as: 'user',
     });
 
-    model.belongsTo(Privilage, {
-      foreignKey: 'privilage_id',
-      as: 'privilage',
+    model.belongsTo(Privilege, {
+      foreignKey: 'privilege_id',
+      as: 'privilege',
     });
   };
   return model;
