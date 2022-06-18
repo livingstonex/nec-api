@@ -1,6 +1,7 @@
 const Sequelize = require('sequelize');
 const crypto = require('crypto');
-const { User, PasswordReset } = require('../../models/sql').models;
+const { User, PasswordReset, Subscription, Plan, Privilege } =
+  require('../../models/sql').models;
 const Error = require('../../utils/errorResponse');
 const Validator = require('../../utils/validator.utils');
 const sendTokenResponse = require('../../utils/sendTokenResponse.utils');
@@ -171,7 +172,30 @@ module.exports = {
         });
       }
 
-      const user = await User.findOne({ where: { email } });
+      const user = await User.findOne({
+        where: { email },
+        include: [
+          {
+            model: Subscription,
+            as: 'subscription',
+            include: [
+              {
+                model: Plan,
+                as: 'plan',
+                include: [
+                  {
+                    model: Privilege,
+                    as: 'privileges',
+                    attributes: {
+                      exclude: ['created_at', 'updated_at', 'plan_id'],
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      });
 
       if (!user) {
         return res.status(400).json({
@@ -349,7 +373,7 @@ module.exports = {
     }
   },
 
-  async uploadAvatar (req, res, next) {
+  async uploadAvatar(req, res, next) {
     try {
       // Check if there is an image sent with the upload
       if (!req.files || !req.files.image) {
@@ -365,25 +389,36 @@ module.exports = {
       }
 
       // Upload new avatar
-      const uploadRes = await cloudinaryUtils.uploadImage(req.files.image.tempFilePath, Env.get('NEC_CLOUDINARY_AVATAR_FOLDER'));
+      const uploadRes = await cloudinaryUtils.uploadImage(
+        req.files.image.tempFilePath,
+        Env.get('NEC_CLOUDINARY_AVATAR_FOLDER') || 'avatars'
+      );
+
       const { url, public_id } = uploadRes;
-      await User.update({ avatar: url, avatar_id: public_id }, { where: { id: req.user.id } });
-      
+
+      await User.update(
+        { avatar: url, avatar_id: public_id },
+        { where: { id: req.user.id } }
+      );
+
       return res.status(201).json({
         msg: 'Image uploaded',
-        data: { url, public_id }
+        data: { url, public_id },
       });
     } catch (err) {
       return next(err);
     }
   },
 
-  async removeAvatar (req, res, next) {
+  async removeAvatar(req, res, next) {
     try {
       if (req.user.avatar) {
         await Promise.all([
           cloudinaryUtils.deleteFile(req.user.avatar_id),
-          User.update({ avatar: null, avatar_id: null }, { where: { id: req.user.id } })
+          User.update(
+            { avatar: null, avatar_id: null },
+            { where: { id: req.user.id } }
+          ),
         ]);
       }
       return res.status(200).json({
@@ -394,7 +429,7 @@ module.exports = {
     }
   },
 
-  async updateProfile (req, res, next) {
+  async updateProfile(req, res, next) {
     try {
       const { fullname, phone, currentPassword, newPassword } = req.body;
 
@@ -414,7 +449,10 @@ module.exports = {
         payload.phone = phone;
       }
 
-      if ((!currentPassword && newPassword) || (currentPassword && !newPassword)) {
+      if (
+        (!currentPassword && newPassword) ||
+        (currentPassword && !newPassword)
+      ) {
         return res.status(400).json({
           status: 'bad-request',
           message: 'Please provide both current and new password.',
@@ -446,7 +484,10 @@ module.exports = {
         payload.password = hashedPassword;
       }
 
-      const updatedUser = await User.update(payload, { where: { id: req.user.id } });
+      const updatedUser = await User.update(payload, {
+        where: { id: req.user.id },
+      });
+      
       return res.status(200).json({
         status: 'ok',
         message: 'Profile updated successfully.',
@@ -455,5 +496,5 @@ module.exports = {
     } catch (err) {
       return next(err);
     }
-  }
+  },
 };

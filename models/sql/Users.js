@@ -91,7 +91,7 @@ module.exports = (sequelize) => {
       },
       plan_id: {
         type: DataTypes.INTEGER(10).UNSIGNED,
-        unique: true,
+        // unique: true,
         allowNull: true,
         references: {
           model: 'plans',
@@ -116,8 +116,8 @@ module.exports = (sequelize) => {
   );
 
   model.associate = ({
-    UserPrivilage,
-    Privilage,
+    UserPrivilege,
+    Privilege,
     Payment,
     Subscription,
     Plan,
@@ -125,10 +125,10 @@ module.exports = (sequelize) => {
     Company,
     Product,
   }) => {
-    // model.belongsToMany(Privilage, {
+    // model.belongsToMany(Privilege, {
     //   foreignKey: 'user_id',
-    //   as: 'privilages',
-    //   through: UserPrivilage,
+    //   as: 'privileges',
+    //   through: UserPrivilege,
     // });
 
     model.hasMany(Payment, {
@@ -136,8 +136,8 @@ module.exports = (sequelize) => {
       foreignKey: 'user_id',
     });
 
-    model.hasMany(Subscription, {
-      as: 'subscriptions',
+    model.hasOne(Subscription, {
+      as: 'subscription',
       foreignKey: 'user_id',
     });
 

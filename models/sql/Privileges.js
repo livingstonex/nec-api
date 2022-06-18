@@ -3,7 +3,7 @@ const Plans = require('./Plans');
 
 module.exports = (sequelize) => {
   const model = sequelize.define(
-    'Privilage',
+    'Privilege',
     {
       id: {
         type: DataTypes.INTEGER(10).UNSIGNED,
@@ -18,7 +18,7 @@ module.exports = (sequelize) => {
       },
       plan_id: {
         type: DataTypes.INTEGER(10).UNSIGNED,
-        unique: true,
+        // unique: true,
         references: {
           model: 'plans',
           key: 'id',
@@ -26,24 +26,24 @@ module.exports = (sequelize) => {
       },
     },
     {
-      tableName: 'privilages',
+      tableName: 'privileges',
       createdAt: 'created_at',
       updatedAt: 'updated_at',
       timestamps: true,
     }
   );
 
-  model.associate = ({ User, UserPrivilage, Plan }) => {
+  model.associate = ({ User, UserPrivilege, Plan }) => {
     // model.belongsToMany(User, {
-    //   foreignKey: 'privilage_id',
+    //   foreignKey: 'privilege_id',
     //   as: 'users',
-    //   through: UserPrivilage,
-    // });
+    //   through: UserPrivilege,
+    // });ƒ
 
     // Not sure about this hasMany relationship for old model
-    // model.hasMany(UserPrivilage, {
-    //   as: 'user_privilages',
-    //   foreignKey: 'privilage_id',
+    // model.hasMany(UserPrivilege, {
+    //   as: 'user_privileges',
+    //   foreignKey: 'privilege_id',
     // });
 
     model.belongsTo(Plan, {
