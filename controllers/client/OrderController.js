@@ -42,5 +42,28 @@ module.exports = {
     }
   },
 
-  async create(req, res, next) {},
+  async create(req, res, next) {
+    const { quantity, specification, message } = req.body;
+    let errors = {};
+    const user = req.user;
+
+    if (!quantity) {
+      errors.quantity = 'Please provide a quantity';
+    }
+
+    if (!specification) {
+      errors.specification = 'Please provide a specification';
+    }
+
+    if (!message) {
+      errors.message = 'Please provide a message';
+    }
+
+    if (Object.keys(errors).length > 0) {
+      return res.badRequest({
+        message: 'Please provide all required fields.',
+        error: errors,
+      });
+    }
+  },
 };
