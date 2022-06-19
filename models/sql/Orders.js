@@ -25,6 +25,10 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING(255),
         allowNull: true,
       },
+      image_id: {
+        type: DataTypes.STRING(255),
+        allowNull: true,
+      },
       message: {
         type: DataTypes.STRING(255),
         allowNull: true,
@@ -50,7 +54,7 @@ module.exports = (sequelize) => {
       },
       buyer_id: {
         type: DataTypes.INTEGER(10).UNSIGNED,
-        allowNull: false,
+        allowNull: true,
         references: {
           model: 'users',
           key: 'id',
@@ -58,7 +62,7 @@ module.exports = (sequelize) => {
       },
       seller_id: {
         type: DataTypes.INTEGER(10).UNSIGNED,
-        allowNull: false,
+        allowNull: true,
         references: {
           model: 'users',
           key: 'id',
