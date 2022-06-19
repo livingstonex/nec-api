@@ -1,4 +1,6 @@
 const { Order } = require('../../models/sql').models;
+const cloudinaryUtils = require('../../utils/cloudinary.utils');
+const Email = require('../../utils/email.utils');
 
 module.exports = {
   async index(req, res, next) {
@@ -43,7 +45,8 @@ module.exports = {
   },
 
   async create(req, res, next) {
-    const { quantity, specification, message } = req.body;
+    const { quantity, specification, message, product_id, product_name } =
+      req.body;
     let errors = {};
     const user = req.user;
 
@@ -66,6 +69,14 @@ module.exports = {
         errors.message = 'Please provide a message';
       }
 
+      if (!product_id) {
+        errors.product_id = 'Please provide a product id';
+      }
+
+      if (!product_name) {
+        errors.product_name = 'Please provide a product name';
+      }
+
       if (Object.keys(errors).length > 0) {
         return res.badRequest({
           message: 'Please provide all required fields.',
@@ -77,6 +88,7 @@ module.exports = {
         req.files.image.tempFilePath,
         Env.get('NEC_CLOUDINARY_ORDERS_FOLDER') || 'orders'
       );
+
       const payload = {
         quantity,
         specification,
@@ -86,9 +98,27 @@ module.exports = {
         type: 'IMPORT',
         status: 'PENDING',
         buyer_id: user.id,
+        product_id,
       };
 
       await Order.create(payload);
+
+      const data = {
+        name: user.fullname,
+        email: user.email,
+        product: product_name,
+        quantity,
+      };
+
+      Email.sendEmailTemplate({
+        to: [
+          { email: user.email, name: user.fullname },
+          { email: 'zeenabgroupict@gmail.com', name: 'Zeenab Group' },
+        ],
+        templateName: 'new-order-notification',
+        templateData: data,
+        subject: 'NEC: New Order',
+      }).catch(console.error());
 
       return res.created({
         message: 'Order created successfully.',

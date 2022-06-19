@@ -1,5 +1,4 @@
 const { DataTypes } = require('sequelize');
-const Users = require('./Users');
 
 module.exports = (sequelize) => {
   const model = sequelize.define(
@@ -68,6 +67,14 @@ module.exports = (sequelize) => {
           key: 'id',
         },
       },
+      product_id: {
+        type: DataTypes.INTEGER(10).UNSIGNED,
+        allowNull: true,
+        references: {
+          model: 'products',
+          key: 'id',
+        },
+      },
     },
     {
       tableName: 'orders',
@@ -77,16 +84,21 @@ module.exports = (sequelize) => {
     }
   );
 
-  model.associate = ({ User }) => {
+  model.associate = ({ User, Product }) => {
     model.belongsTo(User, {
       foreignKey: 'buyer_id',
       as: 'buyer',
     });
 
     model.belongsTo(User, {
-        foreignKey: 'seller_id',
-        as: 'seller',
-      });
+      foreignKey: 'seller_id',
+      as: 'seller',
+    });
+
+    model.belongsTo(Product, {
+      foreignKey: 'product_id',
+      as: 'product',
+    });
   };
 
   return model;

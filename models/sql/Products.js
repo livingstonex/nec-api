@@ -70,7 +70,7 @@ module.exports = (sequelize) => {
     }
   );
 
-  model.associate = ({ User, Category }) => {
+  model.associate = ({ User, Category, Order }) => {
     model.belongsTo(User, {
       foreignKey: 'user_id',
       as: 'user',
@@ -79,6 +79,11 @@ module.exports = (sequelize) => {
     model.belongsTo(Category, {
       foreignKey: 'category_id',
       as: 'category',
+    });
+
+    model.hasMany(Order, {
+      as: 'orders',
+      foreignKey: 'product_id',
     });
   };
 
