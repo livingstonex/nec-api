@@ -75,6 +75,10 @@ module.exports = (sequelize) => {
           key: 'id',
         },
       },
+      tracking_id:{
+        type:DataTypes.STRING(255),
+        allowNull:false
+      }
     },
     {
       tableName: 'orders',

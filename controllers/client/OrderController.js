@@ -1,5 +1,6 @@
 const { Order } = require('../../models/sql').models;
 const cloudinaryUtils = require('../../utils/cloudinary.utils');
+const crypto = require('crypto');
 const Email = require('../../utils/email.utils');
 
 module.exports = {
@@ -99,6 +100,7 @@ module.exports = {
         status: 'PENDING',
         buyer_id: user.id,
         product_id,
+        tracking_id: crypto.randomUUID().split('-').join('').toUpperCase(),
       };
 
       await Order.create(payload);

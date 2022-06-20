@@ -4,6 +4,7 @@ const {
   AuthController,
   PaymentController,
   CompanyController,
+  OrderController,
 } = require('../controllers/client');
 const PasswordResetRateLimiter = require('../utils/ratelimit.utils');
 const { protect } = require('../middlewares/auth');
@@ -192,5 +193,10 @@ router
 router
   .route('/companies/user/company')
   .get(protect, CompanyController.getUserCompany);
+router
+  .route('/orders')
+  .get(protect, OrderController.index)
+  .post(protect, OrderController.create);
+router.route('/orders/:id').get(protect, OrderController.get);
 
 module.exports = router;
