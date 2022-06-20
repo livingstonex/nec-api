@@ -12,6 +12,29 @@ module.exports = {
         },
         offset,
         limit,
+        include: ['buyer']
+      });
+
+      const meta = res.pagination(count, limit);
+
+      return res.ok({ message: 'Success', data: rows, meta });
+    } catch (error) {
+      return next(error);
+    }
+  },
+
+  async index_seller(req, res, next) {
+    const { offset, limit } = req.pagination();
+    const user = req.user;
+
+    try {
+      const { count, rows } = await Order.findAndCountAll({
+        where: {
+          seller_id: user.id,
+        },
+        offset,
+        limit,
+        include: ['seller']
       });
 
       const meta = res.pagination(count, limit);
@@ -30,6 +53,7 @@ module.exports = {
         where: {
           id,
         },
+        include: ['buyer', 'seller']
       }).catch((err) => console.error(err));
 
       if (!order) {
