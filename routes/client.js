@@ -193,10 +193,15 @@ router
 router
   .route('/companies/user/company')
   .get(protect, CompanyController.getUserCompany);
+
 router
   .route('/orders')
   .get(protect, OrderController.index)
   .post(protect, OrderController.create);
+
 router.route('/orders/:id').get(protect, OrderController.get);
+
+// Needs to be checked if he's an exporter (apply privileges middleware)
+router.route('/orders/by/seller').get(protect, OrderController.index_seller);
 
 module.exports = router;

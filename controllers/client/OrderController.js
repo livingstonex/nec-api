@@ -25,6 +25,27 @@ module.exports = {
     }
   },
 
+  async index_seller(req, res, next) {
+    const { offset, limit } = req.pagination();
+    const user = req.user;
+
+    try {
+      const { count, rows } = await Order.findAndCountAll({
+        where: {
+          seller_id: user.id,
+        },
+        offset,
+        limit,
+      });
+
+      const meta = res.pagination(count, limit);
+
+      return res.ok({ message: 'Success', data: rows, meta });
+    } catch (error) {
+      return next(error);
+    }
+  },
+
   async get(req, res, next) {
     const { id } = req.params;
 
