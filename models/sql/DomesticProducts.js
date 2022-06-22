@@ -36,24 +36,6 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING(255),
         allowNull: true,
       },
-    //   domestic_trader_id: {
-    //     type: DataTypes.INTEGER(10).UNSIGNED,
-    //     allowNull: false,
-    //     // unique: true,
-    //     references: {
-    //       model: 'domestic_traders',
-    //       key: 'id',
-    //     },
-    //   },
-    //   domestic_market_id: {
-    //     type: DataTypes.INTEGER(10).UNSIGNED,
-    //     allowNull: false,
-    //     // unique: true,
-    //     references: {
-    //       model: 'domestic_markets',
-    //       key: 'id',
-    //     },
-    //   },
     },
     {
       tableName: 'domestic_products',
@@ -68,17 +50,6 @@ module.exports = (sequelize) => {
     DomesticMarket,
     DomesticMarketProduct,
   }) => {
-    // Might not need this
-    // model.belongsTo(DomesticTrader, {
-    //   foreignKey: 'domestic_trader_id',
-    //   as: 'domestic_trader',
-    // });
-
-    // Might not need this
-    // model.belongsTo(DomesticMarket, {
-    //   foreignKey: 'domestic_market_id',
-    //   as: 'domestic_market',
-    // });
 
     model.belongsToMany(DomesticMarket, {
       foreignKey: 'domestic_product_id',

@@ -14,7 +14,6 @@ module.exports = (sequelize) => {
       domestic_market_id: {
         type: DataTypes.INTEGER(10).UNSIGNED,
         allowNull: false,
-        // unique: true,
         references: {
           model: 'domestic_markets',
           key: 'id',
@@ -23,7 +22,6 @@ module.exports = (sequelize) => {
       domestic_product_id: {
         type: DataTypes.INTEGER(10).UNSIGNED,
         allowNull: false,
-        // unique: true,
         references: {
           model: 'domestic_traders',
           key: 'id',

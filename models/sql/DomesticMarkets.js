@@ -46,12 +46,6 @@ module.exports = (sequelize) => {
     DomesticProduct,
     DomesticMarketProduct,
   }) => {
-    // Might not need this
-    // model.hasMany(DomesticProduct, {
-    //   as: 'domestic_products',
-    //   foreignKey: 'domestic_market_id',
-    // });
-
     model.belongsToMany(DomesticTrader, {
       foreignKey: 'domestic_market_id',
       as: 'domestic_market_traders',
