@@ -57,6 +57,13 @@ const modelDefiners = [
   require('./Products'),
   require('./Administrators'),
   require('./Orders'),
+  require('./DomesticMarketProducts'),
+  require('./DomesticMarkets'),
+  require('./DomesticMarketTraders'),
+  require('./DomesticOrders'),
+  require('./DomesticProducts'),
+  require('./DomesticTraderProducts'),
+  require('./DomesticTraders'),
 ];
 
 for (const modelDefiner of modelDefiners) {
