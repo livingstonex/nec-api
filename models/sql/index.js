@@ -56,6 +56,7 @@ const modelDefiners = [
   require('./Categories'),
   require('./Products'),
   require('./Administrators'),
+  require('./Orders'),
 ];
 
 for (const modelDefiner of modelDefiners) {

@@ -1,10 +1,8 @@
 const { DataTypes } = require('sequelize');
-const Users = require('./Users');
-const Categories = require('./Categories');
 
 module.exports = (sequelize) => {
   const model = sequelize.define(
-    'Product',
+    'Order',
     {
       id: {
         type: DataTypes.INTEGER(10).UNSIGNED,
@@ -12,14 +10,6 @@ module.exports = (sequelize) => {
         primaryKey: true,
         unique: true,
         autoIncrement: true,
-      },
-      name: {
-        type: DataTypes.STRING(50),
-        allowNull: false,
-      },
-      description: {
-        type: DataTypes.STRING(255),
-        allowNull: false,
       },
       quantity: {
         type: DataTypes.INTEGER(11).UNSIGNED,
@@ -38,52 +28,80 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING(255),
         allowNull: true,
       },
-      approved: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
-        defaultValue: false,
+      message: {
+        type: DataTypes.STRING(255),
+        allowNull: true,
       },
-      user_id: {
-        type: DataTypes.INTEGER(10).UNSIGNED,
+      type: {
+        type: DataTypes.STRING(25),
+        allowNull: true,
+      },
+      status: {
+        type: DataTypes.ENUM(
+          'PENDING',
+          'MATCHING',
+          'MATCHING_COMPLETED',
+          'ENROUTE',
+          'ARRIVED',
+          'DELIVERED',
+          'COMPLETED',
+          'REJECTED',
+          'CANCELLED'
+        ),
+        defaultValue: 'PENDING',
         allowNull: false,
-        unique: true,
+      },
+      buyer_id: {
+        type: DataTypes.INTEGER(10).UNSIGNED,
+        allowNull: true,
         references: {
           model: 'users',
           key: 'id',
         },
       },
-      category_id: {
+      seller_id: {
         type: DataTypes.INTEGER(10).UNSIGNED,
-        allowNull: false,
-        unique: true,
+        allowNull: true,
         references: {
-          model: 'categories',
+          model: 'users',
           key: 'id',
         },
       },
+      product_id: {
+        type: DataTypes.INTEGER(10).UNSIGNED,
+        allowNull: true,
+        references: {
+          model: 'products',
+          key: 'id',
+        },
+      },
+      tracking_id:{
+        type:DataTypes.STRING(255),
+        allowNull:false
+      }
     },
     {
-      tableName: 'products',
+      tableName: 'orders',
       createdAt: 'created_at',
       updatedAt: 'updated_at',
       timestamps: true,
     }
   );
 
-  model.associate = ({ User, Category, Order }) => {
+  model.associate = ({ User, Product }) => {
     model.belongsTo(User, {
-      foreignKey: 'user_id',
-      as: 'user',
+      foreignKey: 'buyer_id',
+      as: 'buyer',
     });
 
-    model.belongsTo(Category, {
-      foreignKey: 'category_id',
-      as: 'category',
+    model.belongsTo(User, {
+      foreignKey: 'seller_id',
+      as: 'seller',
     });
 
-    model.hasMany(Order, {
-      as: 'orders',
+    model.belongsTo(Product, {
       foreignKey: 'product_id',
+      as: 'product',
     });
   };
 

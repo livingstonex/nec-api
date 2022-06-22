@@ -124,6 +124,7 @@ module.exports = (sequelize) => {
     Card,
     Company,
     Product,
+    Order,
   }) => {
     // model.belongsToMany(Privilege, {
     //   foreignKey: 'user_id',
@@ -159,6 +160,16 @@ module.exports = (sequelize) => {
     model.hasMany(Product, {
       as: 'products',
       foreignKey: 'category_id',
+    });
+
+    model.hasMany(Order, {
+      as: 'sells',
+      foreignKey: 'seller_id',
+    });
+
+    model.hasMany(Order, {
+      as: 'buys',
+      foreignKey: 'buyer_id',
     });
   };
 
