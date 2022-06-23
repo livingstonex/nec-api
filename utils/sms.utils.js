@@ -7,7 +7,7 @@ const SmsLog = require('../models/mongo/SmsLog');
 
 module.exports = {
   SmsApi: axios.create({
-    baseURL: 'https://api.infobip.com',
+    baseURL: Env.get('INFOBIP_BASE_URL') || 'https://mpv6n4.api.infobip.com',
     headers: {
       'Content-Type': 'application/json',
       Accept: 'application/json',
@@ -29,7 +29,7 @@ module.exports = {
       .map(
         (phone) =>
           new Promise((resolve, reject) => {
-            if (!Env.live) {
+            if (Env.live) {
               // Log SMS to console in Dev
               console.log(
                 `*** SMS ***
@@ -82,7 +82,7 @@ ${text}
                     intermediateReport: true,
                     notifyUrl:
                       Env.get('INFOBIP_CALLBACK_URL') ||
-                      'https://api.nigerianexporthub.com/webhook/sms',
+                      'http://localhost:7001/webhook/sms',
                     notifyContentType: 'application/json',
                     callbackData: ref,
                     text,
@@ -99,8 +99,9 @@ ${text}
               }
 
               // Send Request
-              this.SmsApi.post('/sms/1/text/advanced', postData)
+              this.SmsApi.post('/sms/2/text/advanced', postData)
                 .then((res) => {
+                  console.log('Inner res: ', res);
                   SmsLog.create({
                     data: {
                       ...res.data,
@@ -139,8 +140,7 @@ ${text}
   },
 
   async sendPhoneVerificationOTP(phone, otp) {
-    const text = `Please use this OTP to verify your phone number: ${otp}
-      Call us on ${officialPhoneNumber} if you have any issue.`;
+    const text = `Please use this OTP to verify your phone number: ${otp} \n\nCall us on ${officialPhoneNumber} if you have any issue.`;
 
     return this.sendSms(phone, text, null, {
       type: 'PHONE_VERIFICATION_OTP',

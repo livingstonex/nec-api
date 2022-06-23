@@ -135,7 +135,7 @@ app.use(errorHandler);
 // }
 
 //== Initialize port and server on specified port ==//
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 7001;
 
 const server = app.listen(PORT, () => {
   console.log(
@@ -148,7 +148,6 @@ const server = app.listen(PORT, () => {
   madge('server.js').then((res) => {
     console.log(res.circularGraph());
   });
-});
 
 //== Handle global error on server initialization ==//
 process.on('unhandledRejection', (err, promise) => {

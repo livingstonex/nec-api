@@ -35,4 +35,9 @@ module.exports = {
     if (typeof string !== 'string') return '';
     return string.charAt(0).toUpperCase() + string.slice(1);
   },
+
+  formatNumber(num = '') {
+    return num;
+    // return String(num).replace(/\D/g, '');
+  },
 };
