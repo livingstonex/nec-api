@@ -148,7 +148,7 @@ const server = app.listen(PORT, () => {
   madge('server.js').then((res) => {
     console.log(res.circularGraph());
   });
-
+});
 //== Handle global error on server initialization ==//
 process.on('unhandledRejection', (err, promise) => {
   console.log(`Error: ${err.message}`.red.bold);
