@@ -23,7 +23,7 @@ module.exports = (sequelize) => {
         type: DataTypes.INTEGER(10).UNSIGNED,
         allowNull: false,
         references: {
-          model: 'domestic_traders',
+          model: 'domestic_products',
           key: 'id',
         },
       },
