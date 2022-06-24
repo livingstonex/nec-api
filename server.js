@@ -1,5 +1,6 @@
 const express = require('express');
 const dotenv = require('dotenv');
+dotenv.config({ path: './config/config.env' });
 const morgan = require('morgan');
 const connectDB = require('./config/db');
 const errorHandler = require('./middlewares/error');
@@ -9,12 +10,13 @@ const { client } = require('./utils/cache.utils');
 const { swaggerDocs } = require('./utils/swagger.utils');
 const madge = require('madge');
 const fileUpload = require('express-fileupload');
+const seed = require('./scripts/seed');
 // const swaggerJsDoc = require('swagger-jsdoc');
 // const swaggerUi = require('swagger-ui-express');
 // const { version } = require('./package.json');
 
 //== Load env files ==//
-dotenv.config({ path: './config/config.env' });
+
 
 // Connect to Database
 connectDB();
@@ -152,6 +154,8 @@ const server = app.listen(PORT, () => {
     console.log(res.circularGraph());
   });
 });
+
+seed();
 
 //== Handle global error on server initialization ==//
 process.on('unhandledRejection', (err, promise) => {

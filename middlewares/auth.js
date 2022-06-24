@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { Administrator, User } = require('../models/sql').models;
+const { Administrator, Privileges, User } = require('../models/sql').models;
 
 /**
  * @desc  Middleware to protect routes
@@ -53,6 +53,28 @@ exports.authorize = (roles) => {
                     msg: 'User not authorized to access resource'
                 }
             });
+        }
+        next();
+    };
+};
+
+exports.authorizePrivilege = (privileges) => {
+    return async (req, res, next) => {
+        if (!req.user.subscription || !req.user.subscription.active) {
+            return res.paymentRequired({ message: 'No active subscription for user' });
+        }
+
+        for (let privilege in privileges) {
+            let isPrivileged = false;
+            for  (let user_privilege in req.user.subscription.privileges) {
+                if (privilege === user_privilege.id) {
+                    isPrivileged = true;
+                    break;
+                }
+            }
+            if (!isPrivileged) {
+                return res.paymentRequired({ message: 'No active subscription for user' });
+            }
         }
         next();
     };
