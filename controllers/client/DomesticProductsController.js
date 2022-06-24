@@ -35,4 +35,6 @@ module.exports = {
       return next(error);
     }
   },
+
+  async create(){}
 };
