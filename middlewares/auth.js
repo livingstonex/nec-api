@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { Administrator, Privileges, User } = require('../models/sql').models;
+const { Administrator, Plan, Privilege, Subscription, User } = require('../models/sql').models;
 
 /**
  * @desc  Middleware to protect routes
@@ -31,7 +31,33 @@ exports.protect = async (req, res, next) => {
     try {
         // Verify token
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        decoded.role ? req.user = await Administrator.findByPk(decoded.id) : req.user = await User.findByPk(decoded.id);
+        decoded.role ? req.user = await Administrator.findByPk(decoded.id) : req.user = JSON.parse(JSON.stringify(await User.findOne({
+            where: { id: decoded.id },
+            // raw: true,
+            // nest: true,
+            include: [
+              {
+                model: Subscription,
+                as: 'subscription',
+                include: [
+                  {
+                    model: Plan,
+                    as: 'plan',
+                    include: [
+                      {
+                        model: Privilege,
+                        as: 'privileges',
+                        attributes: {
+                          exclude: ['created_at', 'updated_at', 'plan_id'],
+                        },
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          })));
+          req.user.password = undefined;
         next();
     } catch (err) {
         console.error(err);
@@ -60,21 +86,15 @@ exports.authorize = (roles) => {
 
 exports.authorizePrivilege = (privileges) => {
     return async (req, res, next) => {
-        if (!req.user.subscription || !req.user.subscription.active) {
+        if (!req.user.subscription) {
             return res.paymentRequired({ message: 'No active subscription for user' });
         }
+        
+        const user_privileges = req.user.subscription.plan.privileges.map(privilege => privilege.id).join().replaceAll(',', '');
+        privileges = privileges.join().replaceAll(',', '');
 
-        for (let privilege in privileges) {
-            let isPrivileged = false;
-            for  (let user_privilege in req.user.subscription.privileges) {
-                if (privilege === user_privilege.id) {
-                    isPrivileged = true;
-                    break;
-                }
-            }
-            if (!isPrivileged) {
-                return res.paymentRequired({ message: 'No active subscription for user' });
-            }
+        if (!privileges.includes(user_privileges)) {
+            return res.paymentRequired({ message: 'No active subscription for user' });
         }
         next();
     };

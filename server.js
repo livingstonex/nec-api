@@ -10,7 +10,7 @@ const { client } = require('./utils/cache.utils');
 const { swaggerDocs } = require('./utils/swagger.utils');
 const madge = require('madge');
 const fileUpload = require('express-fileupload');
-const seed = require('./scripts/seed');
+// const seed = require('./scripts/seed');
 // const swaggerJsDoc = require('swagger-jsdoc');
 // const swaggerUi = require('swagger-ui-express');
 // const { version } = require('./package.json');
@@ -155,7 +155,7 @@ const server = app.listen(PORT, () => {
   });
 });
 
-seed();
+// seed();
 
 //== Handle global error on server initialization ==//
 process.on('unhandledRejection', (err, promise) => {
