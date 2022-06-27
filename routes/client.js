@@ -5,7 +5,6 @@ const {
   PaymentController,
   CompanyController,
   OrderController,
-  DomesticProductController
 } = require('../controllers/client');
 const PasswordResetRateLimiter = require('../utils/ratelimit.utils');
 const { protect } = require('../middlewares/auth');
