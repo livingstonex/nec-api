@@ -1,7 +1,6 @@
-const { UUID } = require('sequelize');
-const cloudinaryUtils = require('../../utils/cloudinary.utils');
+const cloudinaryUtils = require('../../../utils/cloudinary.utils');
 const { DomesticMarketProduct, DomesticTraderProduct, DomesticProduct } =
-  require('../../models/sql').models;
+  require('../../../models/sql').models;
 
 module.exports = {
   async index(req, res, next) {
@@ -10,7 +9,6 @@ module.exports = {
       const { count, rows } = await DomesticProduct.findAndCountAll({
         offset,
         limit,
-        include: ['domestic_product_traders', 'domestic_product_markets'],
       });
 
       const meta = res.pagination(count, limit);
@@ -20,6 +18,7 @@ module.exports = {
       return next(error);
     }
   },
+
   async get(req, res, next) {
     const { id } = req.params;
 
@@ -28,6 +27,7 @@ module.exports = {
         where: {
           id,
         },
+        include: ['domestic_product_traders', 'domestic_product_markets'],
       }).catch((err) => console.error(err));
 
       if (!product) {
@@ -39,6 +39,7 @@ module.exports = {
       return next(error);
     }
   },
+
   async create(req, res, next) {
     const {
       domestic_trader_id,
@@ -91,7 +92,7 @@ module.exports = {
       const { url, public_id } = await cloudinaryUtils.uploadImage(
         req.files.image.tempFilePath,
         Env.get('NEC_CLOUDINARY_DOMESTIC_PRODUCTS_FOLDER') ||
-          'domestic products'
+          'domestic_products'
       );
 
       const payload = {
@@ -107,7 +108,8 @@ module.exports = {
 
       if (!product) {
         res.serverError({
-          message: 'sorry we could not create product now. Please try again',
+          message:
+            'sorry we could not create product now. Please try again later.',
         });
       }
       const data1 = {
@@ -120,7 +122,7 @@ module.exports = {
         domestic_product_id: product.id,
       };
 
-      Promise.all([
+      await Promise.all([
         await DomesticMarketProduct.create(data1),
         await DomesticTraderProduct.create(data2),
       ]);
@@ -131,6 +133,114 @@ module.exports = {
       });
     } catch (error) {
       next(error);
+    }
+  },
+
+  async update(req, res, next) {
+    const { id: domestic_product_id } = req.params;
+
+    const {
+      domestic_trader_id,
+      domestic_market_id,
+      product_name,
+      description,
+      quantity,
+      specification,
+    } = req.body;
+
+    let data = {};
+
+    if (domestic_trader_id) {
+      data.domestic_trader_id = domestic_trader_id;
+    }
+
+    if (domestic_market_id) {
+      data.domestic_market_id = domestic_market_id;
+    }
+
+    if (product_name) {
+      data.product_name = product_name;
+    }
+
+    if (description) {
+      data.description = description;
+    }
+
+    if (quantity) {
+      data.quantity = quantity;
+    }
+
+    if (specification) {
+      data.specification = specification;
+    }
+
+    try {
+      if (req.files || req.files?.image) {
+        const domestic_product = await DomesticProduct.findOne({
+          where: {
+            id: domestic_product_id,
+          },
+        });
+
+        await cloudinaryUtils.deleteFile(domestic_product.image_id);
+
+        const { url, public_id } = await cloudinaryUtils.uploadImage(
+          req.files.image.tempFilePath,
+          Env.get('NEC_CLOUDINARY_DOMESTIC_PRODUCT_FOLDER') ||
+            'domestic_products'
+        );
+
+        data.image_url = url;
+        data.image_id = public_id;
+      }
+
+      await DomesticProduct.update(data, {
+        where: {
+          id: domestic_product_id,
+        },
+      });
+
+      return res.ok({
+        message: 'Domestic Product updated successfully.',
+      });
+    } catch (error) {
+      return next(error);
+    }
+  },
+
+  async delete(req, res, next) {
+    const { id } = req.params;
+
+    try {
+      const product = await DomesticProduct.findOne({
+        where: {
+          id,
+        },
+      });
+
+      let promises = [];
+
+      promises.push(cloudinaryUtils.deleteFile(product.image_id));
+
+      promises.push(DomesticProduct.destroy({ where: { id } }));
+
+      promises.push(
+        DomesticMarketProduct.destroy({
+          where: { domestic_product_id: product.id },
+        })
+      );
+
+      promises.push(
+        DomesticTraderProduct.destroy({
+          where: { domestic_product_id: product.id },
+        })
+      );
+
+      await Promise.all(promises);
+
+      return res.ok({ message: 'Product deleted successfully.' });
+    } catch (error) {
+      return next(error);
     }
   },
 };
