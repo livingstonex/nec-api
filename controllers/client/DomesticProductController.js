@@ -16,6 +16,7 @@ module.exports = {
       return next(error);
     }
   },
+  
   async get(req, res, next) {
     const { id } = req.params;
 

@@ -1,7 +1,6 @@
 const { DomesticOrder } = require('../../models/sql').models;
 const Email = require('../../utils/email.utils');
 
-
 module.exports = {
   async index(req, res, next) {
     const user = req.user;
@@ -10,6 +9,25 @@ module.exports = {
       const { count, rows } = await DomesticOrder.findAndCountAll({
         where: {
           buyer_id: user.id,
+        },
+        offset,
+        limit,
+      });
+      const meta = res.pagination(count, limit);
+
+      return res.ok({ message: 'Success', data: rows, meta });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  async index_seller(req, res, next) {
+    const user = req.user;
+    const { offset, limit } = req.pagination();
+    try {
+      const { count, rows } = await DomesticOrder.findAndCountAll({
+        where: {
+          seller_id: user.id,
         },
         offset,
         limit,
@@ -120,7 +138,7 @@ module.exports = {
       }).catch(console.error());
 
       return res.created({
-        message: 'Domestic Order created successfully.',
+        message: 'Order created successfully.',
         data: domestic_order,
       });
     } catch (error) {
