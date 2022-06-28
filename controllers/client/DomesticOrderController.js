@@ -21,25 +21,6 @@ module.exports = {
     }
   },
 
-  async index_seller(req, res, next) {
-    const user = req.user;
-    const { offset, limit } = req.pagination();
-    try {
-      const { count, rows } = await DomesticOrder.findAndCountAll({
-        where: {
-          seller_id: user.id,
-        },
-        offset,
-        limit,
-      });
-      const meta = res.pagination(count, limit);
-
-      return res.ok({ message: 'Success', data: rows, meta });
-    } catch (error) {
-      next(error);
-    }
-  },
-
   async get(req, res, next) {
     const { id } = req.params;
 

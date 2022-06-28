@@ -213,11 +213,6 @@ router
 
 router.route('/domestic/orders/:id').get(protect, DomesticOrderController.get);
 
-// Needs to be checked if he's an exporter (apply privileges middleware)
-router
-  .route('domestic/orders/by/seller')
-  .get(protect, DomesticOrderController.index_seller);
-
 router.route('/domestic/products').get(DomesticProductController.index);
 router.route('/domestic/products/:id').get(DomesticProductController.get);
 
