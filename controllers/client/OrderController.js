@@ -73,12 +73,6 @@ module.exports = {
     const user = req.user;
 
     try {
-      if (!req.files || !req.files.image) {
-        return res.badRequest({
-          message: 'Please provide a product image.',
-        });
-      }
-
       if (!quantity) {
         errors.quantity = 'Please provide a quantity';
       }
@@ -105,24 +99,26 @@ module.exports = {
           error: errors,
         });
       }
-
-      const { url, public_id } = await cloudinaryUtils.uploadImage(
-        req.files.image.tempFilePath,
-        Env.get('NEC_CLOUDINARY_ORDERS_FOLDER') || 'orders'
-      );
-
-      const payload = {
+      let payload = {
         quantity,
         specification,
         message,
-        image_url: url,
-        image_id: public_id,
         type: 'IMPORT',
         status: 'PENDING',
         buyer_id: user.id,
         product_id,
         tracking_id: crypto.randomUUID().split('-').join('').toUpperCase(),
       };
+
+      if (req.files || req.files.image) {
+        const { url, public_id } = await cloudinaryUtils.uploadImage(
+          req.files.image.tempFilePath,
+          Env.get('NEC_CLOUDINARY_ORDERS_FOLDER') || 'orders'
+        );
+
+        payload.image_url = url;
+        payload.image_id = public_id;
+      }
 
       const order = await Order.create(payload);
 

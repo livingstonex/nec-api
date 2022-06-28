@@ -167,7 +167,7 @@ module.exports = {
 
       let promises = [];
 
-      promises.push(cloudinaryUtils.deleteFile(product.image_id));
+      promises.push(cloudinaryUtils.deleteFile(market.image_id));
       promises.push(DomesticMarket.destroy({ where: { id } }));
 
       promises.push(

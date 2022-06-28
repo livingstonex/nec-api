@@ -5,8 +5,38 @@ const Validator = require('../../../utils/validator.utils');
 module.exports = {
   async index(req, res, next) {
     const { offset, limit } = req.pagination();
+    const { name, address, email, phone, order = [['id', 'DESC']] } = req.query;
+
+    let where = {};
+
+    if (name) {
+      where.name = {
+        [Op.like]: `%${name}%`,
+      };
+    }
+
+    if (address) {
+      where.address = {
+        [Op.like]: `%${address}%`,
+      };
+    }
+
+    if (email) {
+      where.email = {
+        [Op.like]: `%${email}%`,
+      };
+    }
+
+    if (phone) {
+      where.phone = {
+        [Op.like]: `%${phone}%`,
+      };
+    }
+
     try {
       const { count, rows } = await DomesticTrader.findAndCountAll({
+        where,
+        order,
         offset,
         limit,
       });
@@ -140,12 +170,13 @@ module.exports = {
       });
 
       if (domestic_market_id) {
-        const old_domestic_market = await DomesticTrader.findOne({
+        const domestic_trader = await DomesticTrader.findOne({
           where: {
             id: trader_id,
           },
           include: ['domestic_trader_markets'],
         });
+
         const join_payload = {
           domestic_market_id,
           domestic_trader_id: trader_id,
@@ -154,8 +185,7 @@ module.exports = {
         await DomesticMarketTraders.update(join_payload, {
           where: {
             domestic_trader_id: trader_id,
-            domestic_market_id:
-              old_domestic_market?.domestic_trader_markets[0]?.id,
+            domestic_market_id: domestic_trader?.domestic_trader_markets[0]?.id,
           },
         });
       }
@@ -172,12 +202,6 @@ module.exports = {
     const { id } = req.params;
 
     try {
-      const product = await DomesticTrader.findOne({
-        where: {
-          id,
-        },
-      });
-
       let promises = [];
 
       promises.push(DomesticTrader.destroy({ where: { id } }));

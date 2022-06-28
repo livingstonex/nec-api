@@ -56,4 +56,61 @@ module.exports = {
       return next(error);
     }
   },
+
+  async update(req, res, next) {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    if (!status) {
+      return res.badRequest({
+        message: 'Please attach a valid status',
+      });
+    }
+
+    const data = {
+      state: status.toUpperCase(),
+    };
+
+    try {
+      const domestic_order_status = await DomesticOrder.update(data, {
+        where: {
+          id,
+        },
+      });
+
+      if (!domestic_order_status[0]) {
+        return res.unprocessable({
+          message: 'We could not process the update, please try again!',
+        });
+      }
+
+      const order = await DomesticOrder.findOne({
+        where: {
+          id,
+        },
+        include: ['domestic_product'],
+      });
+
+      const buyer = order.getBuyer();
+
+      const buyer_data = {
+        buyer_name: buyer.fullname,
+        product_name: order?.domestic_product?.name,
+        status,
+      };
+
+      Email.sendEmailTemplate({
+        to: [{ email: buyer.email, name: buyer.fullname }],
+        templateName: 'order-update-buyer-notification',
+        templateData: buyer_data,
+        subject: 'NEC: Order Status Notification',
+      }).catch(console.error());
+
+      return res.ok({
+        message: 'Status successfully updated.',
+      });
+    } catch (error) {
+      return next(error);
+    }
+  },
 };

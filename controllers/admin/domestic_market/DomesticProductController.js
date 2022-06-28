@@ -5,8 +5,26 @@ const { DomesticMarketProduct, DomesticTraderProduct, DomesticProduct } =
 module.exports = {
   async index(req, res, next) {
     const { offset, limit } = req.pagination();
+    const { name, quantity, order = [['id', 'DESC']] } = req.query;
+
+    let where = {};
+
+    if (name) {
+      where.name = {
+        [Op.like]: `%${name}%`,
+      };
+    }
+
+    if (quantity) {
+      where.quantity = {
+        [Op.lte]: quantity,
+      };
+    }
+
     try {
       const { count, rows } = await DomesticProduct.findAndCountAll({
+        where,
+        order,
         offset,
         limit,
       });
@@ -28,10 +46,10 @@ module.exports = {
           id,
         },
         include: ['domestic_product_traders', 'domestic_product_markets'],
-      }).catch((err) => console.error(err));
+      });
 
       if (!product) {
-        return res.notFound({ message: 'Product not found!' });
+        return res.notFound({ message: 'Domestic Product not found!' });
       }
 
       return res.ok({ message: 'Success', data: product });
@@ -106,12 +124,6 @@ module.exports = {
 
       const product = await DomesticProduct.create(payload);
 
-      if (!product) {
-        res.serverError({
-          message:
-            'sorry we could not create product now. Please try again later.',
-        });
-      }
       const data1 = {
         domestic_market_id,
         domestic_product_id: product.id,
@@ -123,8 +135,8 @@ module.exports = {
       };
 
       await Promise.all([
-        await DomesticMarketProduct.create(data1),
-        await DomesticTraderProduct.create(data2),
+        DomesticMarketProduct.create(data1),
+        DomesticTraderProduct.create(data2),
       ]);
 
       return res.created({
@@ -140,8 +152,8 @@ module.exports = {
     const { id: domestic_product_id } = req.params;
 
     const {
-      domestic_trader_id,
-      domestic_market_id,
+      // domestic_trader_id,
+      // domestic_market_id,
       product_name,
       description,
       quantity,
@@ -149,14 +161,6 @@ module.exports = {
     } = req.body;
 
     let data = {};
-
-    if (domestic_trader_id) {
-      data.domestic_trader_id = domestic_trader_id;
-    }
-
-    if (domestic_market_id) {
-      data.domestic_market_id = domestic_market_id;
-    }
 
     if (product_name) {
       data.product_name = product_name;
@@ -199,6 +203,49 @@ module.exports = {
           id: domestic_product_id,
         },
       });
+
+      // if (domestic_market_id) {
+      //   const domestic_product = await DomesticProduct.findOne({
+      //     where: {
+      //       id: domestic_product_id,
+      //     },
+      //     include: ['domestic_product_markets', 'domestic_product_traders'],
+      //   });
+
+      //   const join_data1 = {
+      //     domestic_market_id,
+      //     domestic_product_id,
+      //   };
+
+      //   const join_data2 = {
+      //     domestic_trader_id: domestic_product?.domestic_product_traders[0]?.id,
+      //     domestic_product_id: domestic_product?.id,
+      //   };
+
+      //   let promises = [];
+
+      //   promises.push(
+      //     DomesticMarketProduct.update(join_data1, {
+      //       where: {
+      //         domestic_market_id:
+      //           domestic_product?.domestic_product_markets[0]?.id,
+      //         domestic_product_id: domestic_product.id,
+      //       },
+      //     })
+      //   );
+
+      //   promises.push(
+      //     DomesticTraderProduct(join_data2, {
+      //       where: {
+      //         domestic_trader_id:
+      //           domestic_product?.domestic_product_traders[0]?.id,
+      //         domestic_product_id: domestic_product?.id,
+      //       },
+      //     })
+      //   );
+
+      //   await Promise.all(promises);
+      // }
 
       return res.ok({
         message: 'Domestic Product updated successfully.',
