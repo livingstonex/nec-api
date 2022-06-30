@@ -106,6 +106,10 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING(255),
         allowNull: true,
       },
+      country_code:{
+        type:DataTypes.STRING(255),
+        allowNull:true 
+      },
     },
     {
       tableName: 'users',
