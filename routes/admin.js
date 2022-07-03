@@ -3,6 +3,7 @@ const router = express.Router();
 const { protect, authorize } = require('../middlewares/auth');
 const AdminController = require('../controllers/admin/AdminController');
 const { StatusController } = require('../controllers/admin/product');
+const DomesticMarket = require('../controllers/admin/domestic_market/DomesticMarketController');
 
 /**
  * @swagger
@@ -54,5 +55,33 @@ router
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
     StatusController.update
   );
-
+router
+  .route('/domestic/market')
+  .get(
+    protect,
+    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+    DomesticMarket.index
+  );
+router
+  .route('/domestic/market/:id')
+  .get(
+    protect,
+    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+    DomesticMarket.get
+  )
+  .put(
+    // protect,
+    // authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+    DomesticMarket.update
+  )
+  .delete(
+    // protect,
+    // authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+    DomesticMarket.delete
+  );
+router.route('/domestic/market').post(
+  // protect,
+  // authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+  DomesticMarket.create
+);
 module.exports = router;
