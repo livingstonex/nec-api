@@ -74,9 +74,7 @@ module.exports = {
       if (created) {
         //send email with verification link
         const reset_link = `${
-          req.protocol +
-          '://' +
-          req.get('host') +
+          Env.get('BASE_URL') +
           '/api/client/verifyemail' +
           '/' +
           verification_token
@@ -268,12 +266,7 @@ module.exports = {
       });
 
       const reset_link = `${
-        req.protocol +
-        '://' +
-        req.get('host') +
-        '/client/password/reset' +
-        '/' +
-        resetToken
+        Env.get('BASE_URL') + '/client/password/reset' + '/' + resetToken
       }`;
 
       // Send email
@@ -487,7 +480,7 @@ module.exports = {
       const updatedUser = await User.update(payload, {
         where: { id: req.user.id },
       });
-      
+
       return res.status(200).json({
         status: 'ok',
         message: 'Profile updated successfully.',
