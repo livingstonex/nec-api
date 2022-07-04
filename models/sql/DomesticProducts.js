@@ -49,6 +49,7 @@ module.exports = (sequelize) => {
     DomesticTrader,
     DomesticMarket,
     DomesticMarketProduct,
+    DomesticTraderProduct,
   }) => {
 
     model.belongsToMany(DomesticMarket, {
@@ -60,7 +61,7 @@ module.exports = (sequelize) => {
     model.belongsToMany(DomesticTrader, {
         foreignKey: 'domestic_product_id',
         as: 'domestic_product_traders',
-        through: DomesticMarketProduct,
+        through: DomesticTraderProduct,
       });
   };
 

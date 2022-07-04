@@ -1,6 +1,7 @@
 const cloudinaryUtils = require('../../../utils/cloudinary.utils');
 const { DomesticMarketProduct, DomesticTraderProduct, DomesticProduct } =
   require('../../../models/sql').models;
+const Env = require('../../../utils/env.utils');
 
 module.exports = {
   async index(req, res, next) {
@@ -62,7 +63,7 @@ module.exports = {
     const {
       domestic_trader_id,
       domestic_market_id,
-      product_name,
+      name,
       description,
       quantity,
       specification,
@@ -93,8 +94,8 @@ module.exports = {
         errors.domestic_trader_id = 'Please provide a domestic trader id';
       }
 
-      if (!product_name) {
-        errors.product_name = 'Please provide a product name';
+      if (!name) {
+        errors.name = 'Please provide a product name';
       }
       if (!domestic_market_id) {
         errors.domestic_market_id = 'Please provide a domestic market id';
@@ -114,7 +115,7 @@ module.exports = {
       );
 
       const payload = {
-        name: product_name,
+        name,
         description,
         quantity,
         specification,
@@ -154,7 +155,7 @@ module.exports = {
     const {
       // domestic_trader_id,
       // domestic_market_id,
-      product_name,
+      name,
       description,
       quantity,
       specification,
@@ -162,8 +163,8 @@ module.exports = {
 
     let data = {};
 
-    if (product_name) {
-      data.product_name = product_name;
+    if (name) {
+      data.name = name;
     }
 
     if (description) {
