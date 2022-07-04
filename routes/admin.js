@@ -57,6 +57,11 @@ router
   );
 router
   .route('/domestic/market')
+  .post(
+    protect,
+    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+    DomesticMarket.create
+  )
   .get(
     protect,
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
@@ -70,18 +75,14 @@ router
     DomesticMarket.get
   )
   .put(
-    // protect,
-    // authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+    protect,
+    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
     DomesticMarket.update
   )
   .delete(
-    // protect,
-    // authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+    protect,
+    authorize(['super_admin', 'admin1']),
     DomesticMarket.delete
   );
-router.route('/domestic/market').post(
-  // protect,
-  // authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
-  DomesticMarket.create
-);
+
 module.exports = router;
