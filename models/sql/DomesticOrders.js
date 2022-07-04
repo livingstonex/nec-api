@@ -78,13 +78,13 @@ module.exports = (sequelize) => {
     }
   );
 
-  model.associate = ({ User, Product }) => {
+  model.associate = ({ User, DomesticProduct }) => {
     model.belongsTo(User, {
       foreignKey: 'buyer_id',
       as: 'domestic_buyer',
     });
 
-    model.belongsTo(Product, {
+    model.belongsTo(DomesticProduct, {
       foreignKey: 'domestic_product_id',
       as: 'domestic_product',
     });
