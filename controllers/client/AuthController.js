@@ -12,8 +12,7 @@ const Time = require('../../utils/time.utils');
 const Config = require('../../utils/config.utils');
 const cloudinaryUtils = require('../../utils/cloudinary.utils');
 const Env = require('../../utils/env.utils');
-const { sendPhoneVerificationOTP } = require('../../utils/sms.utils');
-
+const SMS = require('../../utils/sms.utils');
 
 // module.exports = Register;
 module.exports = {
@@ -517,11 +516,12 @@ module.exports = {
       };
       await Otp.create(payload);
 
-      await sendPhoneVerificationOTP(phone, otp);
+      const formatPhone = `0${phone.slice(phone.length - 10)}`
 
-      res.created({
+      SMS.sendPhoneVerificationOTP(formatPhone, otp);
+
+      return res.created({
         message: 'please check your phone for OTP and verify your phone number',
-        data: '',
       });
     }
     return res.ok({

@@ -9,7 +9,7 @@ const {
 } = require('../controllers/client');
 const PasswordResetRateLimiter = require('../utils/ratelimit.utils');
 const { protect } = require('../middlewares/auth');
-const {verifyOtp} = require('../middlewares/otp')
+const { verifyOtp } = require('../middlewares/otp')
 
 /**
  * @openapi
@@ -162,26 +162,9 @@ router.route('/profile').put(protect, AuthController.updateProfile);
  */
 router.route('/payments').get(protect, PaymentController.index);
 
-/**
- * @swagger
- * /api/client/payments:
- *  get:
- *    description: Get all user payment
- *    responses:
- *      '200':
- *        description: Payment fetched successfully.
- */
+
 router.route('/payments/:reference').get(protect, PaymentController.get);
 
-/**
- * @swagger
- * /api/client/payments:
- *  post:
- *    description: Create payment
- *    responses:
- *      '200':
- *        description: Payment created.
- */
 router.route('/payments').post(protect, PaymentController.create);
 
 router
