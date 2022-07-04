@@ -44,7 +44,7 @@ module.exports = {
     try {
       const { name, description } = req.body;
 
-      if (!req.files || !req.files.image) {
+      if (!req.files || !req.files?.image) {
         return res.badRequest({
           message: 'Please provide a category image.',
         });
@@ -58,7 +58,7 @@ module.exports = {
       }
 
       const { url, public_id } = await cloudinaryUtils.uploadImage(
-        req.files.image.tempFilePath,
+        req.files?.image?.tempFilePath,
         Env.get('NEC_CLOUDINARY_CATEGORY_FOLDER') || 'categories'
       );
 
@@ -112,7 +112,7 @@ module.exports = {
         await cloudinaryUtils.deleteFile(category.image_id);
 
         const { url, public_id } = await cloudinaryUtils.uploadImage(
-          req.files.image.tempFilePath,
+          req.files?.image?.tempFilePath,
           Env.get('NEC_CLOUDINARY_CATEGORY_FOLDER') || 'categories'
         );
 

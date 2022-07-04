@@ -48,7 +48,7 @@ module.exports = {
     let errors = {};
 
     try {
-      if (!req.files || !req.files.image) {
+      if (!req.files || !req.files?.image) {
         return res.badRequest({
           message: 'Please provide a market image.',
         });
@@ -74,7 +74,7 @@ module.exports = {
       }
 
       const { url, public_id } = await cloudinaryUtils.uploadImage(
-        req.files.image.tempFilePath,
+        req.files?.image?.tempFilePath,
         Env.get('NEC_CLOUDINARY_DOMESTIC_MARKETS_FOLDER') || 'domestic_markets'
       );
 
@@ -134,7 +134,7 @@ module.exports = {
         await cloudinaryUtils.deleteFile(domestic_market.image_id);
 
         const { url, public_id } = await cloudinaryUtils.uploadImage(
-          req.files.image.tempFilePath,
+          req.files?.image?.tempFilePath,
           Env.get('NEC_CLOUDINARY_DOMESTIC_MARKET_FOLDER') || 'domestic_market'
         );
 

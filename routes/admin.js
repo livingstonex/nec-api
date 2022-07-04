@@ -118,7 +118,7 @@ router
     DomesticProductController.delete
   );
 
-// Domestic Traders\
+// Domestic Traders
 router
   .route('/domestic/traders')
   .get(

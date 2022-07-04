@@ -65,7 +65,7 @@ module.exports = {
       const { name, description, quantity, specification, category_id } =
         req.body;
 
-      if (!req.files || !req.files.image) {
+      if (!req.files || !req.files?.image) {
         return res.badRequest({
           message: 'Please provide a product image.',
         });
@@ -101,7 +101,7 @@ module.exports = {
       }
 
       const { url, public_id } = await cloudinaryUtils.uploadImage(
-        req.files.image.tempFilePath,
+        req.files?.image?.tempFilePath,
         Env.get('NEC_CLOUDINARY_PRODUCT_FOLDER') || 'products'
       );
 
@@ -172,7 +172,7 @@ module.exports = {
         await cloudinaryUtils.deleteFile(product.image_id);
 
         const { url, public_id } = await cloudinaryUtils.uploadImage(
-          req.files.image.tempFilePath,
+          req.files?.image?.tempFilePath,
           Env.get('NEC_CLOUDINARY_PRODUCT_FOLDER') || 'products'
         );
 

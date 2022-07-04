@@ -1,5 +1,6 @@
 const { DomesticOrder } = require('../../models/sql').models;
 const Email = require('../../utils/email.utils');
+const crypto = require('crypto');
 
 module.exports = {
   async index(req, res, next) {
@@ -86,9 +87,9 @@ module.exports = {
         tracking_id: crypto.randomUUID().split('-').join('').toUpperCase(),
       };
 
-      if (req.files || req.files.image) {
+      if (req.files || req.files?.image) {
         const { url, public_id } = await cloudinaryUtils.uploadImage(
-          req.files.image.tempFilePath,
+          req.files?.image?.tempFilePath,
           Env.get('NEC_CLOUDINARY_DOMESTIC_ORDERS_FOLDER') || 'domestic_orders'
         );
 
