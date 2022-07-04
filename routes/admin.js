@@ -58,10 +58,13 @@ router
   );
 router
   .route('/domestic/market')
-  .get(
-     
-    DomesticMarket.index
-  );
+  .post(
+    protect,
+    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+    DomesticMarket.create
+  )
+  .get(DomesticMarket.index);
+
 router
   .route('/domestic/market/:id')
   .get(
@@ -73,17 +76,17 @@ router
     protect,
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
     DomesticMarket.update
-  ) 
-  .delete(
+  )
+  .delete(protect, authorize(['super_admin', 'admin1']), DomesticMarket.delete);
+
+router
+  .route('/domestic/market')
+  .post(
     protect,
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
-    DomesticMarket.delete
+    DomesticMarket.create
   );
-router.route('/domestic/market').post(
-  protect,
-  authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
-  DomesticMarket.create
-);
+
 router
   .route('/domestic/orders')
   .get(
@@ -91,12 +94,14 @@ router
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
     DomesticOrder.index
   );
-  router
-    .route('/domestic/orders/:id')
-    .get(
-      protect,
-      authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
-      DomesticOrder.get
-    )
-    .put(DomesticOrder.update);
+
+router
+  .route('/domestic/orders/:id')
+  .get(
+    protect,
+    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+    DomesticOrder.get
+  )
+  .put(DomesticOrder.update);
+
 module.exports = router;

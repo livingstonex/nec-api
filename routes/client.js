@@ -213,6 +213,7 @@ router
 
 router.route('/domestic/orders/:id').get(protect, DomesticOrderController.get);
 
+// User should be logged in
 router.route('/domestic/products').get(DomesticProductController.index);
 router.route('/domestic/products/:id').get(DomesticProductController.get);
 
