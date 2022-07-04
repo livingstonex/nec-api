@@ -1,5 +1,5 @@
-const { Op } = require('sequelize/types');
-
+// const { Op } = require('sequelize/types');
+const Sequelize = require('sequelize');
 const { DomesticOrder } = require('../../../models/sql').models;
 
 module.exports = {
@@ -16,7 +16,7 @@ module.exports = {
 
     if (quantity) {
       where.quantity = {
-        [Op.lte]: quantity,
+        [Sequelize.Op.lte]: quantity,
       };
     }
 
@@ -68,7 +68,7 @@ module.exports = {
     }
 
     const data = {
-      state: status.toUpperCase(),
+      status: status.toUpperCase(),
     };
 
     try {

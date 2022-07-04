@@ -4,6 +4,7 @@ const { protect, authorize } = require('../middlewares/auth');
 const AdminController = require('../controllers/admin/AdminController');
 const { StatusController } = require('../controllers/admin/product');
 const DomesticMarket = require('../controllers/admin/domestic_market/DomesticMarketController');
+const DomesticOrder = require('../controllers/admin/domestic_market/DomesticOrderController');
 
 router
   .route('/register')
@@ -33,7 +34,7 @@ router
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
     DomesticMarket.index
   );
-  
+
 router
   .route('/domestic/market/:id')
   .get(
@@ -46,10 +47,31 @@ router
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
     DomesticMarket.update
   )
-  .delete(
+  .delete(protect, authorize(['super_admin', 'admin1']), DomesticMarket.delete);
+
+router
+  .route('/domestic/market')
+  .post(
     protect,
-    authorize(['super_admin', 'admin1']),
-    DomesticMarket.delete
+    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+    DomesticMarket.create
   );
+
+router
+  .route('/domestic/orders')
+  .get(
+    protect,
+    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+    DomesticOrder.index
+  );
+
+router
+  .route('/domestic/orders/:id')
+  .get(
+    protect,
+    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+    DomesticOrder.get
+  )
+  .put(DomesticOrder.update);
 
 module.exports = router;
