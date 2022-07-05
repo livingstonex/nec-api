@@ -5,6 +5,8 @@ const {
   PaymentController,
   CompanyController,
   OrderController,
+  DomesticOrderController,
+  DomesticProductController,
 } = require('../controllers/client');
 const PasswordResetRateLimiter = require('../utils/ratelimit.utils');
 const { protect } = require('../middlewares/auth');
@@ -203,5 +205,16 @@ router.route('/orders/:id').get(protect, OrderController.get);
 
 // Needs to be checked if he's an exporter (apply privileges middleware)
 router.route('/orders/by/seller').get(protect, OrderController.index_seller);
+
+router
+  .route('/domestic/orders')
+  .get(protect, DomesticOrderController.index)
+  .post(protect, DomesticOrderController.create);
+
+router.route('/domestic/orders/:id').get(protect, DomesticOrderController.get);
+
+// User should be logged in
+router.route('/domestic/products').get(DomesticProductController.index);
+router.route('/domestic/products/:id').get(DomesticProductController.get);
 
 module.exports = router;

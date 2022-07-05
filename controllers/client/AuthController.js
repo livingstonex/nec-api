@@ -369,7 +369,7 @@ module.exports = {
   async uploadAvatar(req, res, next) {
     try {
       // Check if there is an image sent with the upload
-      if (!req.files || !req.files.image) {
+      if (!req.files || !req.files?.image) {
         return res.status(400).json({
           status: 'bad-request',
           message: 'Please provide an image.',
@@ -383,7 +383,7 @@ module.exports = {
 
       // Upload new avatar
       const uploadRes = await cloudinaryUtils.uploadImage(
-        req.files.image.tempFilePath,
+        req.files?.image?.tempFilePath,
         Env.get('NEC_CLOUDINARY_AVATAR_FOLDER') || 'avatars'
       );
 
