@@ -14,7 +14,6 @@ const cloudinaryUtils = require('../../utils/cloudinary.utils');
 const Env = require('../../utils/env.utils');
 const SMS = require('../../utils/sms.utils');
 
-// module.exports = Register;
 module.exports = {
   async register(req, res, next) {
     try {
