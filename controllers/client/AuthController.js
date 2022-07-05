@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 const crypto = require('crypto');
-const { User, PasswordReset, Subscription, Plan, Privilege } =
+const { User, PasswordReset, Subscription, Plan, Privilege, Otp } =
   require('../../models/sql').models;
 const Error = require('../../utils/errorResponse');
 const Validator = require('../../utils/validator.utils');
@@ -12,17 +12,43 @@ const Time = require('../../utils/time.utils');
 const Config = require('../../utils/config.utils');
 const cloudinaryUtils = require('../../utils/cloudinary.utils');
 const Env = require('../../utils/env.utils');
+const SMS = require('../../utils/sms.utils');
 
-// module.exports = Register;
 module.exports = {
   async register(req, res, next) {
     try {
-      const { email, fullname, phone, password } = req.body;
-      if (email === '' || password == -'' || phone === '' || fullname === '') {
-        return res.status(400).json({
-          status: 'error',
-          message: 'Please fill in all the fields, they are all required',
-          data: '',
+      const { email, fullname, phone, password, country_code = '' } = req.body;
+
+      let errors = {};
+
+      // if (email === '' || password === '' || phone === '' || fullname === '') {
+      //   return res.status(400).json({
+      //     status: 'error',
+      //     message: 'Please fill in all the fields, they are all required',
+      //     data: '',
+      //   });
+      // }
+
+      if (!email) {
+        errors.email = 'Please provide an email';
+      }
+
+      if (!fullname) {
+        errors.fullname = 'Please provide a fullname';
+      }
+
+      if (!phone) {
+        errors.phone = 'Please provide a phone number';
+      }
+
+      if (!password) {
+        errors.password = 'Please provide a password';
+      }
+
+      if (Object.keys(errors).length > 0) {
+        return res.badRequest({
+          message: 'Please provide all required fields.',
+          error: errors,
         });
       }
 
@@ -67,13 +93,14 @@ module.exports = {
           password: hashedPassword,
           phone,
           email,
+          country_code,
           verification_token,
           verification_token_expires: verification_token_epires_in,
         },
       });
       if (created) {
         //send email with verification link
-	const reset_link = `${
+        const reset_link = `${
           Env.get('BASE_URL') +
           '/api/client/verifyemail' +
           '/' +
@@ -369,7 +396,7 @@ module.exports = {
   async uploadAvatar(req, res, next) {
     try {
       // Check if there is an image sent with the upload
-      if (!req.files || !req.files.image) {
+      if (!req.files || !req.files?.image) {
         return res.status(400).json({
           status: 'bad-request',
           message: 'Please provide an image.',
@@ -383,7 +410,7 @@ module.exports = {
 
       // Upload new avatar
       const uploadRes = await cloudinaryUtils.uploadImage(
-        req.files.image.tempFilePath,
+        req.files?.image?.tempFilePath,
         Env.get('NEC_CLOUDINARY_AVATAR_FOLDER') || 'avatars'
       );
 
@@ -480,7 +507,7 @@ module.exports = {
       const updatedUser = await User.update(payload, {
         where: { id: req.user.id },
       });
-      
+
       return res.status(200).json({
         status: 'ok',
         message: 'Profile updated successfully.',
@@ -489,5 +516,44 @@ module.exports = {
     } catch (err) {
       return next(err);
     }
+  },
+
+  async sendOtp(req, res, next) {
+    const { phone, fullname, password, email } = req.body;
+    const country_code = phone.toString().substring(0, 3);
+
+    if (country_code === '234') {
+      const otp = Math.floor(1000 + Math.random() * 9000);
+
+      const payload = {
+        otp,
+        email,
+        fullname,
+        phone,
+        password,
+      };
+      const emailExist = await User.findOne({
+        where: {
+          email,
+        },
+      });
+
+      if (emailExist) {
+        return res.badRequest({ message: 'A user with this email already exists.'})
+      }
+
+      await Otp.create(payload);
+
+      const formatPhone = `0${phone.slice(phone.length - 10)}`;
+
+      SMS.sendPhoneVerificationOTP(formatPhone, otp);
+
+      return res.created({
+        message: 'please check your phone for OTP and verify your phone number',
+      });
+    }
+    return res.ok({
+      message: 'OTP not required. Not a Nigerian phone number',
+    });
   },
 };

@@ -16,7 +16,6 @@ module.exports = (sequelize) => {
       privilege_id: {
         type: DataTypes.INTEGER(10).UNSIGNED,
         allowNull: true,
-        unique: true,
         references: {
           model: 'privileges',
           key: 'id',
@@ -25,7 +24,6 @@ module.exports = (sequelize) => {
       user_id: {
         type: DataTypes.INTEGER(10).UNSIGNED,
         allowNull: false,
-        unique: true,
         references: {
           model: 'users',
           key: 'id',

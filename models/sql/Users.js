@@ -91,7 +91,6 @@ module.exports = (sequelize) => {
       },
       plan_id: {
         type: DataTypes.INTEGER(10).UNSIGNED,
-        // unique: true,
         allowNull: true,
         references: {
           model: 'plans',
@@ -105,6 +104,10 @@ module.exports = (sequelize) => {
       avatar_id: {
         type: DataTypes.STRING(255),
         allowNull: true,
+      },
+      country_code:{
+        type:DataTypes.STRING(255),
+        allowNull:true 
       },
     },
     {

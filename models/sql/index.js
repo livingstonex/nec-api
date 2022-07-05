@@ -67,6 +67,7 @@ const modelDefiners = [
   require('./DomesticProducts'),
   require('./DomesticTraderProducts'),
   require('./DomesticTraders'),
+  require('./Otps')
 ];
 
 for (const modelDefiner of modelDefiners) {
