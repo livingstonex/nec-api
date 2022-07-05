@@ -9,12 +9,8 @@ const {
   DomesticProductController,
 } = require('../controllers/client');
 const PasswordResetRateLimiter = require('../utils/ratelimit.utils');
-<<<<<<< HEAD
 const { authorizePrivilege, protect } = require('../middlewares/auth');
-=======
-const { protect } = require('../middlewares/auth');
 const { verifyOtp } = require('../middlewares/otp')
->>>>>>> bef1ddfb808dc99c83119f8265b8a2e03d8d7c35
 
 /**
  * @openapi
