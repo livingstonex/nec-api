@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 const crypto = require('crypto');
-const { User, PasswordReset, Subscription, Plan, Privilege } =
+const { User, PasswordReset, Subscription, Plan, Privilege, Otp } =
   require('../../models/sql').models;
 const Error = require('../../utils/errorResponse');
 const Validator = require('../../utils/validator.utils');
@@ -12,13 +12,14 @@ const Time = require('../../utils/time.utils');
 const Config = require('../../utils/config.utils');
 const cloudinaryUtils = require('../../utils/cloudinary.utils');
 const Env = require('../../utils/env.utils');
+const SMS = require('../../utils/sms.utils');
 
 // module.exports = Register;
 module.exports = {
   async register(req, res, next) {
     try {
-      const { email, fullname, phone, password } = req.body;
-      if (email === '' || password == -'' || phone === '' || fullname === '') {
+      const { email, fullname, phone, password, country_code = '' } = req.body;
+      if (email === '' || password === '' || phone === '' || fullname === '') {
         return res.status(400).json({
           status: 'error',
           message: 'Please fill in all the fields, they are all required',
@@ -67,6 +68,7 @@ module.exports = {
           password: hashedPassword,
           phone,
           email,
+          country_code,
           verification_token,
           verification_token_expires: verification_token_epires_in,
         },
@@ -489,5 +491,34 @@ module.exports = {
     } catch (err) {
       return next(err);
     }
+  },
+
+  async sendOtp(req, res, next) {
+    const { phone, fullname, password, email } = req.body;
+    const country_code = phone.toString().substring(0, 3);
+
+    if (country_code === '234') {
+      const otp = Math.floor(1000 + Math.random() * 9000);
+
+      const payload = {
+        otp,
+        email,
+        fullname,
+        phone,
+        password,
+      };
+      await Otp.create(payload);
+
+      const formatPhone = `0${phone.slice(phone.length - 10)}`
+
+      SMS.sendPhoneVerificationOTP(formatPhone, otp);
+
+      return res.created({
+        message: 'please check your phone for OTP and verify your phone number',
+      });
+    }
+    return res.ok({
+      message: 'OTP not required. Not a Nigerian phone number',
+    });
   },
 };
