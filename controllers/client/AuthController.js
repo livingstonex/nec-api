@@ -19,11 +19,37 @@ module.exports = {
   async register(req, res, next) {
     try {
       const { email, fullname, phone, password, country_code = '' } = req.body;
-      if (email === '' || password === '' || phone === '' || fullname === '') {
-        return res.status(400).json({
-          status: 'error',
-          message: 'Please fill in all the fields, they are all required',
-          data: '',
+
+      let errors = {};
+
+      // if (email === '' || password === '' || phone === '' || fullname === '') {
+      //   return res.status(400).json({
+      //     status: 'error',
+      //     message: 'Please fill in all the fields, they are all required',
+      //     data: '',
+      //   });
+      // }
+
+      if (!email) {
+        errors.email = 'Please provide an email';
+      }
+
+      if (!fullname) {
+        errors.fullname = 'Please provide a fullname';
+      }
+
+      if (!phone) {
+        errors.phone = 'Please provide a phone number';
+      }
+
+      if (!password) {
+        errors.password = 'Please provide a password';
+      }
+
+      if (Object.keys(errors).length > 0) {
+        return res.badRequest({
+          message: 'Please provide all required fields.',
+          error: errors,
         });
       }
 
