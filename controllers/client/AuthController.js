@@ -532,9 +532,19 @@ module.exports = {
         phone,
         password,
       };
+      const emailExist = await User.findOne({
+        where: {
+          email,
+        },
+      });
+
+      if (emailExist) {
+        return res.badRequest({ message: 'A user with this email already exists.'})
+      }
+
       await Otp.create(payload);
 
-      const formatPhone = `0${phone.slice(phone.length - 10)}`
+      const formatPhone = `0${phone.slice(phone.length - 10)}`;
 
       SMS.sendPhoneVerificationOTP(formatPhone, otp);
 
