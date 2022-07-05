@@ -73,10 +73,8 @@ module.exports = {
       });
       if (created) {
         //send email with verification link
-        const reset_link = `${
-          req.protocol +
-          '://' +
-          req.get('host') +
+	const reset_link = `${
+          Env.get('BASE_URL') +
           '/api/client/verifyemail' +
           '/' +
           verification_token
@@ -267,13 +265,8 @@ module.exports = {
         token: resetToken,
       });
 
-      const reset_link = `${
-        req.protocol +
-        '://' +
-        req.get('host') +
-        '/client/password/reset' +
-        '/' +
-        resetToken
+	const reset_link = `${
+        Env.get('BASE_URL') + '/client/password/reset' + '/' + resetToken
       }`;
 
       // Send email
