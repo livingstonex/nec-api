@@ -76,9 +76,7 @@ module.exports = {
       if (created) {
         //send email with verification link
         const reset_link = `${
-          req.protocol +
-          '://' +
-          req.get('host') +
+          Env.get('BASE_URL') +
           '/api/client/verifyemail' +
           '/' +
           verification_token
@@ -270,12 +268,7 @@ module.exports = {
       });
 
       const reset_link = `${
-        req.protocol +
-        '://' +
-        req.get('host') +
-        '/client/password/reset' +
-        '/' +
-        resetToken
+        Env.get('BASE_URL') + '/client/password/reset' + '/' + resetToken
       }`;
 
       // Send email
@@ -378,7 +371,7 @@ module.exports = {
   async uploadAvatar(req, res, next) {
     try {
       // Check if there is an image sent with the upload
-      if (!req.files || !req.files.image) {
+      if (!req.files || !req.files?.image) {
         return res.status(400).json({
           status: 'bad-request',
           message: 'Please provide an image.',
@@ -392,7 +385,7 @@ module.exports = {
 
       // Upload new avatar
       const uploadRes = await cloudinaryUtils.uploadImage(
-        req.files.image.tempFilePath,
+        req.files?.image?.tempFilePath,
         Env.get('NEC_CLOUDINARY_AVATAR_FOLDER') || 'avatars'
       );
 

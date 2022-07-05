@@ -38,7 +38,7 @@ const payStackWebHook = async (req, res, next) => {
 
       break;
     case 'subscription.create':
-      Promise.all([
+      await Promise.all([
         await User.findOne({
           where: { email: hook.data.customer.email },
         }),

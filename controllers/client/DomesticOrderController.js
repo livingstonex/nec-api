@@ -1,48 +1,24 @@
-const { Order } = require('../../models/sql').models;
-const cloudinaryUtils = require('../../utils/cloudinary.utils');
-const crypto = require('crypto');
+const { DomesticOrder } = require('../../models/sql').models;
 const Email = require('../../utils/email.utils');
+const crypto = require('crypto');
 
 module.exports = {
   async index(req, res, next) {
-    const { offset, limit } = req.pagination();
     const user = req.user;
-
+    const { offset, limit } = req.pagination();
     try {
-      const { count, rows } = await Order.findAndCountAll({
+      const { count, rows } = await DomesticOrder.findAndCountAll({
         where: {
           buyer_id: user.id,
         },
         offset,
         limit,
       });
-
       const meta = res.pagination(count, limit);
 
       return res.ok({ message: 'Success', data: rows, meta });
     } catch (error) {
-      return next(error);
-    }
-  },
-
-  async index_seller(req, res, next) {
-    const { offset, limit } = req.pagination();
-    const user = req.user;
-
-    try {
-      const { count, rows } = await Order.findAndCountAll({
-        where: {
-          seller_id: user.id,
-        },
-        offset,
-        limit,
-      });
-
-      const meta = res.pagination(count, limit);
-
-      return res.ok({ message: 'Success', data: rows, meta });
-    } catch (error) {
-      return next(error);
+      next(error);
     }
   },
 
@@ -50,7 +26,7 @@ module.exports = {
     const { id } = req.params;
 
     try {
-      const order = await Order.findOne({
+      const order = await DomesticOrder.findOne({
         where: {
           id,
         },
@@ -99,28 +75,29 @@ module.exports = {
           error: errors,
         });
       }
+
       let payload = {
         quantity,
         specification,
         message,
-        type: 'IMPORT',
+        type: 'DOMESTIC_IMPORT',
         status: 'PENDING',
         buyer_id: user.id,
-        product_id,
+        domestic_product_id: product_id,
         tracking_id: crypto.randomUUID().split('-').join('').toUpperCase(),
       };
 
-      if (req.files || req.files.image) {
+      if (req.files || req.files?.image) {
         const { url, public_id } = await cloudinaryUtils.uploadImage(
           req.files?.image?.tempFilePath,
-          Env.get('NEC_CLOUDINARY_ORDERS_FOLDER') || 'orders'
+          Env.get('NEC_CLOUDINARY_DOMESTIC_ORDERS_FOLDER') || 'domestic_orders'
         );
 
         payload.image_url = url;
         payload.image_id = public_id;
       }
 
-      const order = await Order.create(payload);
+      const domestic_order = await DomesticOrder.create(payload);
 
       const data = {
         name: user.fullname,
@@ -134,18 +111,17 @@ module.exports = {
           { email: user.email, name: user.fullname },
           { email: 'zeenabgroupict@gmail.com', name: 'Zeenab Group' },
         ],
-        templateName: 'new-order-notification',
+        templateName: 'new-domestic-order-notification',
         templateData: data,
-        subject: 'NEC: New Order',
+        subject: 'NEC: New Domestic Order',
       }).catch(console.error());
 
       return res.created({
         message: 'Order created successfully.',
-        data: order,
+        data: domestic_order,
       });
     } catch (error) {
       return next(error);
     }
   },
-  // add tracking endpoint.
 };

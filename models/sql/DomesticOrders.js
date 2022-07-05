@@ -32,6 +32,10 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING(255),
         allowNull: true,
       },
+      type: {
+        type: DataTypes.STRING(25),
+        allowNull: true,
+      },
       status: {
         type: DataTypes.ENUM(
           'PENDING',
@@ -74,13 +78,13 @@ module.exports = (sequelize) => {
     }
   );
 
-  model.associate = ({ User, Product }) => {
+  model.associate = ({ User, DomesticProduct }) => {
     model.belongsTo(User, {
       foreignKey: 'buyer_id',
       as: 'domestic_buyer',
     });
 
-    model.belongsTo(Product, {
+    model.belongsTo(DomesticProduct, {
       foreignKey: 'domestic_product_id',
       as: 'domestic_product',
     });

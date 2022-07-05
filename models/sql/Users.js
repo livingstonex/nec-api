@@ -91,7 +91,6 @@ module.exports = (sequelize) => {
       },
       plan_id: {
         type: DataTypes.INTEGER(10).UNSIGNED,
-        // unique: true,
         allowNull: true,
         references: {
           model: 'plans',

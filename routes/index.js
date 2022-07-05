@@ -16,4 +16,5 @@ router.use('/plan', plan);
 router.use('/pay', webhook);
 router.use('/categories', category);
 router.use('/products', product);
+
 module.exports = router;
