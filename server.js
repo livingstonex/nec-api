@@ -1,8 +1,9 @@
 const express = require('express');
 const dotenv = require('dotenv');
+//== Load env files ==//
 dotenv.config({ path: './config/config.env' });
+
 const morgan = require('morgan');
-const connectDB = require('./config/db');
 const errorHandler = require('./middlewares/error');
 const cors = require('cors');
 const ENV = require('./utils/env.utils');
@@ -10,17 +11,11 @@ const { client } = require('./utils/cache.utils');
 const { swaggerDocs } = require('./utils/swagger.utils');
 const madge = require('madge');
 const fileUpload = require('express-fileupload');
-// const seed = require('./scripts/seed');
-// const swaggerJsDoc = require('swagger-jsdoc');
-// const swaggerUi = require('swagger-ui-express');
-// const { version } = require('./package.json');
-
-//== Load env files ==//
-
+const Mongo = require('./models/mongo');
+const SQL = require('./models/sql');
 
 // Connect to Database
-connectDB();
-// const db = require('./models/sql');
+Mongo.init();
 
 //== Route files ==//
 const routes = require('./routes');
@@ -140,7 +135,7 @@ app.use(errorHandler);
 // }
 
 //== Initialize port and server on specified port ==//
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 7001;
 
 const server = app.listen(PORT, () => {
   console.log(
@@ -163,4 +158,12 @@ process.on('unhandledRejection', (err, promise) => {
 
   // Close server and exit process
   server.close(() => process.exit(1));
+});
+
+process.on('SIGINT', async () => {
+  console.log('Shutting Down App...');
+
+  await Promise.all([SQL.closeAll(), Mongo.closeAll()]);
+
+  process.exit(0);
 });

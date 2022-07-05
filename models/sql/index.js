@@ -3,11 +3,14 @@ const Env = require('../../utils/env.utils');
 
 const { SQL_DB_NAME, SQL_DB_USER, SQL_DB_PASS, SQL_DB_HOST, SQL_DB_PORT } =
   process.env;
-
 class SQL extends Sequelize {
-  async closeAll() {
+  async closeAll(x = 10) {
+    if (!x) {
+      return;
+    }
+
     try {
-      await this.closeAll();
+      await this.closeAll(--x);
     } catch (err) {
       console.error(err);
     }
@@ -64,6 +67,7 @@ const modelDefiners = [
   require('./DomesticProducts'),
   require('./DomesticTraderProducts'),
   require('./DomesticTraders'),
+  require('./Otps')
 ];
 
 for (const modelDefiner of modelDefiners) {
@@ -79,4 +83,5 @@ sequelize
   .sync()
   .then((res) => console.log('Synced... '))
   .catch((err) => console.log('Error: ', err));
+
 module.exports = sequelize;
