@@ -2,10 +2,10 @@ const { Payment } = require('../../models/sql').models;
 
 module.exports = {
   async index(req, res, next) {
-    const { user_id } = req.body;
+    const user = req.user;
     let { limit = 30, page = 1 } = req.query;
 
-    if (!user_id) {
+    if (!user?.id) {
       return res.status(400).json({
         status: 'bad-request',
         message: 'Bad request: provide a user id.',
@@ -23,7 +23,7 @@ module.exports = {
     try {
       const { count, rows } = await Payment.findAndCountAll({
         where: {
-          user_id,
+          user_id: user.id,
         },
         limit,
         offset,
@@ -49,19 +49,20 @@ module.exports = {
     const {
       reference,
       amount_paid,
-      user_id,
       method = 'Card',
       processor = 'Paystack',
     } = req.body;
+
+    const user = req.user;
 
     if (!reference) {
       return res.badRequest({ message: 'Invalid reference.' });
     }
 
-    if (!amount_paid || !user_id) {
+    if (!amount_paid) {
       return res.status(400).json({
         status: 'bad-request',
-        message: 'Provide a valid amount and user id.',
+        message: 'Provide an amount.',
       });
     }
 
@@ -83,7 +84,7 @@ module.exports = {
         reference,
         amount_paid,
         status: 'PENDING',
-        user_id,
+        user_id: user.id,
         method,
         processor,
       };
@@ -99,14 +100,13 @@ module.exports = {
   },
 
   async get(req, res, next) {
-    const { id } = req.params;
-    const { user_id } = req.body; // Get user_id from the one injected into the request object on auth
-
+    const { reference } = req.params;
+    const user = req.user;
     try {
       const payment = await Payment.findOne({
         where: {
-          id,
-          user_id,
+          reference,
+          user_id: user.id,
         },
         include: ['subscription'],
       });

@@ -101,7 +101,7 @@ ${text}
               // Send Request
               this.SmsApi.post('/sms/2/text/advanced', postData)
                 .then((res) => {
-                  // console.log('Inner res: ', res);
+                  console.log('Inner res: ', res);
                   SmsLog.create({
                     data: {
                       ...res.data,
@@ -114,6 +114,7 @@ ${text}
                 })
                 .catch((err) => {
                   if (err.response) {
+                    console.error('SMS Error: ', err.response);
                     SmsLog.create({
                       data: {
                         ...err.response.data,
