@@ -5,7 +5,8 @@ const AdminController = require('../controllers/admin/AdminController');
 const { StatusController } = require('../controllers/admin/product');
 const DomesticMarket = require('../controllers/admin/domestic_market/DomesticMarketController');
 const DomesticOrder = require('../controllers/admin/domestic_market/DomesticOrderController');
-
+const DomesticProductController = require('../controllers/admin/domestic_market/DomesticProductController');
+const DomesticTraderController = require('../controllers/admin/domestic_market/DomesticTraderController');
 /**
  * @swagger
  * /api/admin/register:
@@ -59,8 +60,8 @@ router
 router
   .route('/domestic/market')
   .post(
-    protect,
-    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+    // protect,
+    // authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
     DomesticMarket.create
   )
   .get(DomesticMarket.index);
@@ -102,6 +103,26 @@ router
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
     DomesticOrder.get
   )
-  .put(DomesticOrder.update);
+  .put(
+    protect,
+    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+    DomesticOrder.get,
+    DomesticOrder.update
+  );
+
+router
+  .route('/domestic/products')
+  .post(
+    protect,
+    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+    DomesticProductController.create
+  );
+router
+  .route('/domestic/traders')
+  .post(
+    protect,
+    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+    DomesticTraderController.create
+  ).get(DomesticTraderController.index);
 
 module.exports = router;
