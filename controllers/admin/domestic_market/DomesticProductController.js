@@ -3,7 +3,6 @@ const { DomesticMarketProduct, DomesticTraderProduct, DomesticProduct } =
   require('../../../models/sql').models;
 const Env = require('../../../utils/env.utils');
 
-
 module.exports = {
   async index(req, res, next) {
     const { offset, limit } = req.pagination();
@@ -64,7 +63,7 @@ module.exports = {
     const {
       domestic_trader_id,
       domestic_market_id,
-      product_name,
+      name,
       description,
       quantity,
       specification,
@@ -73,7 +72,7 @@ module.exports = {
     let errors = {};
 
     try {
-      if (!req.files || !req.files.image) {
+      if (!req.files || !req.files?.image) {
         return res.badRequest({
           message: 'Please provide a product image.',
         });
@@ -95,8 +94,8 @@ module.exports = {
         errors.domestic_trader_id = 'Please provide a domestic trader id';
       }
 
-      if (!product_name) {
-        errors.product_name = 'Please provide a product name';
+      if (!name) {
+        errors.name = 'Please provide a product name';
       }
       if (!domestic_market_id) {
         errors.domestic_market_id = 'Please provide a domestic market id';
@@ -110,13 +109,13 @@ module.exports = {
       }
 
       const { url, public_id } = await cloudinaryUtils.uploadImage(
-        req.files.image.tempFilePath,
+        req.files?.image?.tempFilePath,
         Env.get('NEC_CLOUDINARY_DOMESTIC_PRODUCTS_FOLDER') ||
           'domestic_products'
       );
 
       const payload = {
-        name: product_name,
+        name,
         description,
         quantity,
         specification,
@@ -156,7 +155,7 @@ module.exports = {
     const {
       // domestic_trader_id,
       // domestic_market_id,
-      product_name,
+      name,
       description,
       quantity,
       specification,
@@ -164,8 +163,8 @@ module.exports = {
 
     let data = {};
 
-    if (product_name) {
-      data.product_name = product_name;
+    if (name) {
+      data.name = name;
     }
 
     if (description) {
@@ -191,7 +190,7 @@ module.exports = {
         await cloudinaryUtils.deleteFile(domestic_product.image_id);
 
         const { url, public_id } = await cloudinaryUtils.uploadImage(
-          req.files.image.tempFilePath,
+          req.files?.image?.tempFilePath,
           Env.get('NEC_CLOUDINARY_DOMESTIC_PRODUCT_FOLDER') ||
             'domestic_products'
         );

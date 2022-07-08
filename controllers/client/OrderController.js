@@ -112,7 +112,7 @@ module.exports = {
 
       if (req.files || req.files.image) {
         const { url, public_id } = await cloudinaryUtils.uploadImage(
-          req.files.image.tempFilePath,
+          req.files?.image?.tempFilePath,
           Env.get('NEC_CLOUDINARY_ORDERS_FOLDER') || 'orders'
         );
 

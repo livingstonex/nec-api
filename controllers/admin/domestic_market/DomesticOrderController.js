@@ -1,6 +1,7 @@
 // const { Op } = require('sequelize/types');
 const Sequelize = require('sequelize');
 const { DomesticOrder } = require('../../../models/sql').models;
+const Email = require('../../../utils/email.utils');
 
 module.exports = {
   async index(req, res, next) {
@@ -88,10 +89,10 @@ module.exports = {
         where: {
           id,
         },
-        include: ['domestic_product'],
+        include: ['domestic_product', 'domestic_buyer'],
       });
 
-      const buyer = order.getBuyer();
+      const buyer = order.domestic_buyer;
 
       const buyer_data = {
         buyer_name: buyer.fullname,

@@ -1,4 +1,4 @@
-const { DomesticTrader, DomesticMarketTraders } =
+const { DomesticTrader, DomesticMarketTrader, DomesticTraderProduct } =
   require('../../../models/sql').models;
 const Validator = require('../../../utils/validator.utils');
 
@@ -64,7 +64,7 @@ module.exports = {
         return res.notFound({ message: 'Trader not found!' });
       }
 
-      return res.ok({ message: 'Success', data: product });
+      return res.ok({ message: 'Success', data: trader });
     } catch (error) {
       return next(error);
     }
@@ -127,11 +127,13 @@ module.exports = {
       const trader = await DomesticTrader.create(payload);
 
       const data1 = {
+        phone,
+        address,
         domestic_market_id,
         domestic_trader_id: trader.id,
       };
 
-      await DomesticMarketTraders.create(data1);
+      await DomesticMarketTrader.create(data1);
 
       return res.created({ message: 'Domestic trader created successfully.' });
     } catch (error) {
@@ -182,7 +184,7 @@ module.exports = {
           domestic_trader_id: trader_id,
         };
 
-        await DomesticMarketTraders.update(join_payload, {
+        await DomesticMarketTrader.update(join_payload, {
           where: {
             domestic_trader_id: trader_id,
             domestic_market_id: domestic_trader?.domestic_trader_markets[0]?.id,
@@ -207,7 +209,7 @@ module.exports = {
       promises.push(DomesticTrader.destroy({ where: { id } }));
 
       promises.push(
-        DomesticMarketTraders.destroy({
+        DomesticMarketTrader.destroy({
           where: { domestic_trader_id: id },
         })
       );
