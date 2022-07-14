@@ -132,6 +132,10 @@ module.exports = {
         });
       }
     } catch (e) {
+      console.log('Validation Err: ', e.errors[0]?.message)
+       if (e.errors[0]?.message === 'phone must be unique'){
+        return res.unprocessable({message: 'This phone number already belongs to a user.' });
+       }
       return next(e);
     }
   },
@@ -292,7 +296,7 @@ module.exports = {
         token: resetToken,
       });
 
-      const reset_link = `${
+	const reset_link = `${
         Env.get('BASE_URL') + '/client/password/reset' + '/' + resetToken
       }`;
 
@@ -521,7 +525,7 @@ module.exports = {
   async sendOtp(req, res, next) {
     const { phone, fullname, password, email } = req.body;
     const country_code = phone.toString().substring(0, 3);
-
+   try{
     if (country_code === '234') {
       const otp = Math.floor(1000 + Math.random() * 9000);
 
@@ -555,5 +559,9 @@ module.exports = {
     return res.ok({
       message: 'OTP not required. Not a Nigerian phone number',
     });
+   } catch(error) {
+  console.error('Error sending OTP: ', error);
+  return next(error);  
+}
   },
 };

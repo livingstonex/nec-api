@@ -18,7 +18,7 @@ module.exports = (sequelize) => {
       email: {
         type: DataTypes.STRING(255),
         allowNull: false,
-        unique: true,
+        // unique: true,
       },
       fullname: {
         type: DataTypes.STRING(255),
@@ -26,7 +26,7 @@ module.exports = (sequelize) => {
       },
       phone: {
         type: DataTypes.BIGINT,
-        unique: true,
+       //  unique: true,
         allowNull: false,
       },
       password: {
