@@ -13,7 +13,7 @@ module.exports = {
         },
         offset,
         limit,
-        include: ['buyer'],
+        include: ['buyer', 'product'],
       });
 
       const meta = res.pagination(count, limit);
@@ -35,7 +35,7 @@ module.exports = {
         },
         offset,
         limit,
-        include: ['seller'],
+        include: ['seller', 'product'],
       });
 
       const meta = res.pagination(count, limit);
