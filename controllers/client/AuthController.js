@@ -132,10 +132,12 @@ module.exports = {
         });
       }
     } catch (e) {
-      console.log('Validation Err: ', e.errors[0]?.message)
-       if (e.errors[0]?.message === 'phone must be unique'){
-        return res.unprocessable({message: 'This phone number already belongs to a user.' });
-       }
+      console.log('Validation Err: ', e.errors[0]?.message);
+      if (e.errors[0]?.message === 'phone must be unique') {
+        return res.unprocessable({
+          message: 'This phone number already belongs to a user.',
+        });
+      }
       return next(e);
     }
   },
@@ -296,7 +298,7 @@ module.exports = {
         token: resetToken,
       });
 
-	const reset_link = `${
+      const reset_link = `${
         Env.get('BASE_URL') + '/client/password/reset' + '/' + resetToken
       }`;
 
@@ -523,45 +525,74 @@ module.exports = {
   },
 
   async sendOtp(req, res, next) {
-    const { phone, fullname, password, email } = req.body;
-    const country_code = phone.toString().substring(0, 3);
-   try{
-    if (country_code === '234') {
-      const otp = Math.floor(1000 + Math.random() * 9000);
+    const { phone, fullname, email } = req.body;
 
-      const payload = {
-        otp,
-        email,
-        fullname,
-        phone,
-        password,
-      };
-      const emailExist = await User.findOne({
-        where: {
-          email,
-        },
-      });
+    let errors = {};
 
-      if (emailExist) {
-        return res.badRequest({ message: 'A user with this email already exists.'})
-      }
+    if (!phone) {
+      errors.phone = 'Please provide a phone';
+    }
 
-      await Otp.create(payload);
+    if (!fullname) {
+      errors.fullname = 'Please provide a fullname';
+    }
 
-      const formatPhone = `0${phone.slice(phone.length - 10)}`;
+    if (!email) {
+      errors.email = 'Please provide an email';
+    }
 
-      SMS.sendPhoneVerificationOTP(formatPhone, otp);
-
-      return res.created({
-        message: 'please check your phone for OTP and verify your phone number',
+    if (Object.keys(errors).length > 0) {
+      return res.badRequest({
+        message: 'Please provide all required fields.',
+        error: errors,
       });
     }
-    return res.ok({
-      message: 'OTP not required. Not a Nigerian phone number',
-    });
-   } catch(error) {
-  console.error('Error sending OTP: ', error);
-  return next(error);  
-}
+
+    const country_code = phone.toString().substring(0, 3);
+
+    try {
+      if (country_code === '234') {
+        if (phone.toString().length < 13) {
+          return res.badRequest({ message: 'Invalid phone number length.' });
+        }
+
+        const otp = Math.floor(1000 + Math.random() * 9000);
+
+        const payload = {
+          otp,
+          email,
+          fullname,
+          password,
+        };
+        const emailExist = await User.findOne({
+          where: {
+            email,
+          },
+        });
+
+        if (emailExist) {
+          return res.badRequest({
+            message: 'A user with this email already exists.',
+          });
+        }
+
+        await Otp.create(payload);
+
+        const formatPhone = `0${phone.slice(phone.length - 10)}`;
+
+        SMS.sendPhoneVerificationOTP(formatPhone, otp);
+
+        return res.created({
+          message:
+            'please check your phone for OTP and verify your phone number',
+        });
+      }
+      return res.ok({
+        message: 'OTP not required. Not a Nigerian phone number',
+      });
+    } catch (error) {
+      console.error('Error sending OTP: ', error);
+      return next(error);
+    }
   },
 };
