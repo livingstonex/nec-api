@@ -562,7 +562,7 @@ module.exports = {
           otp,
           email,
           fullname,
-          password,
+          phone,
         };
         const emailExist = await User.findOne({
           where: {

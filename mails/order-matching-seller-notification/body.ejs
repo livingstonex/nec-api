@@ -72,19 +72,25 @@
     <div>
       <div class="p-1">
         <span>
-          <strong>Hello <%=name%>,</strong>
+          <strong>Hello <%=seller_name%>,</strong>
         </span>
       </div>
       <div class="p-1">
         <span>
-          <strong>A new order has just been created.</strong>
+          <strong
+            >Congrats!! an order with the code: <%=tracking_id%> has just been
+            assigned to you for fulfillment. Please make delivery as soon as
+            possible.</strong
+          >
+          <strong>Youu can find the order details on your dashboard.</strong>
         </span>
       </div>
       <div class="p-1">
-        <span> By: <strong><%=name%></strong> </span>
-        <span> Email: <strong><%=email%></strong> </span>
-        <span> Product: <strong><%=product%></strong> </span>
-        <span> Quantity: <strong><%=quantity%></strong> </span>
+        <strong>Summary</strong>
+        <span>
+          <strong>Order Code: <%=tracking_id%></strong>
+          <strong>Product: <%=product_name%></strong>
+        </span>
       </div>
     </div>
     <div class="mt-3 center-text">

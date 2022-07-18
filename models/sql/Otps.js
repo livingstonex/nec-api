@@ -28,11 +28,7 @@ module.exports = (sequelize) => {
         type: DataTypes.BIGINT,
        //  unique: true,
         allowNull: false,
-      },
-      password: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
+      }
     },
     {
       tableName: 'otps',

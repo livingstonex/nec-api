@@ -1,41 +1,28 @@
-const { Order } = require('../../models/sql').models;
-const Email = require('../../utils/email.utils');
+const { Op } = require('sequelize');
+const { Order, User } = require('../../../models/sql').models;
+const Email = require('../../../utils/email.utils');
 
 module.exports = {
   async index(req, res, next) {
     const { offset, limit } = req.pagination();
-    const user = req.user;
+    const { buyer_id, seller_id, order = [['id', 'DESC']] } = req.query;
 
-    try {
-      const { count, rows } = await Order.findAndCountAll({
-        where: {
-          buyer_id: user.id,
-        },
-        offset,
-        limit,
-        include: ['buyer', 'product'],
-      });
+    let where = {};
 
-      const meta = res.pagination(count, limit);
-
-      return res.ok({ message: 'Success', data: rows, meta });
-    } catch (error) {
-      return next(error);
+    if (buyer_id) {
+      where.buyer_id = buyer_id;
     }
-  },
 
-  async index_seller(req, res, next) {
-    const { offset, limit } = req.pagination();
-    const user = req.user;
+    if (seller_id) {
+      where.seller_id = seller_id;
+    }
 
     try {
       const { count, rows } = await Order.findAndCountAll({
-        where: {
-          seller_id: user.id,
-        },
+        where,
         offset,
         limit,
-        include: ['seller', 'product'],
+        order,
       });
 
       const meta = res.pagination(count, limit);
@@ -69,26 +56,35 @@ module.exports = {
 
   async update(req, res, next) {
     const { id } = req.params;
-    const { status } = req.body;
+    const { seller_id } = req.body;
 
-    if (!status) {
+    if (!seller_id) {
       return res.badRequest({
-        message: 'Please attach a valid status',
+        message: 'Please attach a seller',
       });
     }
 
     const data = {
-      state: status.toUpperCase(),
+      seller_id,
+      status: "MATCHING_COMPLETED"
     };
 
     try {
-      const order_status = await Order.update(data, {
+      const user = await User.findOne({
+        where: { id: seller_id },
+      });
+
+      if(!user) {
+        return res.notFound({message: "Seller not found. Invalid seller provided."})
+      }
+
+      const updated_order = await Order.update(data, {
         where: {
           id,
         },
       });
 
-      if (!order_status[0]) {
+      if (!updated_order[0]) {
         return res.unprocessable({
           message: 'We could not process the update, please try again!',
         });
@@ -101,33 +97,19 @@ module.exports = {
         include: ['product'],
       });
 
-      const buyer = order.getBuyer();
-      const seller = order.getSeller();
-
-      const buyer_data = {
-        buyer_name: buyer.fullname,
-        product_name: order?.product?.name,
-        status,
-      };
+      const seller = await order.getSeller();
 
       const seller_data = {
         seller_name: seller.fullname,
         product_name: order?.product?.name,
-        status,
+        tracking_id: order?.tracking_id,
       };
 
       Email.sendEmailTemplate({
-        to: [{ email: buyer.email, name: buyer.fullname }],
-        templateName: 'order-update-buyer-notification',
-        templateData: buyer_data,
-        subject: 'NEC: Order Status Notification',
-      }).catch(console.error());
-
-      Email.sendEmailTemplate({
         to: [{ email: seller.email, name: seller.fullname }],
-        templateName: 'order-update-seller-notification',
+        templateName: 'order-matching-seller-notification',
         templateData: seller_data,
-        subject: 'NEC: Order Status Notification',
+        subject: 'NEC: New Order Matching',
       }).catch(console.error());
 
       return res.ok({

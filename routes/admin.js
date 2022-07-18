@@ -3,6 +3,7 @@ const router = express.Router();
 const { protect, authorize } = require('../middlewares/auth');
 const AdminController = require('../controllers/admin/AdminController');
 const { StatusController } = require('../controllers/admin/product');
+const Orders = require('../controllers/admin/orders');
 const DomesticMarketController = require('../controllers/admin/domestic_market/DomesticMarketController');
 const DomesticOrderController = require('../controllers/admin/domestic_market/DomesticOrderController');
 const DomesticProductController = require('../controllers/admin/domestic_market/DomesticProductController');
@@ -22,6 +23,36 @@ router
     protect,
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
     StatusController.update
+  );
+
+// Orders
+router
+  .route('/orders')
+  .get(
+    protect,
+    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+    Orders.OrderController.index
+  );
+
+router
+  .route('/orders/:id')
+  .get(
+    protect,
+    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+    Orders.OrderController.get
+  )
+  .put(
+    protect,
+    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+    Orders.OrderController.update
+  );
+
+router
+  .route('/orders/:id/status')
+  .put(
+    protect,
+    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+    Orders.StatusController.update
   );
 
 // Domestic Market
@@ -149,5 +180,5 @@ router
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
     DomesticTraderController.delete
   );
-  
+
 module.exports = router;
