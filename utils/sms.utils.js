@@ -29,7 +29,7 @@ module.exports = {
       .map(
         (phone) =>
           new Promise((resolve, reject) => {
-            if (Env.live) {
+            if (!Env.live) {
               // Log SMS to console in Dev
               console.log(
                 `*** SMS ***
@@ -101,7 +101,7 @@ ${text}
               // Send Request
               this.SmsApi.post('/sms/2/text/advanced', postData)
                 .then((res) => {
-                  console.log('Inner res: ', res);
+                  console.log('Inner res: ', res.data.messages);
                   SmsLog.create({
                     data: {
                       ...res.data,
