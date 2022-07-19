@@ -114,6 +114,7 @@ ${text}
                 })
                 .catch((err) => {
                   if (err.response) {
+                    console.error('SMS Error: ', err.response);
                     SmsLog.create({
                       data: {
                         ...err.response.data,

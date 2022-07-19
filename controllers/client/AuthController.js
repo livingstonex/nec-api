@@ -132,10 +132,13 @@ module.exports = {
         });
       }
     } catch (e) {
-      console.log('Validation Err: ', e.errors[0]?.message)
-       if (e.errors[0]?.message === 'phone must be unique'){
-        return res.unprocessable({message: 'This phone number already belongs to a user.' });
-       }
+
+      console.log('Validation Err: ', e.errors[0]?.message);
+      if (e.errors[0]?.message === 'phone must be unique') {
+        return res.unprocessable({
+          message: 'This phone number already belongs to a user.',
+        });
+      }
       return next(e);
     }
   },
@@ -546,48 +549,51 @@ module.exports = {
       });
     }
 
-   const country_code = phone.toString().substring(0, 3);
+    const country_code = phone.toString().substring(0, 3);
 
-   try{
-    if (country_code === '234') {
-      if (phone.toString().length < 13) {
-        return res.badRequest({message: "Invalid phone number length."});
-      }
+    try {
+      if (country_code === '234') {
+        if (phone.toString().length < 13) {
+          return res.badRequest({ message: 'Invalid phone number length.' });
+        }
 
-      const otp = Math.floor(1000 + Math.random() * 9000);
+        const otp = Math.floor(1000 + Math.random() * 9000);
 
-      const payload = {
-        otp,
-        email,
-        fullname,
-        phone,
-      };
-      const emailExist = await User.findOne({
-        where: {
+        const payload = {
+          otp,
           email,
-        },
-      });
+          fullname,
+          phone,
+        };
+        const emailExist = await User.findOne({
+          where: {
+            email,
+          },
+        });
 
-      if (emailExist) {
-        return res.badRequest({ message: 'A user with this email already exists.'})
+        if (emailExist) {
+          return res.badRequest({
+            message: 'A user with this email already exists.',
+          });
+        }
+
+        await Otp.create(payload);
+
+        const formatPhone = `0${phone.slice(phone.length - 10)}`;
+
+        SMS.sendPhoneVerificationOTP(formatPhone, otp);
+
+        return res.created({
+          message:
+            'please check your phone for OTP and verify your phone number',
+        });
       }
-
-      await Otp.create(payload);
-
-      const formatPhone = `0${phone.slice(phone.length - 10)}`;
-
-      SMS.sendPhoneVerificationOTP(formatPhone, otp);
-
-      return res.created({
-        message: 'please check your phone for OTP and verify your phone number',
+      return res.ok({
+        message: 'OTP not required. Not a Nigerian phone number',
       });
+    } catch (error) {
+      console.error('Error sending OTP: ', error);
+      return next(error);
     }
-    return res.ok({
-      message: 'OTP not required. Not a Nigerian phone number',
-    });
-   } catch(error) {
-     console.error('Error sending OTP: ', error);
-     return next(error);  
-   }
   },
 };
