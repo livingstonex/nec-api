@@ -2,6 +2,7 @@ const { Order } = require('../../models/sql').models;
 const cloudinaryUtils = require('../../utils/cloudinary.utils');
 const crypto = require('crypto');
 const Email = require('../../utils/email.utils');
+const Env = require('../../utils/env.utils');
 
 module.exports = {
   async index(req, res, next) {
@@ -73,6 +74,10 @@ module.exports = {
     const user = req.user;
 
     try {
+      if (user.country_code === 'NG'){
+        return res.forbidden({ message: "Please use the domestic market to make your orders." });
+      }
+
       if (!quantity) {
         errors.quantity = 'Please provide a quantity';
       }
@@ -110,7 +115,7 @@ module.exports = {
         tracking_id: crypto.randomUUID().split('-').join('').toUpperCase(),
       };
 
-      if (req.files || req.files.image) {
+      if (req.files || req.files?.image) {
         const { url, public_id } = await cloudinaryUtils.uploadImage(
           req.files?.image?.tempFilePath,
           Env.get('NEC_CLOUDINARY_ORDERS_FOLDER') || 'orders'

@@ -132,6 +132,10 @@ module.exports = {
         });
       }
     } catch (e) {
+      console.log('Validation Err: ', e.errors[0]?.message)
+       if (e.errors[0]?.message === 'phone must be unique'){
+        return res.unprocessable({message: 'This phone number already belongs to a user.' });
+       }
       return next(e);
     }
   },
@@ -293,7 +297,7 @@ module.exports = {
       });
 
 	const reset_link = `${
-        Env.get('BASE_URL') + '/client/password/reset' + '/' + resetToken
+        'https://www.nigerianexportershub.com' + '/reset-password' + '/' + resetToken
       }`;
 
       // Send email
@@ -519,10 +523,37 @@ module.exports = {
   },
 
   async sendOtp(req, res, next) {
-    const { phone, fullname, password, email } = req.body;
-    const country_code = phone.toString().substring(0, 3);
+    const { phone, fullname, email } = req.body;
 
+    let errors = {};
+
+    if (!phone) {
+      errors.phone = 'Please provide a phone';
+    }
+
+    if (!fullname) {
+      errors.fullname = 'Please provide a fullname';
+    }
+
+    if (!email) {
+      errors.email = 'Please provide an email';
+    }
+
+    if (Object.keys(errors).length > 0) {
+      return res.badRequest({
+        message: 'Please provide all required fields.',
+        error: errors,
+      });
+    }
+
+   const country_code = phone.toString().substring(0, 3);
+
+   try{
     if (country_code === '234') {
+      if (phone.toString().length < 13) {
+        return res.badRequest({message: "Invalid phone number length."});
+      }
+
       const otp = Math.floor(1000 + Math.random() * 9000);
 
       const payload = {
@@ -530,7 +561,6 @@ module.exports = {
         email,
         fullname,
         phone,
-        password,
       };
       const emailExist = await User.findOne({
         where: {
@@ -555,5 +585,9 @@ module.exports = {
     return res.ok({
       message: 'OTP not required. Not a Nigerian phone number',
     });
+   } catch(error) {
+     console.error('Error sending OTP: ', error);
+     return next(error);  
+   }
   },
 };
