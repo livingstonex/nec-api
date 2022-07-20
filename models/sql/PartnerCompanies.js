@@ -1,9 +1,8 @@
 const { DataTypes } = require('sequelize');
-const Users = require('./Users');
 
 module.exports = (sequelize) => {
   const model = sequelize.define(
-    'Company',
+    'PartnerCompany',
     {
       id: {
         type: DataTypes.INTEGER(10).UNSIGNED,
@@ -36,30 +35,16 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING(255),
         allowNull: true,
       },
-      user_id: {
-        type: DataTypes.INTEGER(10).UNSIGNED,
-        allowNull: false,
-        unique: true,
-        references: {
-          model: 'users',
-          key: 'id',
-        },
-      },
     },
     {
-      tableName: 'companies',
+      tableName: 'partner_companies',
       createdAt: 'created_at',
       updatedAt: 'updated_at',
       timestamps: true,
     }
   );
 
-  model.associate = ({ User }) => {
-    model.belongsTo(User, {
-      foreignKey: 'user_id',
-      as: 'user',
-    });
-  };
+  model.associate = ({}) => {};
 
   return model;
 };

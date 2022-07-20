@@ -1,7 +1,9 @@
 const AdminController = require('../admin/AdminController');
-const OrderController = require('../admin/OrderController');
+const PartnerCompanyController = require('../admin/PartnerCompanyController');
+const CompanyController = require('../admin/CompanyController');
 
 module.exports = {
   AdminController,
-  OrderController,
+  PartnerCompanyController,
+  CompanyController,
 };

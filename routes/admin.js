@@ -2,12 +2,13 @@ const express = require('express');
 const router = express.Router();
 const { protect, authorize } = require('../middlewares/auth');
 const AdminController = require('../controllers/admin/AdminController');
-const { StatusController } = require('../controllers/admin/product');
+const Product = require('../controllers/admin/product');
 const Orders = require('../controllers/admin/orders');
-const DomesticMarketController = require('../controllers/admin/domestic_market/DomesticMarketController');
-const DomesticOrderController = require('../controllers/admin/domestic_market/DomesticOrderController');
-const DomesticProductController = require('../controllers/admin/domestic_market/DomesticProductController');
-const DomesticTraderController = require('../controllers/admin/domestic_market/DomesticTraderController');
+const DomesticMarket = require('../controllers/admin/domestic_market');
+const {
+  CompanyController,
+  PartnerCompanyController,
+} = require('../controllers/admin');
 
 router
   .route('/register')
@@ -22,7 +23,7 @@ router
   .put(
     protect,
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
-    StatusController.update
+    Product.StatusController.update
   );
 
 // Orders
@@ -61,12 +62,12 @@ router
   .post(
     protect,
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
-    DomesticMarketController.create
+    DomesticMarket.MarketController.create
   )
   .get(
     protect,
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
-    DomesticMarketController.index
+    DomesticMarket.MarketController.index
   );
 
 router
@@ -74,25 +75,17 @@ router
   .get(
     protect,
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
-    DomesticMarketController.get
+    DomesticMarket.MarketController.get
   )
   .put(
     protect,
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
-    DomesticMarketController.update
+    DomesticMarket.MarketController.update
   )
   .delete(
     protect,
     authorize(['super_admin', 'admin1']),
-    DomesticMarketController.delete
-  );
-
-router
-  .route('/domestic/market')
-  .post(
-    protect,
-    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
-    DomesticMarketController.create
+    DomesticMarket.MarketController.delete
   );
 
 // Domestic Orders
@@ -101,7 +94,7 @@ router
   .get(
     protect,
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
-    DomesticOrderController.index
+    DomesticMarket.OrderController.index
   );
 
 router
@@ -109,12 +102,12 @@ router
   .get(
     protect,
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
-    DomesticOrderController.get
+    DomesticMarket.OrderController.get
   )
   .put(
     protect,
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
-    DomesticOrderController.update
+    DomesticMarket.OrderController.update
   );
 
 // Domestic Products
@@ -123,12 +116,12 @@ router
   .get(
     protect,
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
-    DomesticProductController.index
+    DomesticMarket.ProductController.index
   )
   .post(
     protect,
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
-    DomesticProductController.create
+    DomesticMarket.ProductController.create
   );
 
 router
@@ -136,17 +129,17 @@ router
   .get(
     protect,
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
-    DomesticProductController.get
+    DomesticMarket.ProductController.get
   )
   .put(
     protect,
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
-    DomesticProductController.update
+    DomesticMarket.ProductController.update
   )
   .delete(
     protect,
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
-    DomesticProductController.delete
+    DomesticMarket.ProductController.delete
   );
 
 // Domestic Traders
@@ -155,12 +148,12 @@ router
   .get(
     protect,
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
-    DomesticTraderController.index
+    DomesticMarket.TraderController.index
   )
   .post(
     protect,
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
-    DomesticTraderController.create
+    DomesticMarket.TraderController.create
   );
 
 router
@@ -168,17 +161,52 @@ router
   .get(
     protect,
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
-    DomesticTraderController.get
+    DomesticMarket.TraderController.get
   )
   .put(
     protect,
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
-    DomesticTraderController.update
+    DomesticMarket.TraderController.update
   )
   .delete(
     protect,
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
-    DomesticTraderController.delete
+    DomesticMarket.TraderController.delete
+  );
+
+// Company
+router.route('/user/:id/company').get(protect, CompanyController.get);
+
+// Partner Companies
+router
+  .route('/partner/companies')
+  .get(
+    protect,
+    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+    PartnerCompanyController.index
+  )
+  .post(
+    protect,
+    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+    PartnerCompanyController.create
+  );
+
+router
+  .route('/partner/companies/:id')
+  .get(
+    protect,
+    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+    PartnerCompanyController.get
+  )
+  .put(
+    protect,
+    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+    PartnerCompanyController.update
+  )
+  .delete(
+    protect,
+    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+    PartnerCompanyController.delete
   );
 
 module.exports = router;

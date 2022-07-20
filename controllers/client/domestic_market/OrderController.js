@@ -1,5 +1,5 @@
-const { DomesticOrder } = require('../../models/sql').models;
-const Email = require('../../utils/email.utils');
+const { DomesticOrder } = require('../../../models/sql').models;
+const Email = require('../../../utils/email.utils');
 const crypto = require('crypto');
 
 module.exports = {

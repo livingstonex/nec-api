@@ -1,4 +1,4 @@
-const { DomesticProduct } = require('../../models/sql').models;
+const { DomesticProduct } = require('../../../models/sql').models;
 
 module.exports = {
   async index(req, res, next) {

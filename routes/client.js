@@ -5,9 +5,8 @@ const {
   PaymentController,
   CompanyController,
   OrderController,
-  DomesticOrderController,
-  DomesticProductController,
 } = require('../controllers/client');
+const DomesticMarket = require('../controllers/client/domestic_market')
 const PasswordResetRateLimiter = require('../utils/ratelimit.utils');
 const { protect } = require('../middlewares/auth');
 const { verifyOtp } = require('../middlewares/otp')
@@ -171,16 +170,12 @@ router.route('/payments').post(protect, PaymentController.create);
 router
   .route('/companies')
   .post(protect, CompanyController.create)
-  .get(CompanyController.index);
+  .get(protect, CompanyController.index);
 
 router
   .route('/companies/:id')
-  .get(CompanyController.get)
+  .get(protect, CompanyController.get)
   .put(protect, CompanyController.update);
-
-router
-  .route('/companies/user/company')
-  .get(protect, CompanyController.getUserCompany);
 
 router
   .route('/orders')
@@ -194,13 +189,13 @@ router.route('/orders/by/seller').get(protect, OrderController.index_seller);
 
 router
   .route('/domestic/orders')
-  .get(protect, DomesticOrderController.index)
-  .post(protect, DomesticOrderController.create);
+  .get(protect, DomesticMarket.OrderController.index)
+  .post(protect, DomesticMarket.OrderController.create);
 
-router.route('/domestic/orders/:id').get(protect, DomesticOrderController.get);
+router.route('/domestic/orders/:id').get(protect, DomesticMarket.OrderController.get);
 
 // User should be logged in
-router.route('/domestic/products').get(DomesticProductController.index);
-router.route('/domestic/products/:id').get(DomesticProductController.get);
+router.route('/domestic/products').get(DomesticMarket.ProductController.index);
+router.route('/domestic/products/:id').get(DomesticMarket.ProductController.get);
 
 module.exports = router;
