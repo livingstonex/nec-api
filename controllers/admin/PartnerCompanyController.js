@@ -1,13 +1,19 @@
-const { Company } = require('../../models/sql').models;
+const { PartnerCompany } = require('../../models/sql').models;
 const cloudinaryUtils = require('../../utils/cloudinary.utils');
 const Env = require('../../utils/env.utils');
 
 module.exports = {
   async index(req, res, next) {
+    const { offset, limit } = req.pagination();
     try {
-      const company = await Company.findAll();
+      const { count, rows } = await PartnerCompany.findAndCountAll({
+        offset,
+        limit,
+      });
 
-      return res.ok({ message: 'Success', data: company });
+      const meta = res.pagination(count, limit);
+
+      return res.ok({ message: 'Success', data: rows, meta });
     } catch (error) {
       return next(error);
     }
@@ -17,17 +23,17 @@ module.exports = {
     const { id } = req.params;
 
     try {
-      const company = await Company.findOne({
+      const partner_company = await PartnerCompany.findOne({
         where: {
           id,
         },
       }).catch((err) => console.error(err));
 
-      if (!company) {
-        return res.notFound({ message: 'Company not found!' });
+      if (!partner_company) {
+        return res.notFound({ message: 'Partner Company not found!' });
       }
 
-      return res.ok({ message: 'Success', data: company });
+      return res.ok({ message: 'Success', data: partner_company });
     } catch (error) {
       return next(error);
     }
@@ -84,11 +90,11 @@ module.exports = {
         image_id: public_id,
       };
 
-      const company = await Company.create(payload);
+      const partner_company = await PartnerCompany.create(payload);
 
       return res.created({
-        message: 'Company created successfully.',
-        data: company,
+        message: 'Partner Company created successfully.',
+        data: partner_company,
       });
     } catch (error) {
       return next(error);
@@ -96,7 +102,7 @@ module.exports = {
   },
 
   async update(req, res, next) {
-    const { id: company_id } = req.params;
+    const { id: partner_company_id } = req.params;
     const { name, description, cac_number, business_address } = req.body;
     let data = {};
 
@@ -118,32 +124,56 @@ module.exports = {
 
     try {
       if (req.files || req.files?.image) {
-        const company = await Company.findOne({
+        const partner_company = await PartnerCompany.findOne({
           where: {
-            id: company_id,
+            id: partner_company_id,
           },
         });
 
-        await cloudinaryUtils.deleteFile(company.image_id);
+        await cloudinaryUtils.deleteFile(partner_company.image_id);
 
         const { url, public_id } = await cloudinaryUtils.uploadImage(
           req.files?.image?.tempFilePath,
-          Env.get('NEC_CLOUDINARY_USER_COMPANY_FOLDER') || 'nec_user_companies'
+          Env.get('NEC_CLOUDINARY_PARTNER_COMPANY_FOLDER') ||
+            'nec_partner_companies'
         );
 
         data.image_url = url;
         data.image_id = public_id;
       }
 
-      await Company.update(data, {
+      await PartnerCompany.update(data, {
         where: {
-          id: company_id,
+          id: partner_company_id,
         },
       });
 
       return res.ok({
-        message: 'Company updated successfully.',
+        message: 'Partner Company updated successfully.',
       });
+    } catch (error) {
+      return next(error);
+    }
+  },
+
+  async delete(req, res, next) {
+    const { id } = req.params;
+
+    try {
+      const partner_company = await PartnerCompany.findOne({
+        where: {
+          id,
+        },
+      });
+
+      let promises = [];
+
+      promises.push(cloudinaryUtils.deleteFile(partner_company.image_id));
+      promises.push(PartnerCompany.destroy({ where: { id } }));
+
+      await Promise.all(promises);
+
+      return res.ok({ message: 'Partner company deleted successfully.' });
     } catch (error) {
       return next(error);
     }
