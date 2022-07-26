@@ -1,4 +1,4 @@
-const { User } = require('../../models/sql').models;
+const { User } = require('../../../models/sql').models;
 
 module.exports = {
   async index(req, res, next) {
@@ -23,7 +23,7 @@ module.exports = {
       const user = await User.findOne({
         where: {
           id,
-        }
+        },
       }).catch((err) => console.error(err));
 
       if (!user) {
@@ -35,4 +35,4 @@ module.exports = {
       return next(error);
     }
   },
-}
+};
