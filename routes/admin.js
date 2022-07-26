@@ -9,6 +9,7 @@ const {
   CompanyController,
   PartnerCompanyController,
 } = require('../controllers/admin');
+const UsersController = require('../controllers/admin/client/index');
 
 router
   .route('/register')
@@ -207,6 +208,22 @@ router
     protect,
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
     PartnerCompanyController.delete
+  );
+
+//clients
+router
+  .route('/clients')
+  .get(
+    protect,
+    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+    UsersController.index
+  );
+router
+  .route('/clients/:id')
+  .get(
+    protect,
+    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+    UsersController.get
   );
 
 module.exports = router;
