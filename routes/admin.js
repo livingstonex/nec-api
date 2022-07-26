@@ -9,7 +9,7 @@ const {
   CompanyController,
   PartnerCompanyController,
 } = require('../controllers/admin');
-const UsersController = require('../controllers/admin/client/index');
+const { UsersController } = require('../controllers/admin/client');
 
 router
   .route('/register')
