@@ -162,7 +162,7 @@ module.exports = (sequelize) => {
 
     model.hasMany(Product, {
       as: 'products',
-      foreignKey: 'category_id',
+      foreignKey: 'user_id',
     });
 
     model.hasMany(Order, {
