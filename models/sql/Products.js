@@ -46,7 +46,6 @@ module.exports = (sequelize) => {
       user_id: {
         type: DataTypes.INTEGER(10).UNSIGNED,
         allowNull: false,
-        unique: true,
         references: {
           model: 'users',
           key: 'id',
