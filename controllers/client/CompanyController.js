@@ -109,7 +109,7 @@ module.exports = {
     }
 
     if (cac_number) {
-      data.cac_number = name;
+      data.cac_number = cac_number;
     }
 
     if (business_address) {
