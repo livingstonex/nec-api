@@ -19,15 +19,15 @@ module.exports = {
     try {
       const { email, fullname, phone, password, country_code = '' } = req.body;
 
-      let errors = {};
+      const country_phone_code = phone.toString().substring(0, 3);
 
-      // if (email === '' || password === '' || phone === '' || fullname === '') {
-      //   return res.status(400).json({
-      //     status: 'error',
-      //     message: 'Please fill in all the fields, they are all required',
-      //     data: '',
-      //   });
-      // }
+      if (country_phone_code === '234') {
+        return res.forbidden({
+          message: 'Please use the exporters portal to signup.',
+        });
+      }
+
+      let errors = {};
 
       if (!email) {
         errors.email = 'Please provide an email';
@@ -96,6 +96,7 @@ module.exports = {
           country_code,
           verification_token,
           verification_token_expires: verification_token_epires_in,
+          role: 'IMPORTER',
         },
       });
       if (created) {
@@ -117,13 +118,6 @@ module.exports = {
         }).catch(console.error());
 
         sendTokenResponse(user, res, 200, 'user signed up successfully');
-
-        // return res.status(200).json({
-        //   status: 'ok',
-        //   message:
-        //     'We have sent a verification link to your email, Please clink on the link to verify your email',
-        //   data: user,
-        // });
       } else {
         return res.status(422).json({
           status: 'unprocessable',
@@ -178,6 +172,119 @@ module.exports = {
         message: 'email verified successfully',
       });
     } catch (e) {
+      return next(e);
+    }
+  },
+
+  async registerExporter(req, res, next) {
+    try {
+      const { email, fullname, phone, password, country_code = '' } = req.body;
+
+      let errors = {};
+
+      if (!email) {
+        errors.email = 'Please provide an email';
+      }
+
+      if (!fullname) {
+        errors.fullname = 'Please provide a fullname';
+      }
+
+      if (!phone) {
+        errors.phone = 'Please provide a phone number';
+      }
+
+      if (!password) {
+        errors.password = 'Please provide a password';
+      }
+
+      if (Object.keys(errors).length > 0) {
+        return res.badRequest({
+          message: 'Please provide all required fields.',
+          error: errors,
+        });
+      }
+
+      const passwordValid = Validator.passwordChecker(password);
+
+      if (!passwordValid) {
+        return res.status(400).json({
+          status: 'error',
+          message:
+            'Password must be minimum of eight (8) characters long, containing uppercase and lowercase letters,atleast a number and a special character',
+          data: '',
+        });
+      }
+
+      const hashedPassword = await bcrypt.hash(password, 12);
+
+      const emailChecker = Validator.validateEmail(email);
+      if (!emailChecker) {
+        return res.status(400).json({
+          status: 'failed',
+          message: 'Please enter a valid email',
+          data: '',
+        });
+      }
+
+      const validPhoneNumber = Validator.phoneNumberChecker(phone);
+
+      if (!validPhoneNumber) {
+        res.status(400).json({
+          status: 'failed',
+          message: 'please enter a valid phone number',
+          data: '',
+        });
+      }
+      const verification_token = crypto.randomBytes(20).toString('hex');
+      const verification_token_epires_in = Time.add(1, 'day', Date.now());
+
+      const [user, created] = await User.findOrCreate({
+        where: { email },
+        defaults: {
+          fullname,
+          password: hashedPassword,
+          phone,
+          email,
+          country_code,
+          verification_token,
+          verification_token_expires: verification_token_epires_in,
+          role: 'EXPORTER',
+        },
+      });
+      if (created) {
+        //send email with verification link
+        const reset_link = `${
+          Env.get('BASE_URL') +
+          '/api/client/verifyemail' +
+          '/' +
+          verification_token
+        }`;
+
+        const data = { link: reset_link, name: fullname };
+
+        Email.sendEmailTemplate({
+          to: [{ email, name: fullname }],
+          templateName: 'verification',
+          templateData: data,
+          subject: 'NEC: Account verification',
+        }).catch(console.error());
+
+        sendTokenResponse(user, res, 200, 'user signed up successfully');
+      } else {
+        return res.status(422).json({
+          status: 'unprocessable',
+          message: `A user with ${email} already exist`,
+          data: '',
+        });
+      }
+    } catch (e) {
+      console.log('Validation Err: ', e.errors[0]?.message);
+      if (e.errors[0]?.message === 'phone must be unique') {
+        return res.unprocessable({
+          message: 'This phone number already belongs to a user.',
+        });
+      }
       return next(e);
     }
   },

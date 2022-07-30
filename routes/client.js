@@ -34,7 +34,8 @@ const { verifyOtp } = require('../middlewares/otp')
  *        400:
  *          description: Bad request
  */
-router.route('/register').post(verifyOtp, AuthController.register);
+router.route('/register').post(AuthController.register);
+router.route('/exporter/register').post(verifyOtp, AuthController.registerExporter);
 router.route('/otp').post(AuthController.sendOtp);
 
 

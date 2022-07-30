@@ -1,44 +1,6 @@
 const { DataTypes } = require('sequelize');
 // const Plans = require('./Plans');
 
-/**
- * @openapi
- * components:
- *  schemas:
- *    CreateUserInput:
- *      type: object
- *      required:
- *        - fullname
- *        - email
- *        - phone
- *        - password
- *      properties:
- *       fullname:
- *         type: string
- *         default: John Doe
- *       email:
- *         type: string
- *         default: john.doe@example.com
- *       phone:
- *         type: string
- *         default: 09011111111
- *       password:
- *         type: string
- *         default: anypassword
- *    CreateUserResponse:
- *      type: object
- *      properties:
- *       fullname:
- *         type: string
- *       email:
- *         type: string
- *       phone:
- *         type: string
- *       created_at:
- *         type: string
- *       updated_at:
- *         type: string
- */
 module.exports = (sequelize) => {
   const model = sequelize.define(
     'User',
@@ -105,9 +67,13 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING(255),
         allowNull: true,
       },
-      country_code:{
-        type:DataTypes.STRING(255),
-        allowNull:true 
+      country_code: {
+        type: DataTypes.STRING(255),
+        allowNull: true,
+      },
+      role: {
+        type: DataTypes.STRING(15),
+        allowNull: true,
       },
     },
     {
