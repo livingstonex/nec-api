@@ -5,6 +5,9 @@ module.exports = {
     const { offset, limit } = req.pagination();
     try {
       const { count, rows } = await User.findAndCountAll({
+        where: {
+          role: 'EXPORTER',
+        },
         offset,
         limit,
       });
@@ -23,6 +26,7 @@ module.exports = {
       const user = await User.findOne({
         where: {
           id,
+          role: 'EXPORTER',
         },
       }).catch((err) => console.error(err));
 
