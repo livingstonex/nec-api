@@ -62,7 +62,7 @@ module.exports = {
 
   async create(req, res, next) {
     try {
-      const { name, description, quantity, specification, category_id } =
+      const { name, description, quantity, specification, category_id, user_id } =
         req.body;
 
       if (!req.files || !req.files?.image) {
@@ -93,6 +93,10 @@ module.exports = {
         errors.category_id = 'Provide a category_id';
       }
 
+      if (!user_id) {
+        errors.user_id = 'Provide a user';
+      }
+
       if (Object.keys(errors).length > 0) {
         return res.badRequest({
           message: 'Please provide all required fields.',
@@ -110,7 +114,7 @@ module.exports = {
         quantity,
         specification,
         category_id,
-        user_id: req.user?.id,
+        user_id,
         image_url: url,
         image_id: public_id,
       };

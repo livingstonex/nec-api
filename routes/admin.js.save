@@ -182,7 +182,8 @@ router.route('/user/:id/company').get(protect, CompanyController.get);
 router
   .route('/partner/companies')
   .get(
-    PartnerCompanyController.index
+    protect,
+    authori
   )
   .post(
     protect,
@@ -193,6 +194,8 @@ router
 router
   .route('/partner/companies/:id')
   .get(
+    protect,
+    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
     PartnerCompanyController.get
   )
   .put(
