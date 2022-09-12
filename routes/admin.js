@@ -8,6 +8,7 @@ const DomesticMarket = require('../controllers/admin/domestic_market');
 const {
   CompanyController,
   PartnerCompanyController,
+  DashboardStatsController,
 } = require('../controllers/admin');
 const { UsersController } = require('../controllers/admin/client');
 
@@ -221,5 +222,12 @@ router
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
     UsersController.get
   );
+
+  //stats
+  router
+    .route('/stats')
+    // .get(protect, authorize(['super_admin']), DashboardStatsController.index);
+    .get(DashboardStatsController.index);
+
 
 module.exports = router;
