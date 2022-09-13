@@ -20,6 +20,11 @@ router.route('/login').post(AdminController.login);
 router.route('/logout').get(AdminController.logout);
 
 router
+  .route('/ban/:id')
+  .get(protect, authorize(['super_admin']), AdminController.deactivateAdmin);
+// update model sequalize ?
+
+router
   .route('/product/:id/status')
   .put(
     protect,
@@ -181,9 +186,7 @@ router.route('/user/:id/company').get(protect, CompanyController.get);
 // Partner Companies
 router
   .route('/partner/companies')
-  .get(
-    PartnerCompanyController.index
-  )
+  .get(PartnerCompanyController.index)
   .post(
     protect,
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
@@ -192,9 +195,7 @@ router
 
 router
   .route('/partner/companies/:id')
-  .get(
-    PartnerCompanyController.get
-  )
+  .get(PartnerCompanyController.get)
   .put(
     protect,
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
