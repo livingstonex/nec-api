@@ -182,9 +182,7 @@ router.route('/user/:id/company').get(protect, CompanyController.get);
 // Partner Companies
 router
   .route('/partner/companies')
-  .get(
-    PartnerCompanyController.index
-  )
+  .get(PartnerCompanyController.index)
   .post(
     protect,
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
@@ -193,9 +191,7 @@ router
 
 router
   .route('/partner/companies/:id')
-  .get(
-    PartnerCompanyController.get
-  )
+  .get(PartnerCompanyController.get)
   .put(
     protect,
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
@@ -223,11 +219,9 @@ router
     UsersController.get
   );
 
-  //stats
-  router
-    .route('/stats')
-    // .get(protect, authorize(['super_admin']), DashboardStatsController.index);
-    .get(DashboardStatsController.index);
-
+//stats
+router
+  .route('/stats')
+  .get(protect, authorize(['super_admin']), DashboardStatsController.index);
 
 module.exports = router;
