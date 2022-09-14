@@ -123,4 +123,55 @@ module.exports = {
     }
 
   },
+  async activate(req,res,next){
+    const {id} = req.params
+    try{
+      const admin = await Administrator.findOne({
+        where: {
+          [Op.and]: [{ id }, { active: false }],
+        },
+      });
+      if(!admin){
+        return res.notFound({
+          message:"this admin does not exist"
+        })
+      }
+      const update = Administrator.update(
+        { active: true },
+        {
+          where: {
+            id,
+          },
+        }
+      );
+      
+      return res.ok({
+        message:'admin activated successfully'
+      })
+    }catch(e){
+      next(e)
+    }
+
+  },
+  async admins(req,res,next){
+    try{
+      const admins = Administrator.findAll({
+        where:{
+          role:['admin1','admin2','admin3']
+        }
+      })
+      if(!admins){
+        return res.badRequest({
+          message:'no admins found. Please add an admin'
+        })
+      }
+      return res.ok({
+        message:"admins retrieved successfully",
+        data:admins
+      })
+    }catch(e){
+      next(e)
+    }
+  }
+
 };
