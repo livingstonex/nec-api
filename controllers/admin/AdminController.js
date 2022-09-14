@@ -94,17 +94,17 @@ module.exports = {
     });
   },
   async deactivateAdmin(req, res, next) {
-    const {id} = req.params
-    try{
+    const { id } = req.params;
+    try {
       const admin = await Administrator.findOne({
         where: {
           [Op.and]: [{ id }, { active: true }],
         },
       });
-      if(!admin){
+      if (!admin) {
         return res.notFound({
-          message:"this admin does not exist"
-        })
+          message: 'this admin does not exist',
+        });
       }
       const update = Administrator.update(
         { active: false },
@@ -114,27 +114,26 @@ module.exports = {
           },
         }
       );
-      
-      return res.ok({
-        message:'admin deactivated successfully'
-      })
-    }catch(e){
-      next(e)
-    }
 
+      return res.ok({
+        message: 'admin deactivated successfully',
+      });
+    } catch (e) {
+      next(e);
+    }
   },
-  async activate(req,res,next){
-    const {id} = req.params
-    try{
+  async activate(req, res, next) {
+    const { id } = req.params;
+    try {
       const admin = await Administrator.findOne({
         where: {
           [Op.and]: [{ id }, { active: false }],
         },
       });
-      if(!admin){
+      if (!admin) {
         return res.notFound({
-          message:"this admin does not exist"
-        })
+          message: 'this admin does not exist',
+        });
       }
       const update = Administrator.update(
         { active: true },
@@ -144,34 +143,32 @@ module.exports = {
           },
         }
       );
-      
-      return res.ok({
-        message:'admin activated successfully'
-      })
-    }catch(e){
-      next(e)
-    }
 
+      return res.ok({
+        message: 'admin activated successfully',
+      });
+    } catch (e) {
+      next(e);
+    }
   },
-  async admins(req,res,next){
-    try{
-      const admins = Administrator.findAll({
-        where:{
-          role:['admin1','admin2','admin3']
-        }
-      })
-      if(!admins){
-        return res.badRequest({
-          message:'no admins found. Please add an admin'
-        })
+  async admins(req, res, next) {
+    try {
+      const admins = await Administrator.findAll({
+        where: {
+          role: ['admin1', 'admin2', 'admin3'],
+        },
+      });
+      if (!admins) {
+        return res.notFound({
+          message: 'no admins found. Please add an admin',
+        });
       }
       return res.ok({
-        message:"admins retrieved successfully",
-        data:admins
-      })
-    }catch(e){
-      next(e)
+        message: 'admins retrieved successfully',
+        data: admins,
+      });
+    } catch (e) {
+      next(e);
     }
-  }
-
+  },
 };

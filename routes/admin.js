@@ -223,4 +223,8 @@ router
     UsersController.get
   );
 
+router
+  .route('/')
+  .get(protect, authorize(['super_admin']), AdminController.admins);
+
 module.exports = router;
