@@ -181,9 +181,7 @@ router.route('/user/:id/company').get(protect, CompanyController.get);
 // Partner Companies
 router
   .route('/partner/companies')
-  .get(
-    PartnerCompanyController.index
-  )
+  .get(PartnerCompanyController.index)
   .post(
     protect,
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
@@ -192,9 +190,7 @@ router
 
 router
   .route('/partner/companies/:id')
-  .get(
-    PartnerCompanyController.get
-  )
+  .get(PartnerCompanyController.get)
   .put(
     protect,
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
@@ -221,5 +217,33 @@ router
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
     UsersController.get
   );
+router
+  .route('/clients/status/:status')
+  .get(
+    protect,
+    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+    UsersController.verified
+  );
+router
+  .route('/clients/users/registered')
+  .get(
+    protect,
+    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+    UsersController.allUsers
+  );
+  router
+    .route('/clients/users/members')
+    .get(
+      protect,
+      authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+      UsersController.members
+    );
+  router
+    .route('/clients/users/:id')
+    .get(
+      protect,
+      authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+      UsersController.getVerified
+    );
 
 module.exports = router;
