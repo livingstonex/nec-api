@@ -8,6 +8,7 @@ const DomesticMarket = require('../controllers/admin/domestic_market');
 const {
   CompanyController,
   PartnerCompanyController,
+  ExportController,
 } = require('../controllers/admin');
 const { UsersController } = require('../controllers/admin/client');
 
@@ -181,9 +182,7 @@ router.route('/user/:id/company').get(protect, CompanyController.get);
 // Partner Companies
 router
   .route('/partner/companies')
-  .get(
-    PartnerCompanyController.index
-  )
+  .get(PartnerCompanyController.index)
   .post(
     protect,
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
@@ -192,9 +191,7 @@ router
 
 router
   .route('/partner/companies/:id')
-  .get(
-    PartnerCompanyController.get
-  )
+  .get(PartnerCompanyController.get)
   .put(
     protect,
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
@@ -220,6 +217,44 @@ router
     protect,
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
     UsersController.get
+  );
+
+//exports
+router
+  .route('/exports')
+  .get(
+    protect,
+    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+    ExportController.index
+  );
+
+router
+  .route('/exports/pending')
+  .get(
+    protect,
+    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+    ExportController.pending
+  );
+  router
+    .route('/exports/fulfilled')
+    .get(
+      protect,
+      authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+      ExportController.fulfilled
+    );
+    router
+      .route('/exports/inprogress')
+      .get(
+        protect,
+        authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+        ExportController.inProgress
+      );
+router
+  .route('/exports/:id')
+  .get(
+    protect,
+    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+    ExportController.get
   );
 
 module.exports = router;
