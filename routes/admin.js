@@ -235,20 +235,20 @@ router
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
     ExportController.pending
   );
-  router
-    .route('/exports/fulfilled')
-    .get(
-      protect,
-      authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
-      ExportController.fulfilled
-    );
-    router
-      .route('/exports/inprogress')
-      .get(
-        protect,
-        authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
-        ExportController.inProgress
-      );
+router
+  .route('/exports/fulfilled')
+  .get(
+    protect,
+    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+    ExportController.fulfilled
+  );
+router
+  .route('/exports/inprogress')
+  .get(
+    protect,
+    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+    ExportController.inProgress
+  );
 router
   .route('/exports/:id')
   .get(

@@ -1,6 +1,6 @@
 const { Order } = require('../../../models/sql').models;
 const Email = require('../../../utils/email.utils');
-
+//update status if status is other than matching -- if status is matching then seller id can be null, anything else seller id cannot be null.
 module.exports = {
   async update(req, res, next) {
     const { id } = req.params;
@@ -11,6 +11,7 @@ module.exports = {
         message: 'Please attach a valid status',
       });
     }
+    const valid_status = []
 
     const data = {
       status: status.toUpperCase(),

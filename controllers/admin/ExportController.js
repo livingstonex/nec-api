@@ -4,17 +4,11 @@ const { Order } = require('../../models/sql').models;
 module.exports = {
   async index(req, res, next) {
     try {
-      const { count, rows } = await Order.findAndCountAll();
-
-      if (!rows) {
-        return res.notFound({
-          message: 'No exports found',
-        });
-      }
+      const exportCount = await Order.count();
 
       return res.ok({
         message: 'Success',
-        data: count,
+        data: exportCount,
       });
     } catch (e) {
       next(e);
@@ -49,21 +43,15 @@ module.exports = {
   },
   async pending(req, res, next) {
     try {
-      const { count, rows } = Order.findAndCountAll({
+      const pending = await Order.count({
         where: {
           status: 'PENDING',
         },
       });
 
-      if (!rows) {
-        return res.notFound({
-          message: 'no pending orders found',
-        });
-      }
-
       res.ok({
         message: 'success',
-        data: count,
+        data: pending,
       });
     } catch (e) {
       next(e);
@@ -71,21 +59,15 @@ module.exports = {
   },
   async fulfilled(req, res, next) {
     try {
-      const { count, rows } = await Order.findAndCountAll({
+      const filled = await Order.count({
         where: {
           status: 'COMPLETED',
         },
       });
 
-      if (!rows) {
-        return res.notFound({
-          message: 'No exports found',
-        });
-      }
-
       return res.ok({
         message: 'Success',
-        data: count,
+        data: filled,
       });
     } catch (e) {
       next(e);
@@ -93,7 +75,7 @@ module.exports = {
   },
   async inProgress(req, res, next) {
     try {
-      const { count, rows } = await Order.findAndCountAll({
+      const in_progress = await Order.count({
         where: {
           status: [
             'MATCHING',
@@ -104,15 +86,11 @@ module.exports = {
           ],
         },
       });
-      if(!rows){
-        return res.notFound({
-          message:'No exports inprogress'
-        })
-      }
+
       return res.ok({
-        message:'success',
-        data:count
-      })
+        message: 'success',
+        data: in_progress,
+      });
     } catch (e) {
       return next(e);
     }
