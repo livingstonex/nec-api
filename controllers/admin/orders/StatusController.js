@@ -4,18 +4,28 @@ const Email = require('../../../utils/email.utils');
 module.exports = {
   async update(req, res, next) {
     const { id } = req.params;
-    const { status } = req.body;
+    const { status,seller_id } = req.body;
 
     if (!status) {
       return res.badRequest({
         message: 'Please attach a valid status',
       });
     }
-    const valid_status = []
+    const status_requiring_sellerId = [
+      'MATCHING_COMPLETED',
+      'ENROUTE',
+      'ARRIVED',
+      'DELIVERED',
+      'COMPLETED',
+    ];
 
     const data = {
       status: status.toUpperCase(),
     };
+
+    if (status_requiring_sellerId.includes(status)) {
+      data.seller_id = seller_id;
+    }
 
     try {
       const order_status = await Order.update(data, {
