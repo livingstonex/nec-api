@@ -128,7 +128,7 @@ module.exports = {
       next(e);
     }
   },
-  async activate(req, res, next) {
+  async activateAdmin(req, res, next) {
     const { id } = req.params;
     try {
       const admin = await Administrator.findOne({

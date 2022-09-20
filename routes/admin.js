@@ -22,7 +22,10 @@ router.route('/logout').get(AdminController.logout);
 router
   .route('/ban/:id')
   .get(protect, authorize(['super_admin']), AdminController.deactivateAdmin);
-// update model sequalize ?
+
+  router
+    .route('/unban/:id')
+    .get(protect, authorize(['super_admin']), AdminController.activateAdmin);
 
 router
   .route('/product/:id/status')
