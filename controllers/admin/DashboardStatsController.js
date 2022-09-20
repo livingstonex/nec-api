@@ -7,20 +7,20 @@ module.exports = {
     try {
       let query = [];
 
-      const users = User.findAll();
-      const exported = Order.findAll({
+      const users = User.count();
+      const exported = Order.count({
         where: {
           status: 'COMPLETED',
         },
       });
-      const products = Product.findAll();
-      const admin = Administrator.findAll({
+      const products = Product.count();
+      const admin = Administrator.count({
         where: {
           role: ['admin1', 'admin2', 'admin3'],
         },
       });
 
-      const members = User.findAll({
+      const members = User.count({
         where: {
           plan_id: {
             [Op.ne]: null,
@@ -35,11 +35,11 @@ module.exports = {
       return res.ok({
         message: 'success',
         data: {
-          users: stats[0].length,
-          exports: stats[1].length,
-          products: stats[2].length,
-          sub_admin: stats[3].length,
-          members:stats[4].length
+          users: stats[0],
+          exports: stats[1],
+          products: stats[2],
+          sub_admin: stats[3],
+          members:stats[4]
         },
       });
     } catch (e) {
