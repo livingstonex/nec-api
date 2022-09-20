@@ -222,7 +222,7 @@ router
   .get(
     protect,
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
-    UsersController.verified
+    UsersController.getVerifiedUsers
   );
 router
   .route('/clients/users/registered')
@@ -231,19 +231,19 @@ router
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
     UsersController.allUsers
   );
-  router
-    .route('/clients/users/members')
-    .get(
-      protect,
-      authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
-      UsersController.members
-    );
-  router
-    .route('/clients/users/:id')
-    .get(
-      protect,
-      authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
-      UsersController.getVerified
-    );
+router
+  .route('/clients/users/members')
+  .get(
+    protect,
+    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+    UsersController.members
+  );
+router
+  .route('/clients/users/:id')
+  .get(
+    protect,
+    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+    UsersController.getVerifiedUser
+  );
 
 module.exports = router;

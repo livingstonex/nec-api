@@ -41,7 +41,7 @@ module.exports = {
       return next(error);
     }
   },
-  async verified(req, res, next) {
+  async getVerifiedUsers(req, res, next) {
     let { status } = req.params;
     const { offset, limit } = req.pagination();
     status = status === 'verified' ? true : false;
@@ -122,7 +122,7 @@ module.exports = {
       next(e);
     }
   },
-  async getVerified(req, res, next) {
+  async getVerifiedUser(req, res, next) {
     const { id } = req.params;
 
     try {
