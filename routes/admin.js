@@ -233,21 +233,21 @@ router
   .get(
     protect,
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
-    ExportController.pending
+    ExportController.pendingOrders
   );
 router
   .route('/exports/fulfilled')
   .get(
     protect,
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
-    ExportController.fulfilled
+    ExportController.fulfilledOrders
   );
 router
   .route('/exports/inprogress')
   .get(
     protect,
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
-    ExportController.inProgress
+    ExportController.ordersInProgress
   );
 router
   .route('/exports/:id')

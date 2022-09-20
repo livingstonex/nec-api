@@ -4,7 +4,13 @@ const { Order } = require('../../models/sql').models;
 module.exports = {
   async index(req, res, next) {
     try {
-      const exportCount = await Order.count();
+      const exportCount = await Order.count({
+        where: {
+          seller_id: {
+            [Op.ne]: null,
+          },
+        },
+      });
 
       return res.ok({
         message: 'Success',
@@ -16,11 +22,6 @@ module.exports = {
   },
   async get(req, res, next) {
     const { id } = req.params;
-    if (!id) {
-      return res.badRequest({
-        message: 'please pass in an ID',
-      });
-    }
     try {
       const item = await Order.findOne({
         where: {
@@ -41,7 +42,7 @@ module.exports = {
       return next(e);
     }
   },
-  async pending(req, res, next) {
+  async pendingOrders(req, res, next) {
     try {
       const pending = await Order.count({
         where: {
@@ -57,7 +58,7 @@ module.exports = {
       next(e);
     }
   },
-  async fulfilled(req, res, next) {
+  async fulfilledOrders(req, res, next) {
     try {
       const filled = await Order.count({
         where: {
@@ -73,7 +74,7 @@ module.exports = {
       next(e);
     }
   },
-  async inProgress(req, res, next) {
+  async ordersInProgress(req, res, next) {
     try {
       const in_progress = await Order.count({
         where: {
