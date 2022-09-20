@@ -8,6 +8,7 @@ const DomesticMarket = require('../controllers/admin/domestic_market');
 const {
   CompanyController,
   PartnerCompanyController,
+  DashboardStatsController,
 } = require('../controllers/admin');
 const { UsersController } = require('../controllers/admin/client');
 
@@ -181,9 +182,7 @@ router.route('/user/:id/company').get(protect, CompanyController.get);
 // Partner Companies
 router
   .route('/partner/companies')
-  .get(
-    PartnerCompanyController.index
-  )
+  .get(PartnerCompanyController.index)
   .post(
     protect,
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
@@ -192,9 +191,7 @@ router
 
 router
   .route('/partner/companies/:id')
-  .get(
-    PartnerCompanyController.get
-  )
+  .get(PartnerCompanyController.get)
   .put(
     protect,
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
@@ -221,5 +218,10 @@ router
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
     UsersController.get
   );
+
+//stats
+router
+  .route('/stats')
+  .get(protect, authorize(['super_admin']), DashboardStatsController.index);
 
 module.exports = router;

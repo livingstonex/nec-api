@@ -75,5 +75,8 @@ module.exports = {
       data: {},
       message: 'Logout successful',
     });
+  },
+  async deactivateAdmin(req,res,next){
+
   }
 };
