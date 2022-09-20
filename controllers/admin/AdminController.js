@@ -69,6 +69,12 @@ module.exports = {
         return res.badRequest({ msg: 'Invalid login details!' });
       }
 
+      if(!admin.active){
+        return res.forbidden({
+          message:"This account has been deactivated by the supper admin"
+        })
+      }
+
       const isMatch = await bcrypt.compare(password, admin.password);
 
       if (!isMatch) {
