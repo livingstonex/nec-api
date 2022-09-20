@@ -8,6 +8,7 @@ const DomesticMarket = require('../controllers/admin/domestic_market');
 const {
   CompanyController,
   PartnerCompanyController,
+  DashboardStatsController,
 } = require('../controllers/admin');
 const { UsersController } = require('../controllers/admin/client');
 
@@ -225,6 +226,39 @@ router
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
     UsersController.get
   );
+router
+  .route('/clients/status/:status')
+  .get(
+    protect,
+    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+    UsersController.getVerifiedUsers
+  );
+router
+  .route('/clients/users/registered')
+  .get(
+    protect,
+    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+    UsersController.allUsers
+  );
+router
+  .route('/clients/users/members')
+  .get(
+    protect,
+    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+    UsersController.members
+  );
+router
+  .route('/clients/users/:id')
+  .get(
+    protect,
+    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+    UsersController.getVerifiedUser
+  );
+
+//stats
+router
+  .route('/stats')
+  .get(protect, authorize(['super_admin']), DashboardStatsController.index);
 
 router
   .route('/')

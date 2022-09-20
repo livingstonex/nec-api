@@ -99,6 +99,7 @@ module.exports = {
       message: 'Logout successful',
     });
   },
+
   async deactivateAdmin(req, res, next) {
     const { id } = req.params;
     try {
