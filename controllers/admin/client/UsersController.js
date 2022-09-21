@@ -120,9 +120,7 @@ module.exports = {
         offset,
         limit,
       });
-      if (!rows) {
-        return res.notFound({ message: 'user not found!' });
-      }
+
       const meta = res.pagination(count, limit);
       return res.ok({ message: 'Success', data: rows, meta });
     } catch (e) {
