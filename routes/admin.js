@@ -236,7 +236,7 @@ router
   );
 
 router
-  .route('/clients/subscribers')
+  .route('/clients/subscribers/all')
   .get(
     protect,
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
