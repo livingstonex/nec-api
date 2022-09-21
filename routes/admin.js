@@ -236,11 +236,11 @@ router
   );
 
 router
-  .route('/clients/subscriber')
+  .route('/clients/subscribers')
   .get(
     protect,
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
-    UsersController.subscriber
+    UsersController.subscribers
   );
 router
   .route('/clients/verified/:id')

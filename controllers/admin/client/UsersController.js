@@ -107,7 +107,7 @@ module.exports = {
     }
   },
 
-  async subscriber(req, res, next) {
+  async subscribers(req, res, next) {
     const { offset, limit } = req.pagination();
 
     try {
@@ -160,7 +160,7 @@ module.exports = {
           },
         ],
       });
-      
+
       if (!user) {
         return res.notFound({ message: 'user not found!' });
       }
