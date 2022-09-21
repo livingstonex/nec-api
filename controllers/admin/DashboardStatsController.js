@@ -1,6 +1,6 @@
 const { User, Order, Product, Administrator } =
   require('../../models/sql').models;
-  const { Op } = require('sequelize');
+const { Op } = require('sequelize');
 
 module.exports = {
   async index(req, res, next) {
@@ -20,7 +20,7 @@ module.exports = {
         },
       });
 
-      const members = User.count({
+      const subscribers = User.count({
         where: {
           plan_id: {
             [Op.ne]: null,
@@ -28,7 +28,7 @@ module.exports = {
         },
       });
 
-      query.push(users, exported, products, admin,members);
+      query.push(users, exported, products, admin, subscribers);
 
       const stats = await Promise.all(query);
 
@@ -39,7 +39,7 @@ module.exports = {
           exports: stats[1],
           products: stats[2],
           sub_admin: stats[3],
-          members:stats[4]
+          subscribers: stats[4],
         },
       });
     } catch (e) {
