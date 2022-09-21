@@ -57,19 +57,26 @@ module.exports = {
   async getVerifiedOrUnverifiedUsers(req, res, next) {
     let { status } = req.params;
     const { offset, limit } = req.pagination();
-    status =
-      status === 'verified' ? true : status === 'unverified' ? false : null;
+    let newStatus;
 
-    if (!status) {
-      return res.badRequest({
-        message: 'Invalid status passed',
-      });
+    switch (status) {
+      case 'verified':
+        newStatus = true;
+        break;
+
+      case 'unverified':
+        newStatus = false;
+        break;
+      default:
+        return res.badRequest({
+          message: 'Invalid status passed',
+        });
     }
 
     try {
       const { count, rows } = await User.findAndCountAll({
         where: {
-          is_verified: status,
+          is_verified: newStatus,
         },
         include: [
           {
@@ -96,9 +103,6 @@ module.exports = {
         limit,
       });
 
-      if (!rows) {
-        return res.notFound({ message: 'users not found!' });
-      }
       const meta = res.pagination(count, limit);
 
       return res.ok({ message: 'Success', data: rows, meta });
