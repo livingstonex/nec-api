@@ -11,7 +11,7 @@ module.exports = {
         message: 'Please attach a valid status',
       });
     }
-    const status_requiring_sellerId = [
+    const status_requiring_seller_id = [
       'MATCHING_COMPLETED',
       'ENROUTE',
       'ARRIVED',
@@ -23,7 +23,13 @@ module.exports = {
       status: status.toUpperCase(),
     };
 
-    if (status_requiring_sellerId.includes(status)) {
+    if (status_requiring_seller_id.includes(status)) {
+      if (!seller_id) {
+        return res.badRequest({
+          message:
+            'This update requires a seller id. Please pass in a seller id',
+        });
+      }
       data.seller_id = seller_id;
     }
 
