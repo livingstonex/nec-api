@@ -8,6 +8,7 @@ const DomesticMarket = require('../controllers/admin/domestic_market');
 const {
   CompanyController,
   PartnerCompanyController,
+  ExportController,
   DashboardStatsController,
 } = require('../controllers/admin');
 const { UsersController } = require('../controllers/admin/client');
@@ -263,5 +264,43 @@ router
 router
   .route('/')
   .get(protect, authorize(['super_admin']), AdminController.admins);
+
+//exports
+router
+  .route('/exports')
+  .get(
+    protect,
+    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+    ExportController.index
+  );
+
+router
+  .route('/exports/pending')
+  .get(
+    protect,
+    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+    ExportController.pendingOrders
+  );
+router
+  .route('/exports/fulfilled')
+  .get(
+    protect,
+    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+    ExportController.fulfilledOrders
+  );
+router
+  .route('/exports/inprogress')
+  .get(
+    protect,
+    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+    ExportController.ordersInProgress
+  );
+router
+  .route('/exports/:id')
+  .get(
+    protect,
+    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+    ExportController.get
+  );
 
 module.exports = router;

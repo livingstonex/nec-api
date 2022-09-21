@@ -1,20 +1,37 @@
 const { Order } = require('../../../models/sql').models;
 const Email = require('../../../utils/email.utils');
-
+//update status if status is other than matching -- if status is matching then seller id can be null, anything else seller id cannot be null.
 module.exports = {
   async update(req, res, next) {
     const { id } = req.params;
-    const { status } = req.body;
+    const { status,seller_id } = req.body;
 
     if (!status) {
       return res.badRequest({
         message: 'Please attach a valid status',
       });
     }
+    const status_requiring_seller_id = [
+      'MATCHING_COMPLETED',
+      'ENROUTE',
+      'ARRIVED',
+      'DELIVERED',
+      'COMPLETED',
+    ];
 
     const data = {
       status: status.toUpperCase(),
     };
+
+    if (status_requiring_seller_id.includes(status)) {
+      if (!seller_id) {
+        return res.badRequest({
+          message:
+            'This update requires a seller id. Please pass in a seller id',
+        });
+      }
+      data.seller_id = seller_id;
+    }
 
     try {
       const order_status = await Order.update(data, {
