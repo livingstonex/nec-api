@@ -10,6 +10,7 @@ module.exports = {
         },
         offset,
         limit,
+        include: ['sells', 'products'],
       });
 
       const meta = res.pagination(count, limit);

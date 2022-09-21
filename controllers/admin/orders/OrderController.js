@@ -23,6 +23,7 @@ module.exports = {
         offset,
         limit,
         order,
+        include: ['buyer'],
       });
 
       const meta = res.pagination(count, limit);
@@ -66,7 +67,7 @@ module.exports = {
 
     const data = {
       seller_id,
-      status: "MATCHING_COMPLETED"
+      status: 'MATCHING_COMPLETED',
     };
 
     try {
@@ -74,8 +75,10 @@ module.exports = {
         where: { id: seller_id },
       });
 
-      if(!user) {
-        return res.notFound({message: "Seller not found. Invalid seller provided."})
+      if (!user) {
+        return res.notFound({
+          message: 'Seller not found. Invalid seller provided.',
+        });
       }
 
       const updated_order = await Order.update(data, {
