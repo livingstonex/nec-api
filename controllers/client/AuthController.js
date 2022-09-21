@@ -126,6 +126,7 @@ module.exports = {
         });
       }
     } catch (e) {
+
       console.log('Validation Err: ', e.errors[0]?.message);
       if (e.errors[0]?.message === 'phone must be unique') {
         return res.unprocessable({
@@ -405,8 +406,8 @@ module.exports = {
         token: resetToken,
       });
 
-      const reset_link = `${
-        Env.get('BASE_URL') + '/client/password/reset' + '/' + resetToken
+	const reset_link = `${
+        'https://www.nigerianexportershub.com' + '/reset-password' + '/' + resetToken
       }`;
 
       // Send email

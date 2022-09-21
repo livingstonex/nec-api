@@ -78,7 +78,7 @@ module.exports = {
       }
 
       return res.created({
-        message: 'Plan created successfully.',
+        message: 'Category created successfully.',
         data: category,
       });
     } catch (error) {

@@ -8,8 +8,6 @@ const DomesticMarket = require('../controllers/admin/domestic_market');
 const {
   CompanyController,
   PartnerCompanyController,
-  ExportController,
-  DashboardStatsController,
 } = require('../controllers/admin');
 const { UsersController } = require('../controllers/admin/client');
 
@@ -20,14 +18,6 @@ router
 router.route('/login').post(AdminController.login);
 
 router.route('/logout').get(AdminController.logout);
-
-router
-  .route('/ban/:id')
-  .get(protect, authorize(['super_admin']), AdminController.deactivateAdmin);
-
-  router
-    .route('/unban/:id')
-    .get(protect, authorize(['super_admin']), AdminController.activateAdmin);
 
 router
   .route('/product/:id/status')
@@ -191,7 +181,10 @@ router.route('/user/:id/company').get(protect, CompanyController.get);
 // Partner Companies
 router
   .route('/partner/companies')
-  .get(PartnerCompanyController.index)
+  .get(
+    protect,
+    authori
+  )
   .post(
     protect,
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
@@ -200,7 +193,11 @@ router
 
 router
   .route('/partner/companies/:id')
-  .get(PartnerCompanyController.get)
+  .get(
+    protect,
+    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+    PartnerCompanyController.get
+  )
   .put(
     protect,
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
@@ -226,81 +223,6 @@ router
     protect,
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
     UsersController.get
-  );
-router
-  .route('/clients/status/:status')
-  .get(
-    protect,
-    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
-    UsersController.getVerifiedUsers
-  );
-router
-  .route('/clients/users/registered')
-  .get(
-    protect,
-    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
-    UsersController.allUsers
-  );
-router
-  .route('/clients/users/members')
-  .get(
-    protect,
-    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
-    UsersController.members
-  );
-router
-  .route('/clients/users/:id')
-  .get(
-    protect,
-    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
-    UsersController.getVerifiedUser
-  );
-
-//stats
-router
-  .route('/stats')
-  .get(protect, authorize(['super_admin']), DashboardStatsController.index);
-
-router
-  .route('/')
-  .get(protect, authorize(['super_admin']), AdminController.admins);
-
-//exports
-router
-  .route('/exports')
-  .get(
-    protect,
-    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
-    ExportController.index
-  );
-
-router
-  .route('/exports/pending')
-  .get(
-    protect,
-    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
-    ExportController.pendingOrders
-  );
-router
-  .route('/exports/fulfilled')
-  .get(
-    protect,
-    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
-    ExportController.fulfilledOrders
-  );
-router
-  .route('/exports/inprogress')
-  .get(
-    protect,
-    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
-    ExportController.ordersInProgress
-  );
-router
-  .route('/exports/:id')
-  .get(
-    protect,
-    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
-    ExportController.get
   );
 
 module.exports = router;
