@@ -4,12 +4,18 @@ const { Op } = require('sequelize');
 
 module.exports = {
   async index(req, res, next) {
+    const { role } = req.query;
     const { offset, limit } = req.pagination();
+
+    let where = {};
+
+    if (role) {
+      where.role = role.toUpperCase();
+    }
+
     try {
       const { count, rows } = await User.findAndCountAll({
-        where: {
-          role: 'EXPORTER',
-        },
+        where,
         offset,
         limit,
         include: ['sells', 'products'],
@@ -22,15 +28,20 @@ module.exports = {
       return next(error);
     }
   },
+
   async get(req, res, next) {
     const { id } = req.params;
+    const { role } = req.query;
+
+    let where = { id };
+
+    if (role) {
+      where.role = role.toUpperCase();
+    }
 
     try {
       const user = await User.findOne({
-        where: {
-          id,
-          role: 'EXPORTER',
-        },
+        where,
       }).catch((err) => console.error(err));
 
       if (!user) {
@@ -42,10 +53,19 @@ module.exports = {
       return next(error);
     }
   },
-  async getVerifiedUsers(req, res, next) {
+
+  async getVerifiedOrUnverifiedUsers(req, res, next) {
     let { status } = req.params;
     const { offset, limit } = req.pagination();
-    status = status === 'verified' ? true : false;
+    status =
+      status === 'verified' ? true : status === 'unverified' ? false : null;
+
+    if (!status) {
+      return res.badRequest({
+        message: 'Invalid status passed',
+      });
+    }
+
     try {
       const { count, rows } = await User.findAndCountAll({
         where: {
@@ -86,22 +106,8 @@ module.exports = {
       return next(error);
     }
   },
-  async allUsers(req, res, next) {
-    const { offset, limit } = req.pagination();
-    try {
-      const { count, rows } = await User.findAndCountAll({
-        offset,
-        limit,
-      });
 
-      const meta = res.pagination(count, limit);
-
-      return res.ok({ message: 'Success', data: rows, meta });
-    } catch (error) {
-      return next(error);
-    }
-  },
-  async members(req, res, next) {
+  async subscriber(req, res, next) {
     const { offset, limit } = req.pagination();
 
     try {
@@ -154,6 +160,7 @@ module.exports = {
           },
         ],
       });
+      
       if (!user) {
         return res.notFound({ message: 'user not found!' });
       }

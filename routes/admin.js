@@ -232,24 +232,18 @@ router
   .get(
     protect,
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
-    UsersController.getVerifiedUsers
+    UsersController.getVerifiedOrUnverifiedUsers
   );
+
 router
-  .route('/clients/users/registered')
+  .route('/clients/subscriber')
   .get(
     protect,
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
-    UsersController.allUsers
+    UsersController.subscriber
   );
 router
-  .route('/clients/users/members')
-  .get(
-    protect,
-    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
-    UsersController.members
-  );
-router
-  .route('/clients/users/:id')
+  .route('/clients/verified/:id')
   .get(
     protect,
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),

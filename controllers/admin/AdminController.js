@@ -129,6 +129,7 @@ module.exports = {
       next(e);
     }
   },
+  
   async activateAdmin(req, res, next) {
     const { id } = req.params;
     try {
