@@ -69,10 +69,10 @@ module.exports = {
         return res.badRequest({ msg: 'Invalid login details!' });
       }
 
-      if(!admin.active){
+      if (!admin.active) {
         return res.forbidden({
-          message:"This account has been deactivated by the supper admin"
-        })
+          message: 'This account has been deactivated by the supper admin',
+        });
       }
 
       const isMatch = await bcrypt.compare(password, admin.password);
@@ -101,19 +101,22 @@ module.exports = {
   },
 
   async deactivateAdmin(req, res, next) {
-    const { id } = req.params;
+    const { admin_id: id } = req.params;
+
     try {
       const admin = await Administrator.findOne({
         where: {
           [Op.and]: [{ id }, { active: true }],
         },
       });
+
       if (!admin) {
         return res.notFound({
           message: 'this admin does not exist',
         });
       }
-      const update = Administrator.update(
+
+      await Administrator.update(
         { active: false },
         {
           where: {
@@ -129,21 +132,24 @@ module.exports = {
       next(e);
     }
   },
-  
+
   async activateAdmin(req, res, next) {
-    const { id } = req.params;
+    const { admin_id: id } = req.params;
+
     try {
       const admin = await Administrator.findOne({
         where: {
           [Op.and]: [{ id }, { active: false }],
         },
       });
+
       if (!admin) {
         return res.notFound({
           message: 'this admin does not exist',
         });
       }
-      const update = Administrator.update(
+
+      await Administrator.update(
         { active: true },
         {
           where: {

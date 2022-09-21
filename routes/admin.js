@@ -22,12 +22,12 @@ router.route('/login').post(AdminController.login);
 router.route('/logout').get(AdminController.logout);
 
 router
-  .route('/ban/:id')
-  .get(protect, authorize(['super_admin']), AdminController.deactivateAdmin);
+  .route('/deactivate/:admin_id')
+  .put(protect, authorize(['super_admin']), AdminController.deactivateAdmin);
 
-  router
-    .route('/unban/:id')
-    .get(protect, authorize(['super_admin']), AdminController.activateAdmin);
+router
+  .route('/activate/:admin_id')
+  .put(protect, authorize(['super_admin']), AdminController.activateAdmin);
 
 router
   .route('/product/:id/status')
