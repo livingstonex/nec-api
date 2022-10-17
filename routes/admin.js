@@ -41,8 +41,8 @@ router
 router
   .route('/orders')
   .get(
-    protect,
-    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+    // protect,
+    // authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
     Orders.OrderController.index
   );
 
