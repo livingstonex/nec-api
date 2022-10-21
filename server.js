@@ -154,7 +154,7 @@ process.on('unhandledRejection', (err, promise) => {
   console.log(`Error: ${err.message}`.red.bold);
 
   // Close server and exit process
-  server.close(() => process.exit(1));
+  // server.close(() => process.exit(1));
 });
 
 process.on('SIGINT', async () => {
@@ -162,5 +162,5 @@ process.on('SIGINT', async () => {
 
   await Promise.all([SQL.closeAll(), Mongo.closeAll()]);
 
-  process.exit(0);
+  // process.exit(0);
 });
