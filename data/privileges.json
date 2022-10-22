@@ -1,0 +1,218 @@
+[
+    {
+        "name": "1 Export per Month",
+        "description": "Guaranteed export of one (1) container in a month",
+        "plan_id": 1
+    },
+    {
+        "name": "Verified Buyers",
+        "description": "You get verified buyers from us.",
+        "plan_id": 1
+    },
+    {
+        "name": "Logistics and Exports",
+        "description": "Assisted with shipping logistics and clearing services",
+        "plan_id": 1
+    },
+    {
+        "name": "Warehousing",
+        "description": "We provide you warehousing services for a variety of commodities in China.",
+        "plan_id": 1
+    },
+    {
+        "name": "Exports Training",
+        "description": "Special training on exports trade",
+        "plan_id": 1
+    },
+
+
+
+
+
+
+
+    {
+        "name": "2 Exports per Month",
+        "description": "Guaranteed export of two (2) containers in a month",
+        "plan_id": 2
+    },
+    {
+        "name": "Performance Report",
+        "description": "Performance Report on your Nex Hub Dashboard.",
+        "plan_id": 2
+    },
+    {
+        "name": "Verified Buyers",
+        "description": "You get verified buyers from us.",
+        "plan_id": 2
+    },
+    {
+        "name": "Logistics and Exports",
+        "description": "Assisted with shipping logistics and clearing services",
+        "plan_id": 2
+    },
+    {
+        "name": "Warehousing",
+        "description": "We provide you warehousing services for a variety of commodities in China.",
+        "plan_id": 2
+    },
+    {
+        "name": "Exports Training",
+        "description": "Special training on exports trade",
+        "plan_id": 2
+    },
+
+
+
+
+
+
+
+    {
+        "name": "5 Exports per Month",
+        "description": "Guaranteed export of five (5) containers in a month",
+        "plan_id": 3
+    },
+    {
+        "name": "Export Finance",
+        "description": "We will guide you to enjoy export finance from our partner Financial Institutions",
+        "plan_id": 3
+    },
+    {
+        "name": "Regulatory Liason",
+        "description": "We handle liaison with regulatory agencies on your behalf",
+        "plan_id": 3
+    },
+    {
+        "name": "Trust Score 70+",
+        "description": "With due diligence of trust score of 70+",
+        "plan_id": 3
+    },
+    {
+        "name": "Quarterly Orientation",
+        "description": "Orientation + Planned Quarterly Sessions on Export.",
+        "plan_id": 3
+    },
+    {
+        "name": "Performance Report",
+        "description": "Performance Report on your Nex Hub Dashboard.",
+        "plan_id": 3
+    },
+    {
+        "name": "Verified Buyers",
+        "description": "You get verified buyers from us.",
+        "plan_id": 3
+    },
+    {
+        "name": "Logistics and Exports",
+        "description": "Assisted with shipping logistics and clearing services",
+        "plan_id": 3
+    },
+    {
+        "name": "Warehousing",
+        "description": "We provide you warehousing services for a variety of commodities in China.",
+        "plan_id": 3
+    },
+    {
+        "name": "Exports Training",
+        "description": "Special training on exports trade",
+        "plan_id": 3
+    },
+
+
+
+
+
+
+
+    {
+        "name": "10 Exports per Month",
+        "description": "Guaranteed export of ten (10) containers in a month",
+        "plan_id": 4
+    },
+    {
+        "name": "Export Finance",
+        "description": "We will guide you to enjoy export finance from our partner Financial Institutions",
+        "plan_id": 4
+    },
+    {
+        "name": "Regulatory Liason",
+        "description": "We handle liaison with regulatory agencies on your behalf",
+        "plan_id": 4
+    },
+    {
+        "name": "Trust Score 70+",
+        "description": "With due diligence of trust score of 70+",
+        "plan_id": 4
+    },
+    {
+        "name": "Quarterly Orientation",
+        "description": "Orientation + Planned Quarterly Sessions on Export.",
+        "plan_id": 4
+    },
+    {
+        "name": "Performance Report",
+        "description": "Performance Report on your Nex Hub Dashboard.",
+        "plan_id": 4
+    },
+    {
+        "name": "Verified Buyers",
+        "description": "You get verified buyers from us.",
+        "plan_id": 4
+    },
+    {
+        "name": "Logistics and Exports",
+        "description": "Assisted with shipping logistics and clearing services",
+        "plan_id": 4
+    },
+    {
+        "name": "Warehousing",
+        "description": "We provide you warehousing services for a variety of commodities in China.",
+        "plan_id": 4
+    },
+    {
+        "name": "Exports Training",
+        "description": "Special training on exports trade",
+        "plan_id": 4
+    },
+    {
+        "name": "B2B Engagements",
+        "description": "Provided with extensive international B2B engagements",
+        "plan_id": 4
+    },
+    {
+        "name": "Off taking Benefits",
+        "description": "Enjoy off taking benefits for up to five (5) different commodities",
+        "plan_id": 4
+    },
+    {
+        "name": "Documentations for Export",
+        "description": "Assisted with documentations for export",
+        "plan_id": 4
+    },
+    {
+        "name": "Consultancy Services",
+        "description": "We provide consultancy services (Market intelligence, Product specification, Packaging, certifications & Value addition) for you where applicable.",
+        "plan_id": 4
+    },
+    {
+        "name": "Trust Score 90+",
+        "description": "With due diligence of trust score of 90+",
+        "plan_id": 4
+    },
+    {
+        "name": "Advertisement",
+        "description": "We advertise your product on our social media [Facebook, Instagram, Twitter & LinkedIn] Platform",
+        "plan_id": 4
+    },
+    {
+        "name": "Language Translation Services",
+        "description": "Assist with language translator service.",
+        "plan_id": 4
+    },
+    {
+        "name": "Visa Assistance",
+        "description": "We provide Visa assistance services.",
+        "plan_id": 4
+    }
+]

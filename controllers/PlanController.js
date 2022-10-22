@@ -15,17 +15,17 @@ module.exports = {
 
   async create(req, res, next) {
     try {
-      const { name, price } = req.body;
+      const { name, price, code } = req.body;
 
-      if (!name || !price) {
+      if (!name || !price || !code) {
         return res.status(400).json({
           status: 'bad-request',
           message:
-            'Invalid price or name entered. Please provide a price and a name.',
+            'Invalid price or name entered. Please provide a price, name and price.',
         });
       }
 
-      const payload = { name, price };
+      const payload = { name, price, code };
 
       const plan = await Plan.create(payload);
 

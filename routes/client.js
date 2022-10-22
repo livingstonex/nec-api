@@ -8,7 +8,7 @@ const {
 } = require('../controllers/client');
 const DomesticMarket = require('../controllers/client/domestic_market')
 const PasswordResetRateLimiter = require('../utils/ratelimit.utils');
-const { protect } = require('../middlewares/auth');
+const { authorizePrivilege, protect } = require('../middlewares/auth');
 const { verifyOtp } = require('../middlewares/otp')
 
 /**
@@ -150,7 +150,7 @@ router.route('/avatar').delete(protect, AuthController.removeAvatar);
  *      '200':
  *        description: Profile updated successfully.
  */
-router.route('/profile').put(protect, AuthController.updateProfile);
+router.route('/profile').put(protect, authorizePrivilege([1,2,3,4,5]), AuthController.updateProfile);
 
 /**
  * @swagger

@@ -1,0 +1,26 @@
+[
+    {
+        "id": 1,
+        "name": "BRONZE",
+        "code": "PLN_BRONZE",
+        "price": 10000
+    },
+    {   
+        "id": 2,
+        "name": "SILVER",
+        "code": "PLN_SILVER",
+        "price": 10000
+    },
+    {
+        "id": 3,
+        "name": "GOLD",
+        "code": "PLN_GOLD",
+        "price": 10000
+    },
+    {
+        "id": 4,
+        "name": "PLATINUM",
+        "code": "PLN_PLATINUM",
+        "price": 10000
+    }
+]

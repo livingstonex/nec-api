@@ -149,6 +149,9 @@ const server = app.listen(PORT, () => {
     console.log(res.circularGraph());
   });
 });
+
+// seed();
+
 //== Handle global error on server initialization ==//
 process.on('unhandledRejection', (err, promise) => {
   console.log(`Error: ${err.message}`.red.bold);
