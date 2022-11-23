@@ -19,12 +19,20 @@ module.exports = {
     try {
       const { email, fullname, phone, password, country_code = '' } = req.body;
 
-      const country_phone_code = phone.toString().substring(0, 3);
+      const country_phone_code = phone?.toString().substring(0, 3);
 
+      let role = ''
+
+      // if (country_phone_code === '234') {
+      //   return res.forbidden({
+      //     message: 'Please use the exporters portal to signup.',
+      //   });
+      // }
+      
       if (country_phone_code === '234') {
-        return res.forbidden({
-          message: 'Please use the exporters portal to signup.',
-        });
+         role = 'EXPORTER'
+      }else{
+        role = 'IMPORTER'
       }
 
       let errors = {};
@@ -96,7 +104,7 @@ module.exports = {
           country_code,
           verification_token,
           verification_token_expires: verification_token_epires_in,
-          role: 'IMPORTER',
+          role
         },
       });
       if (created) {

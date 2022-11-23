@@ -4,7 +4,7 @@ const { Order } = require('../../models/sql').models;
 module.exports = {
   async index(req, res, next) {
     try {
-      const exportCount = await Order.count({
+      const exportCount = await Order.findAll({
         where: {
           seller_id: {
             [Op.ne]: null,
@@ -44,7 +44,7 @@ module.exports = {
   },
   async pendingOrders(req, res, next) {
     try {
-      const pending = await Order.count({
+      const pending = await Order.findAll({
         where: {
           status: 'PENDING',
         },
@@ -60,7 +60,7 @@ module.exports = {
   },
   async fulfilledOrders(req, res, next) {
     try {
-      const filled = await Order.count({
+      const filled = await Order.findAll({
         where: {
           status: 'COMPLETED',
         },
@@ -76,7 +76,7 @@ module.exports = {
   },
   async ordersInProgress(req, res, next) {
     try {
-      const in_progress = await Order.count({
+      const in_progress = await Order.findAll({
         where: {
           status: [
             'MATCHING',

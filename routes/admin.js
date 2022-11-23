@@ -10,6 +10,7 @@ const {
   PartnerCompanyController,
   ExportController,
   DashboardStatsController,
+  Transactions,
 } = require('../controllers/admin');
 const { UsersController } = require('../controllers/admin/client');
 
@@ -38,13 +39,11 @@ router
   );
 
 // Orders
-router
-  .route('/orders')
-  .get(
-    protect,
-    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
-    Orders.OrderController.index
-  );
+router.route('/orders').get(
+  // protect,
+  // authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+  Orders.OrderController.index
+);
 
 router
   .route('/orders/:id')
@@ -186,7 +185,13 @@ router
   );
 
 // Company
-router.route('/user/:id/company').get(protect, CompanyController.get);
+router
+  .route('/user/:id/company')
+  .get(
+    protect,
+    authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+    CompanyController.get
+  );
 
 // Partner Companies
 router
@@ -296,5 +301,13 @@ router
     authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
     ExportController.get
   );
+//transactions
+  router
+    .route('/transactions')
+    .get(
+      protect,
+      authorize(['super_admin', 'admin1', 'admin2', 'admin3']),
+      Transactions.index
+    );
 
 module.exports = router;
