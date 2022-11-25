@@ -19,7 +19,7 @@ const mandrill_client = new mandrill.Mandrill(Env.get('MANDRILL_API_KEY'));
 // Initialize mailgun
 const mg = Mailgun({
   apiKey: Env.get('MAILGUN_API_KEY'),
-  domain: 'sandbox820ba9ce2e654b969d87bca27b31775a.mailgun.org',
+  domain: 'mg.nigerianexportershub.com',
 });
 
 // Mandrill Request
