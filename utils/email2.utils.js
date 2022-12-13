@@ -18,8 +18,8 @@ const TEMPLATES = {
 const mandrill_client = new mandrill.Mandrill(Env.get('MANDRILL_API_KEY'));
 // Initialize mailgun
 const mg = Mailgun({
-  apiKey: process.env.MAILGUN_API_KEY,
-  domain: process.env.MAILGUN_DOMAIN,
+  apiKey: Env.get('MAILGUN_API_KEY'),
+  domain: 'mg.nigerianexportershub.com',
 });
 
 // Mandrill Request
@@ -55,7 +55,7 @@ module.exports = {
   }) {
     try {
       const invalidRecipients = [];
-      const MAIL_PROVIDER = (await Config.get('MAIL_PROVIDER')) || 'MAILGUN';
+      const MAIL_PROVIDER = (await Config.get('MAIL_PROVIDER')) || 'DISABLED';
 
       to = to.filter(async (recipient) => {
         const isValidEmail = Validator.validateEmail(recipient.email);
@@ -70,8 +70,9 @@ module.exports = {
 
       const html = await getHTMLBody(templateName, templateData);
 
+      if (!Env.live) return console.log(`**** MAIL SENT: ${templateName} ****`);
+
       if (MAIL_PROVIDER === 'MAILGUN') {
-        console.log('sending....');
         return this.sendViaMailgun({
           html,
           subject,
@@ -83,7 +84,7 @@ module.exports = {
             console.log('Mail Response: ', res);
           })
           .catch((err) => {
-            console.error('Mailgun Err: ', err);
+            console.log('Mailgun Err: ', err);
           });
       }
 
@@ -121,11 +122,8 @@ module.exports = {
       };
 
       mg.messages().send(data, (err, body) => {
-        if (err) {
-          console.log(err);
-          return reject(err);
-        }
-        console.log(body);
+        if (err) return reject(err);
+
         return resolve(body);
       });
     });
