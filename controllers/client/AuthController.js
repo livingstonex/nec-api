@@ -21,18 +21,18 @@ module.exports = {
 
       const country_phone_code = phone?.toString().substring(0, 3);
 
-      let role = ''
+      let role = '';
 
       // if (country_phone_code === '234') {
       //   return res.forbidden({
       //     message: 'Please use the exporters portal to signup.',
       //   });
       // }
-      
-      if (country_phone_code === '234') {
-         role = 'EXPORTER'
-      }else{
-        role = 'IMPORTER'
+
+      if (country_phone_code == '234') {
+        role = 'EXPORTER';
+      } else {
+        role = 'IMPORTER';
       }
 
       let errors = {};
@@ -104,7 +104,7 @@ module.exports = {
           country_code,
           verification_token,
           verification_token_expires: verification_token_epires_in,
-          role
+          role,
         },
       });
       if (created) {
@@ -134,7 +134,6 @@ module.exports = {
         });
       }
     } catch (e) {
-
       console.log('Validation Err: ', e.errors[0]?.message);
       if (e.errors[0]?.message === 'phone must be unique') {
         return res.unprocessable({
@@ -414,8 +413,11 @@ module.exports = {
         token: resetToken,
       });
 
-	const reset_link = `${
-        'https://www.nigerianexportershub.com' + '/reset-password' + '/' + resetToken
+      const reset_link = `${
+        'https://www.nigerianexportershub.com' +
+        '/reset-password' +
+        '/' +
+        resetToken
       }`;
 
       // Send email
@@ -540,7 +542,7 @@ module.exports = {
 
       await User.update(
         { avatar: url, avatar_id: public_id },
-        { where: { id: req.user.id } }
+        { where: { id: req.user?.id } }
       );
 
       return res.status(201).json({
