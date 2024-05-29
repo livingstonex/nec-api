@@ -1,20 +1,21 @@
-const { Sequelize } = require('sequelize');
+const Sequelize = require('sequelize');
 const Env = require('../../utils/env.utils');
 
 const { SQL_DB_NAME, SQL_DB_USER, SQL_DB_PASS, SQL_DB_HOST, SQL_DB_PORT } =
   process.env;
-
 class SQL extends Sequelize {
-  async closeAll() {
+  async closeAll(x = 10) {
+    if (!x) {
+      return;
+    }
+
     try {
-      await this.closeAll();
+      await this.closeAll(--x);
     } catch (err) {
       console.error(err);
     }
   }
 }
-
-console.log('SQL... ', SQL_DB_NAME);
 
 const pool = Env.live
   ? {
@@ -45,7 +46,30 @@ sequelize
     console.error('PSQL: Unable to connect to the database:', err);
   });
 
-const modelDefiners = [];
+const modelDefiners = [
+  require('./PasswordReset'),
+  require('./Users'),
+  require('./Plans'),
+  require('./Privileges'),
+  require('./Payments'),
+  require('./Subscriptions'),
+  // require('./UserPrivileges'),
+  require('./Cards'),
+  require('./Companies'),
+  require('./Categories'),
+  require('./Products'),
+  require('./Administrators'),
+  require('./Orders'),
+  require('./DomesticMarketProducts'),
+  require('./DomesticMarkets'),
+  require('./DomesticMarketTraders'),
+  require('./DomesticOrders'),
+  require('./DomesticProducts'),
+  require('./DomesticTraderProducts'),
+  require('./DomesticTraders'),
+  require('./Otps'),
+  require('./PartnerCompanies'),
+];
 
 for (const modelDefiner of modelDefiners) {
   modelDefiner(sequelize);
@@ -56,9 +80,9 @@ Object.keys(sequelize.models).forEach((key) => {
     sequelize.models[key].associate(sequelize.models);
 });
 
-// sequelize
-//   .sync()
-//   .then((res) => console.log('Synced: ', res))
-//   .catch((err) => console.log('Error: ', err));
+sequelize
+  .sync()
+  .then((res) => console.log('Synced... '))
+  .catch((err) => console.log('Error: ', err));
 
 module.exports = sequelize;

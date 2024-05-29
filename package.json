@@ -4,7 +4,7 @@
   "description": "API for the zeenab backend",
   "main": "server.js",
   "scripts": {
-    "start": "NODE_ENV=production node server",
+    "start": "NODE_ENV=production nodemon server",
     "dev": "nodemon server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -25,18 +25,37 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.27.2",
+    "bcryptjs": "^2.4.3",
+    "cloudinary": "^1.30.0",
     "colors": "^1.4.0",
     "cors": "^2.8.5",
-    "dotenv": "^16.0.1",
+    "cron": "^2.0.0",
+    "crypto-random-string": "^3.3.0",
+    "dotenv": "^16.0.2",
+    "ejs": "^3.1.8",
     "express": "^4.18.1",
+    "express-fileupload": "^1.4.0",
+    "express-rate-limit": "^6.4.0",
     "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.21",
+    "mailgun-js": "^0.22.0",
+    "mandrill-api": "^1.0.45",
+    "moment": "^2.29.3",
     "mongoose": "^6.3.3",
     "morgan": "^1.10.0",
+    "numeral": "^2.0.6",
+    "path": "^0.12.7",
     "pg": "^8.7.3",
     "prettier": "^2.6.2",
-    "sequelize": "^6.19.1"
+    "redis": "^4.1.0",
+    "sequelize": "^6.19.1",
+    "swagger-jsdoc": "^6.2.1",
+    "swagger-ui-express": "^4.4.0",
+    "validator": "^13.7.0"
   },
   "devDependencies": {
+    "madge": "^5.0.1",
     "nodemon": "^2.0.16"
   }
 }
